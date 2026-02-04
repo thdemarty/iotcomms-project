@@ -1,181 +1,137 @@
-#include "random.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "ztimer.h"
-#include "host/util/util.h"
-#include "host/ble_gap.h"
-#include "controller/ble_phy.h"
-#include "services/gap/ble_svc_gap.h"
+#include "assert.h"
+#include "net/ipv6/addr.h"
+#include "net/gnrc/netif.h"
+#include "net/gnrc/netapi.h"
+#include "nimble_netif.h"
 
-#define TX_POWER 8
-#define BLE_SVC_CUSTOM_UUID 0xff00
-#define BLE_CHR_CUSTOM_NOTIFY_UUID 0xee00
+#define NODE_COUNT 5
+static const char *addr_node_str[] = {"2001:db8::1", "2001:db8::2", "2001:db8::3", "2001:db8::4", "2001:db8::5"}; 
+static ipv6_addr_t addr_node[NODE_COUNT];
 
-/* Define variables that will be used later. */
-const char *device_name = "linqua-NodeA";
-uint8_t addr_type;
-uint8_t conn_state;
-uint16_t conn_handle;
-uint8_t notify_state;
-/* Define characteristic value handle. */
-uint16_t custom_notify_data_val_handle;
-
-void advertise(void);
-
-/*
- * Define characteristic access callback handler.
- * This function is called when a client accesses the characteristic.
- * It is used to handle read/write requests from the client.
- * In this case, we are only interested in the notification characteristic.
- * But we still keep it in case we want to add more functionality in the future.
- */
-int custom_notify_data_handler(uint16_t conn_handle, uint16_t attr_handle,
-							   struct ble_gatt_access_ctxt *ctxt, void *arg)
-{
-	(void)conn_handle;
-	(void)attr_handle;
-	(void)arg;
-	if (ble_uuid_u16(ctxt->chr->uuid) != BLE_CHR_CUSTOM_NOTIFY_UUID)
-	{
-		return BLE_ATT_ERR_UNLIKELY;
-	}
-	return 0;
-}
-
-/* Define our custom service and characteristic. */
-const struct ble_gatt_svc_def gatt_svr_svcs[] = {
-	{/* Custom Service */
-	 .type = BLE_GATT_SVC_TYPE_PRIMARY,
-	 .uuid = BLE_UUID16_DECLARE(BLE_SVC_CUSTOM_UUID),
-	 .characteristics = (struct ble_gatt_chr_def[]){
-		 {
-			 /* Custom Notify Characteristic */
-			 .uuid = BLE_UUID16_DECLARE(BLE_CHR_CUSTOM_NOTIFY_UUID),
-			 .access_cb = custom_notify_data_handler,
-			 .val_handle = &custom_notify_data_val_handle,
-			 .flags = BLE_GATT_CHR_F_NOTIFY,
-		 },
-		 {
-			 0, /* No more characteristics in this service */
-		 },
-	 }},
-	{
-		0, /* No more services */
-	},
+// TODO: have one of these for each peer
+static ble_addr_t peer_addr = {
+    .type = BLE_ADDR_PUBLIC,
+    .val = { 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff },
 };
 
-int peripheral_conn_event(struct ble_gap_event *event, void *arg)
+static gnrc_netif_t *ble_netif = NULL;
+
+static void event_cb(int handle, nimble_netif_event_t event,
+                      const uint8_t *addr)
 {
-	(void)arg;
+    (void) addr;
+    switch (event) {
+        case NIMBLE_NETIF_ACCEPTING:
+            printf("Advertising\n");
+            break;
 
-	switch (event->type)
-	{
-	case BLE_GAP_EVENT_ADV_COMPLETE:
-		advertise();
-		return 0;
-	case BLE_GAP_EVENT_CONNECT:
-		conn_state = 1;
-		conn_handle = event->connect.conn_handle;
-		return 0;
-	case BLE_GAP_EVENT_DISCONNECT:
-		conn_state = 0;
-		advertise();
-		return 0;
+        case NIMBLE_NETIF_CONNECTED_SLAVE:
+            printf("Connected as slave, handle=%d\n", handle);
+            break;
 
-		/* [TASK 3: Check if someone subscribed to our custom characteristic] */
+        case NIMBLE_NETIF_CLOSED_SLAVE:
+            printf("Slave connection closed, handle=%d\n", handle);
+            break;
 
-	case BLE_GAP_EVENT_NOTIFY_TX:
-		printf("Peripheral: Connected and sending notification\n");
-		return 0;
-	}
-	return 0;
+        case NIMBLE_NETIF_INIT_MASTER:
+            puts("Starting connection attempt");
+            break;
+
+        case NIMBLE_NETIF_CONNECTED_MASTER:
+            printf("Connected as master, handle=%d\n", handle);
+            break;
+
+        case NIMBLE_NETIF_CLOSED_MASTER:
+            printf("Master connection closed, handle=%d\n", handle);
+            break;
+
+        default:
+            break;
+    }
 }
 
-void advertise(void)
+static void assign_static_ipv6(gnrc_netif_t *netif, const ipv6_addr_t *addr)
 {
-	int rc;
-	struct ble_gap_adv_params adv_params;
-	struct ble_hs_adv_fields fields;
+    uint8_t flags = GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID;
+    int res = gnrc_netif_ipv6_addr_add(netif, addr, 64, flags);
+    if (res < 0) {
+        printf("Failed to add IPv6 address to interface %u: %d\n",
+               netif->pid, res);
+    } else {
+        char str[IPV6_ADDR_MAX_STR_LEN];
+        printf("Added IPv6 address %s to interface %u\n",
+               ipv6_addr_to_str(str, addr, sizeof(str)), netif->pid);
+    }
+}
 
-	/* Fill all fields and parameters with zeros */
-	memset(&adv_params, 0, sizeof(adv_params));
-	memset(&fields, 0, sizeof(fields));
+static gnrc_netif_t *find_ble_netif(void)
+{
+    gnrc_netif_t *netif = NULL;
+    while ((netif = gnrc_netif_iter(netif))) {
+        if (netif->device_type == NETDEV_TYPE_BLE) {
+            return netif;
+        }
+    }
+    return NULL;
+}
 
-	adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
-	adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
-
-	fields.flags = BLE_HS_ADV_F_DISC_GEN;
-	fields.name = (uint8_t *)device_name;
-	fields.name_len = strlen(device_name);
-	fields.name_is_complete = 1;
-
-	/* Set UUID for the custom service */
-	fields.uuids16 = (ble_uuid16_t[]){
-		BLE_UUID16_INIT(BLE_SVC_CUSTOM_UUID)};
-	fields.num_uuids16 = 1;
-	fields.uuids16_is_complete = 1;
-
-	rc = ble_gap_adv_set_fields(&fields);
-	assert(rc == 0);
-
-	rc = ble_gap_adv_start(addr_type, NULL, BLE_HS_FOREVER, &adv_params, peripheral_conn_event, NULL);
-	assert(rc == 0);
+ipv6_addr_t *get_node_addr(uint8_t node_id)
+{
+    ipv6_addr_t *rc;
+    rc = ipv6_addr_from_str(&addr_node[node_id], addr_node_str[node_id]);
+    assert(rc != NULL);
+    return &addr_node[node_id];
 }
 
 int main(void)
 {
-	int rc;
+    // Delay generally required before pyterm comes up 
+    ztimer_sleep(ZTIMER_MSEC, 3000);
 
-	// Set TX power
-	rc = ble_phy_txpwr_set(TX_POWER);
-	assert(rc == 0);
+    printf("NODEID is: %d\n",NODEID);
+    // TODO: print BLE address of this node
 
-	/* Set device name */
-	rc = ble_svc_gap_device_name_set(device_name);
-	assert(rc == 0);
+    // TODO: Find correct flags for our use case
+    nimble_netif_accept_cfg_t accept_cfg = {.flags = NIMBLE_NETIF_FLAG_LEGACY};
+    printf("1\n");
+    nimble_netif_connect_cfg_t connect_cfg = {0};
+    printf("2\n");
 
-	/* [TASK 2: Add our custom service, and reload the GATT server] */
+    // TODO: find out why this is failing
+    nimble_netif_init();
+    printf("3\n");
+    nimble_netif_eventcb(event_cb);
+    printf("4\n");
 
-	/* addr_type will store type of address we use */
-	rc = ble_hs_util_ensure_addr(0);
-	assert(rc == 0);
+    // TODO: find out why this is failing
+    nimble_netif_accept(NULL, 0, &accept_cfg);
+    printf("5\n");
 
-	// Infer address type
-	rc = ble_hs_id_infer_auto(0, &addr_type);
-	assert(rc == 0);
+    // TODO: this should loop over all node BLE addresses
+    int res = nimble_netif_connect(&peer_addr, &connect_cfg);
+    if (res != 0) {
+        printf("nimble_netif_connect failed: %d\n", res);
+    }
 
-	/* Begin advertising. */
-	advertise();
-	int8_t rssi_raw;
+    printf("Got beyond nimble!\n");
+    // Assign IPv6 address to own BLE interface
+    // Might need to wait for the BLE interface to come up
+    while (1) {
+        ztimer_sleep(ZTIMER_MSEC, 100);
 
-	while (1)
-	{
-		if (conn_state == 0)
-		{
-			// printf("Peripheral: Not connected\n");
-		}
-		else
-		{
-			if (notify_state == 1)
-			{
+        gnrc_netif_t *netif = find_ble_netif();
+        if (netif != NULL && netif != ble_netif) {
+            ble_netif = netif;
+            const ipv6_addr_t *my_addr = get_node_addr(NODEID);
+            assign_static_ipv6(ble_netif, my_addr);
+        }
+    }
 
-				/* [TASK 4: Achieve the notification here] */
-			}
-			else
-			{
-				// printf("Peripheral: Connected but not sending notification\n");
-				rc = ble_gap_conn_rssi(conn_handle, &rssi_raw);
+    // TODO: send pings (there is a module for that), do measurements
 
-				if (rc == 0)
-				{
-					printf("Peripheral: Current RSSI: %d dBm\n", rssi_raw);
-				}
-				else
-				{
-					printf("Peripheral: Error reading RSSI; rc=%d\n", rc);
-				}
-			}
-		}
-		ztimer_sleep(ZTIMER_MSEC, 100);
-	}
-
-	return 0;
+    return 0;
 }
