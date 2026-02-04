@@ -8,8 +8,11 @@ BOARD ?= adafruit-feather-nrf52840-sense
 RIOTBASE ?= $(CURDIR)/RIOT
 
 USEPKG += nimble
+USEMODULE += nimble
 USEMODULE += nimble_netif
+USEMODULE += nimble_addr
 USEMODULE += gnrc_netif
+USEMODULE += auto_init_gnrc_netif
 USEMODULE += gnrc_neterr
 USEMODULE += gnrc_pktdump
 USEMODULE += gnrc_ipv6
@@ -25,6 +28,7 @@ DEVELHELP ?= 1
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
 
+NODEID ?= 0
 # Specify NODEID when invoking make
 CFLAGS += -DNODEID=$(NODEID)
 
