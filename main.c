@@ -15,27 +15,26 @@
 static const char *addr_node_str[] = {"2001:db8::1", "2001:db8::2", "2001:db8::3", "2001:db8::4", "2001:db8::5"}; 
 static ipv6_addr_t addr_node[NODE_COUNT];
 
-// TODO: replace with real device MAC
 static ble_addr_t peer_addr[] = {
     {
-        .type = BLE_ADDR_PUBLIC,
-        .val = {0xa0, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
+        .type = BLE_ADDR_RANDOM,
+        .val = {0x00, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
     },
     {
-        .type = BLE_ADDR_PUBLIC,
-        .val = {0xa1, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
+        .type = BLE_ADDR_RANDOM,
+        .val = {0x11, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
     },
     {
-        .type = BLE_ADDR_PUBLIC,
-        .val = {0xa2, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
+        .type = BLE_ADDR_RANDOM,
+        .val = {0x22, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
     },
     {
-        .type = BLE_ADDR_PUBLIC,
-        .val = {0xa3, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
+        .type = BLE_ADDR_RANDOM,
+        .val = {0x33, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
     },
     {
-        .type = BLE_ADDR_PUBLIC,
-        .val = {0xa4, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
+        .type = BLE_ADDR_RANDOM,
+        .val = {0x44, 0xbb, 0xcc, 0xdd, 0xee, 0xff},
     },
 };
 
@@ -112,47 +111,48 @@ int main(void)
 {
     // Delay generally required before pyterm comes up 
     ztimer_sleep(ZTIMER_MSEC, 3000);
+    int rc;
 
     printf("NODEID is: %d\n",NODEID);
 
-    // TODO: find out why this is failing
-    nimble_netif_init();
-    printf("1\n");
+    // Set BLE Random address based on NODEID
+    rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
+    if (rc != 0) {
+        printf("Failed to set BLE random address: %X", rc);
+    }
 
     // Print BLE address of this node
     uint8_t own_addr[6];
-    int rc = ble_hs_id_copy_addr(BLE_ADDR_PUBLIC, own_addr, NULL);
+    rc = ble_hs_id_copy_addr(BLE_ADDR_RANDOM, own_addr, NULL);
     if (rc != 0) {
-        printf("Failed to get own BLE address: %d",rc);
+        printf("Failed to get own BLE address: %X",rc);
     } else {
         printf("BLE addr: %02X:%02X:%02X:%02X:%02X:%02X\n",
                own_addr[5], own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
     }
 
-    printf("2\n");
-
     // TODO: Find correct flags for our use case
     nimble_netif_accept_cfg_t accept_cfg = {.flags = NIMBLE_NETIF_FLAG_LEGACY};
     nimble_netif_connect_cfg_t connect_cfg = {0};
 
-    printf("3\n");
     nimble_netif_eventcb(event_cb);
-    printf("4\n");
 
     // TODO: find out why this is failing
-    nimble_netif_accept(NULL, 0, &accept_cfg);
+    rc = nimble_netif_accept(own_addr, 6*sizeof(uint8_t), &accept_cfg);
+    if (rc != 0) {
+        printf("Failed to advertise: %X", rc);
+    }
     printf("5\n");
 
     for(int n = 0; n < NODE_COUNT; n++) {
         if (n != NODEID) {
             int res = nimble_netif_connect(&peer_addr[n], &connect_cfg);
             if (res != 0) {
-                printf("nimble_netif_connect failed: %d\n", res);
+                printf("nimble_netif_connect failed: %02X\n", res);
             }
         }
     }
 
-    printf("Got beyond nimble!\n");
     // Assign IPv6 address to own BLE interface
     // Might need to wait for the BLE interface to come up
     while (1) {
