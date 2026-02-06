@@ -1,21 +1,29 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
+
+#include "net/gnrc/nettype.h"
+#include "net/netopt.h"
 #include "ztimer.h"
 #include "assert.h"
 #include "net/ipv6/addr.h"
-#include "net/gnrc/netif.h"
-#include "net/gnrc/netapi.h"
+#include "net/gnrc.h"
 #include "nimble_netif.h"
 #include "nimble_addr.h"
 #include "host/ble_hs.h"
+#include "thread.h"
+#include "msg.h"
 
 #define NODE_COUNT 5
+#define MSG_QUEUE_SIZE 8
+
 static const char *addr_node_str[] = {"2001:db8::1", "2001:db8::2", "2001:db8::3", "2001:db8::4", "2001:db8::5"};
 static ipv6_addr_t addr_node[NODE_COUNT];
+static char receive_thread_stack[THREAD_STACKSIZE_DEFAULT];
+static msg_t msg_queue[MSG_QUEUE_SIZE];
 
 // TODO: replace with real device MAC
 // we want to have static random addresses with MSB starting with 0b11
+// FIXME: i think this might by in little endian?
 static ble_addr_t peer_addr[] = {
     {
         .type = BLE_ADDR_RANDOM,
@@ -179,15 +187,86 @@ static void ble_on_sync(void)
     // }
 }
 
-int main(void)
+int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 {
+    int rc;
+    char *pld = "Payload";
+
+    // FIXME: find out why this fails
+    rc = gnrc_netapi_set(netif->pid, NETOPT_IPV6_ADDR, 0, dst_addr, sizeof(*dst_addr));
+    if (rc != 0) {
+        printf("Failed to set destination address: %d\n", rc);
+    }
+
+    int PROTO_TYPE = GNRC_NETTYPE_IPV6;
+    gnrc_pktsnip_t *payload =
+        gnrc_pktbuf_add(NULL, pld, strlen(pld), PROTO_TYPE);
+    if (!payload) {
+        printf("Failed to allocate payload\n");
+        return 1;
+    }
+    gnrc_pktsnip_t *netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
+    if (!netif_hdr) {
+        printf("Failed to allocate link-layer header\n");
+        gnrc_pktbuf_release(payload);
+        return 1;
+    }
+
+    // Set the network interface
+    gnrc_netif_hdr_set_netif(netif_hdr->data, netif);
+
+    gnrc_netif_hdr_t *neth = (gnrc_netif_hdr_t *)netif_hdr->data;
+    // FIXME: Broadcast might fail silently
+    neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST; 
+
+    // Prepend header to payload
+    gnrc_pktsnip_t *pkt = gnrc_pkt_prepend(payload, netif_hdr);
+
+    // Send packet to network interface - GNRC will handle L2 forwarding
+    if (!gnrc_netif_send(netif, pkt)) {
+        printf("Failed to send packet\n");
+        gnrc_pktbuf_release(pkt);
+        return 1;
+    }
+    printf("Packet sent\n");
+
+    return 0;
+}
+
+void *gnrc_receive_handler(void *args){
+    (void) args;
+
+    msg_t msg;
+    msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
+
+    struct gnrc_netreg_entry me_reg =
+        GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
+    gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
+
+    while (1) {
+        msg_receive(&msg);
+        if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
+            printf("RCV: 4\n");
+            gnrc_pktsnip_t *pkt = msg.content.ptr;
+            if (pkt->next) {
+              if (pkt->next->next) {
+                gnrc_netif_hdr_t *hdr = pkt->next->next->data;
+                int rssi_raw = (int)hdr->rssi;
+                int lqi_raw = (int)hdr->lqi;
+                printf("RSSI: %d, LQI: %d", rssi_raw, lqi_raw);
+              }
+            }
+        }
+    }
+}
+
+int main(void) {
     // Delay generally required before pyterm comes up
     ztimer_sleep(ZTIMER_MSEC, 3000);
 
     printf("NODEID is: %d\n", NODEID);
 
-    while (!ble_hs_synced())
-    {
+    while (!ble_hs_synced()) {
         ztimer_sleep(ZTIMER_MSEC, 100);
     }
 
@@ -198,26 +277,42 @@ int main(void)
     // print BLE MAC address
     uint8_t own_addr[6];
     ble_hs_id_copy_addr(BLE_ADDR_RANDOM, own_addr, NULL);
-    printf("Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n",
-           own_addr[5], own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
+    printf("Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n", own_addr[5],
+           own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
 
     printf("Got beyond nimble!\n");
+
+    // TODO: find out whether we can get away with raw GNRC without IPv6
+    for (int n = 0; n < NODE_COUNT; n++) {
+        get_node_addr(n);
+    }
+    
     // Assign IPv6 address to own BLE interface
     // Might need to wait for the BLE interface to come up
-    while (1)
-    {
-        ztimer_sleep(ZTIMER_MSEC, 100);
-
-        gnrc_netif_t *netif = find_ble_netif();
-        if (netif != NULL && netif != ble_netif)
-        {
-            ble_netif = netif;
-            const ipv6_addr_t *my_addr = get_node_addr(NODEID);
-            assign_static_ipv6(ble_netif, my_addr);
-        }
+    gnrc_netif_t *netif = find_ble_netif();
+    if (netif != NULL && netif != ble_netif) {
+        ble_netif = netif;
+        const ipv6_addr_t *my_addr = &addr_node[NODEID];
+        assign_static_ipv6(ble_netif, my_addr);
+    } else {
+        printf("Error: no BLE interface\n");
     }
 
-    // TODO: send pings (there is a module for that), do measurements
+    // Handle incoming messages in separate thread
+    thread_create(
+        receive_thread_stack,
+        sizeof(receive_thread_stack),
+        THREAD_PRIORITY_MAIN - 1,
+        THREAD_CREATE_NO_STACKTEST,
+        gnrc_receive_handler,
+        NULL,
+        "receive_thread"
+    );
 
-    return 0;
+    // Continuously send packets
+    for (int n = 0; n < NODE_COUNT; n++) {
+        if (n != NODEID) {
+            send_gnrc_packet(&addr_node[n], netif);
+        }
+    }
 }
