@@ -5,8 +5,8 @@
 #include "net/netopt.h"
 #include "ztimer.h"
 #include "assert.h"
-#include "net/ipv6/addr.h"
 #include "net/gnrc.h"
+#include "net/gnrc/ipv6.h"
 #include "nimble_netif.h"
 #include "nimble_netif_conn.h"
 #include "nimble_addr.h"
@@ -214,53 +214,56 @@ static void setup_ble_stack(void)
 
 int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 {
-    int rc;
-    char *pld = "Payload";
+    const char *pld = "Payload";
+    gnrc_pktsnip_t *payload;
+    gnrc_pktsnip_t *ip;
+    gnrc_pktsnip_t *netif_hdr;
+    gnrc_pktsnip_t *pkt;
 
-    // FIXME: find out why this fails
-    rc = gnrc_netapi_set(netif->pid, NETOPT_IPV6_ADDR, 0, dst_addr, sizeof(*dst_addr));
-    if (rc != 0)
-    {
-        printf("Failed to set destination address: %d\n", rc);
-    }
-
-    int PROTO_TYPE = GNRC_NETTYPE_IPV6;
-    gnrc_pktsnip_t *payload =
-        gnrc_pktbuf_add(NULL, pld, strlen(pld), PROTO_TYPE);
-    if (!payload)
-    {
-        printf("Failed to allocate payload\n");
+    ipv6_addr_t *src_addr = &addr_node[NODEID];
+    
+    payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), GNRC_NETTYPE_UNDEF);
+    if (payload == NULL) {
+        printf("[IP] Failed to allocate payload\n");
         return 1;
     }
-    gnrc_pktsnip_t *netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
-    if (!netif_hdr)
-    {
-        printf("Failed to allocate link-layer header\n");
+
+    ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
+    if (ip == NULL) {
+        printf("[IP] Failed to allocate IPv6 header\n");
         gnrc_pktbuf_release(payload);
         return 1;
     }
 
-    // Set the network interface
+    netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
+    if (netif_hdr == NULL) {
+        printf("[IP] Failed to allocate netif header\n");
+        gnrc_pktbuf_release(ip);
+        return 1;
+    }
+
     gnrc_netif_hdr_set_netif(netif_hdr->data, netif);
 
     gnrc_netif_hdr_t *neth = (gnrc_netif_hdr_t *)netif_hdr->data;
-    // FIXME: Broadcast might fail silently
     neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST;
 
-    // Prepend header to payload
-    gnrc_pktsnip_t *pkt = gnrc_pkt_prepend(payload, netif_hdr);
+    pkt = gnrc_pkt_prepend(ip, netif_hdr);
+    if (pkt == NULL) {
+        printf("[IP] Failed to prepend netif header\n");
+        gnrc_pktbuf_release(ip);
+        return 1;
+    }
 
-    // Send packet to network interface - GNRC will handle L2 forwarding
-    if (!gnrc_netif_send(netif, pkt))
-    {
-        printf("Failed to send packet\n");
+    if (gnrc_netapi_dispatch_send(GNRC_NETTYPE_IPV6, 0, pkt) <= 0) {
+        printf("[IP] Failed to dispatch IPv6 packet\n");
         gnrc_pktbuf_release(pkt);
         return 1;
     }
-    printf("Packet sent\n");
 
+    printf("[IP] Packet sent\n");
     return 0;
 }
+
 
 void *gnrc_receive_handler(void *args)
 {
