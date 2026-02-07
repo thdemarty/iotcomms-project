@@ -3,7 +3,7 @@ APPLICATION = link-quality-fingerprint
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= adafruit-feather-nrf52840-sense
-
+		 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/RIOT
 
@@ -19,7 +19,9 @@ USEMODULE += gnrc_ipv6
 USEMODULE += gnrc_icmpv6_echo
 USEMODULE += ztimer
 USEMODULE += ztimer_msec
-
+USEMODULE += bluetil
+USEMODULE += bluetil_ad
+USEMODULE += nimble_scanner
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the 
 # development process:
