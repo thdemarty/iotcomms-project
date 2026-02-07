@@ -8,13 +8,15 @@
 #include "net/ipv6/addr.h"
 #include "net/gnrc.h"
 #include "nimble_netif.h"
+#include "nimble_netif_conn.h"
 #include "nimble_addr.h"
 #include "host/ble_hs.h"
 #include "thread.h"
 #include "msg.h"
 #include "net/bluetil/ad.h"
+#include "board.h"
 
-#define NODE_COUNT 2
+#define NODE_COUNT 5
 #define MSG_QUEUE_SIZE 8
 #define BLE_TX_POWER 8
 
@@ -39,6 +41,30 @@ static ble_addr_t peer_addr[] = {
 };
 
 static gnrc_netif_t *ble_netif = NULL;
+
+
+static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
+
+static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
+
+void *led_status_thread(void *args)
+{
+    (void)args;
+
+    while (1) {
+        unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+
+        if (count >= (NODE_COUNT - 1)) {
+            LED1_ON;
+            ztimer_sleep(ZTIMER_MSEC, 500);
+        }
+        else {
+            LED1_TOGGLE;
+            ztimer_sleep(ZTIMER_MSEC, 500);
+        }
+    }
+    return NULL;
+}
 
 static void advertise(void)
 {
@@ -279,6 +305,16 @@ int main(void)
     {
         ztimer_sleep(ZTIMER_MSEC, 100);
     }
+
+    thread_create(
+        led_thread_stack,
+        sizeof(led_thread_stack),
+        THREAD_PRIORITY_MAIN - 2, // Priorité légèrement inférieure
+        THREAD_CREATE_NO_STACKTEST,
+        led_status_thread,
+        NULL,
+        "led_thread"
+    );
 
     nimble_netif_eventcb(event_cb);
 
