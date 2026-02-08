@@ -16,7 +16,7 @@
 #include "net/bluetil/ad.h"
 #include "board.h"
 
-#define NODE_COUNT 5
+#define NODE_COUNT 2
 #define MSG_QUEUE_SIZE 8
 #define BLE_TX_POWER 8
 
@@ -42,8 +42,6 @@ static ble_addr_t peer_addr[] = {
 
 static gnrc_netif_t *ble_netif = NULL;
 
-
-static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
 
 static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
 
@@ -203,10 +201,6 @@ static void setup_ble_stack(void)
         {
             printf("[BLE] Failed to initiate connection to node %d: %d\n", target, rc);
         }
-        else
-        {
-            printf("[BLE] Connected to %d\n", target);
-        }
 
         ztimer_sleep(ZTIMER_MSEC, 500);
     }
@@ -255,6 +249,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     }
 
     if (gnrc_netapi_dispatch_send(GNRC_NETTYPE_IPV6, 0, pkt) <= 0) {
+        // FIXME: failed to dispatch ipv6 packet
         printf("[IP] Failed to dispatch IPv6 packet\n");
         gnrc_pktbuf_release(pkt);
         return 1;
@@ -312,7 +307,7 @@ int main(void)
     thread_create(
         led_thread_stack,
         sizeof(led_thread_stack),
-        THREAD_PRIORITY_MAIN - 2, // Priorité légèrement inférieure
+        THREAD_PRIORITY_MAIN - 2,
         THREAD_CREATE_NO_STACKTEST,
         led_status_thread,
         NULL,
@@ -322,6 +317,15 @@ int main(void)
     nimble_netif_eventcb(event_cb);
 
     setup_ble_stack();
+
+    // Do not proceed until we have connected to all other nodes
+    unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+    while (count < (NODE_COUNT - 1))
+    {
+        ztimer_sleep(ZTIMER_MSEC, 1000);
+        printf("[WARN] Waiting for connections... (%u/%u)\n", count, (NODE_COUNT - 1));
+        count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+    }
 
     // print BLE MAC address
     uint8_t own_addr[6];
