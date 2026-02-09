@@ -193,20 +193,16 @@ static void setup_ble_stack(void)
         .own_addr_type = BLE_ADDR_RANDOM,
     };
 
-    while (nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED) < (NODE_COUNT - 1))
+    rc = -1;
+    for (int target = NODEID + 1; target < NODE_COUNT; target++)
     {
-        for (int target = NODEID + 1; target < NODE_COUNT; target++)
+        while (rc < 0)
         {
             printf("[BLE] Attempt to connect to node %d...\n", target);
-    
             rc = nimble_netif_connect(&peer_addr[target], &connect_cfg);
-    
-            if (rc < 0)
-            {
-                printf("[BLE] Failed to initiate connection to node %d: %d\n", target, rc);
-            }
-        }    
-        ztimer_sleep(ZTIMER_MSEC, 100);
+            ztimer_sleep(ZTIMER_MSEC, 500);
+        }
+        ztimer_sleep(ZTIMER_MSEC, 1000);
     }
 }
 
