@@ -242,7 +242,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 {
     const char *pld = "Payload";
     gnrc_pktsnip_t *payload;
-    // gnrc_pktsnip_t *ip;
+    gnrc_pktsnip_t *ip;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
 
@@ -260,12 +260,12 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
         return 1;
     }
 
-    // ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
-    // if (ip == NULL) {
-    //     printf("[GNRC] Failed to allocate IPv6 header\n");
-    //     gnrc_pktbuf_release(payload);
-    //     return 1;
-    // }
+    ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
+    if (ip == NULL) {
+        printf("[GNRC] Failed to allocate IPv6 header\n");
+        gnrc_pktbuf_release(payload);
+        return 1;
+    }
 
     netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
     if (!netif_hdr)
@@ -277,10 +277,11 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 
     gnrc_netif_hdr_set_netif(netif_hdr->data, netif);
 
-    gnrc_netif_hdr_t *neth = (gnrc_netif_hdr_t *)netif_hdr->data;
-    neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST;
+    //gnrc_netif_hdr_t *neth = (gnrc_netif_hdr_t *)netif_hdr->data;
+    //neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST;
 
-    pkt = gnrc_pkt_prepend(payload, netif_hdr);
+    pkt = gnrc_pkt_prepend(payload, ip);
+    pkt = gnrc_pkt_prepend(pkt, netif_hdr);
     if (!pkt)
     {
         printf("[GNRC] Failed to prepend netif header\n");
@@ -429,7 +430,9 @@ int main(void)
 
     // Continuously send packets
     while (1) {
-        send_gnrc_packet(NULL, netif);
+        for (int i = 0; i < NODE_COUNT; i++) {
+            send_gnrc_packet(&addr_node[i], netif);
+        }
         ztimer_sleep(ZTIMER_MSEC, 1000);
     }
 }
