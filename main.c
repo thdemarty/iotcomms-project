@@ -434,5 +434,31 @@ int main(void)
             send_gnrc_packet(&addr_node[i], netif);
         }
         ztimer_sleep(ZTIMER_MSEC, 1000);
+        unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+        while (count < (NODE_COUNT - 1)) {
+            ztimer_sleep(ZTIMER_MSEC, 1000);
+            printf("[WARN] Waiting for connections... (%u/%u)\n", count,
+                   (NODE_COUNT - 1));
+            // printf("\t[DEBUG] L2CAP_CLIENT: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
+            // printf("\t[DEBUG] L2CAP_SERVER: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));
+            // printf("\t[DEBUG] L2CAP_CONNECTED: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
+            // printf("\t[DEBUG] GAP_MASTER: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));
+            // printf("\t[DEBUG] GAP_SLAVE: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
+            // printf("\t[DEBUG] GAP_CONNECTED: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
+            // printf("\t[DEBUG] ADV: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_ADV)); printf("\t[DEBUG]
+            // CONNECTING: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
+            // printf("\t[DEBUG] UNUSED: %u\n",
+            // nimble_netif_conn_count(NIMBLE_NETIF_UNUSED)); printf("\t[DEBUG]
+            // ANY: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY));
+            count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+        }
     }
 }
