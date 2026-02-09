@@ -17,6 +17,7 @@
 #include "thread.h"
 #include "msg.h"
 #include "net/bluetil/ad.h"
+#include "host/ble_gap.h"
 #include "board.h"
 
 #define NODE_COUNT 3
@@ -303,8 +304,8 @@ void *gnrc_receive_handler(void *args)
             //  printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
             //}
 
-            uint8_t rssi_raw = (uint8_t) hdr->rssi;
-            uint16_t lqi_raw = (uint16_t) hdr->lqi;
+            int rssi_raw = hdr->rssi;
+            int lqi_raw = hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
 
             //for (size_t i = 0; i < pkt->next->size; i++) {
@@ -318,12 +319,24 @@ void *gnrc_receive_handler(void *args)
                 node_id = (int)((uint8_t *)pkt->next->data)[13] & 0x0F;
             }
 
+            int rc;
+            int8_t rssi_gap;
+            // FIXME: dynamically find correct handle (so replace the 1)
+            rc = ble_gap_conn_rssi(1,&rssi_gap);
+            if (rc != 0) {
+                printf("[WARN] error reading gap rssi: %d\n", rc);
+            }
+
+            if (rssi_raw == 0) {
+                rssi_raw = rssi_gap;
+            }
+
             //printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
             printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
         } else {
-            printf("[DEBUG] wrong message type: %d\n", msg.type);
+            printf("[WARN] wrong message type: %d\n", msg.type);
         }
     }
 }
@@ -333,7 +346,7 @@ int main(void)
     // Delay generally required before pyterm comes up
     ztimer_sleep(ZTIMER_MSEC, 3000);
 
-    printf("NODEID is: %d\n", NODEID);
+    printf("[DEBUG] NODEID is: %d\n", NODEID);
 
     while (!ble_hs_synced())
     {
@@ -399,7 +412,7 @@ int main(void)
         // FIXME: recovery is not working, need to properly release connections
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         while (count < (NODE_COUNT - 1)) {
-            printf("[DEBUG] connection lost, retrying\n");
+            printf("[WARN] connection lost, retrying\n");
             for (int i = 0; i <= NODE_COUNT; i++) {
                 nimble_netif_close(i);
             }
