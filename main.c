@@ -221,10 +221,6 @@ static void setup_ble_stack(void)
         if (connect_i != -1) {
             printf("[BLE] Attempt to connect to node %d...\n", connect_i);
             rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
-            //while (!(rc = nimble_netif_conn_connected(peer_addr[connect_i].val))) {
-            //  printf("[BLE] Failed to connect: %d\n", rc);
-            //  ztimer_sleep(ZTIMER_MSEC, 1000);
-            //}
         }
 
         ztimer_sleep(ZTIMER_MSEC, 3000);
@@ -232,10 +228,6 @@ static void setup_ble_stack(void)
         if (adv_i != -1) {
             advertise(&peer_addr[adv_i]);
             printf("[DEBUG] advertising to node %d\n", adv_i);
-            //while (!(rc = nimble_netif_conn_connected(peer_addr[adv_i].val))) {
-            //  printf("[BLE] Failed to advertise: %d\n", rc);
-            //  ztimer_sleep(ZTIMER_MSEC, 1000);
-            //}
             ztimer_sleep(ZTIMER_MSEC, 3000);
             res = nimble_netif_accept_stop();
             if (res < 0) {
@@ -259,7 +251,9 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     (void)src_addr;
     (void)dst_addr;
 
-    payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), GNRC_NETTYPE_UNDEF);
+    int CUSTOM_PROTO_TYPE = 253;
+
+    payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), CUSTOM_PROTO_TYPE);
     if (!payload)
     {
         printf("[GNRC] Failed to allocate payload\n");
@@ -277,7 +271,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     if (!netif_hdr)
     {
         printf("[GNRC] Failed to allocate netif header\n");
-        // gnrc_pktbuf_release(ip);
+        gnrc_pktbuf_release(payload);
         return 1;
     }
 
@@ -296,7 +290,6 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 
     if (gnrc_netif_send(netif, pkt) <= 0)
     {
-        // FIXME: failed to dispatch ipv6 packet
         printf("[GNRC] Failed to send gnrc packet\n");
         gnrc_pktbuf_release(pkt);
         return 1;
@@ -313,6 +306,8 @@ void *gnrc_receive_handler(void *args)
     msg_t msg;
     msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
 
+    printf("[DEBUG] entered receive handler\n");
+
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
     gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
@@ -320,9 +315,9 @@ void *gnrc_receive_handler(void *args)
     while (1)
     {
         msg_receive(&msg);
+        printf("[DEBUG] received msg\n");
         if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV)
         {
-            printf("RCV: 4\n");
             gnrc_pktsnip_t *pkt = msg.content.ptr;
             if (pkt->next)
             {
@@ -334,6 +329,8 @@ void *gnrc_receive_handler(void *args)
                     printf("RSSI: %d, LQI: %d", rssi_raw, lqi_raw);
                 }
             }
+        } else {
+            printf("[DEBUG] wrong message type: %d\n", msg.type);
         }
     }
 }
@@ -408,6 +405,16 @@ int main(void)
     else
     {
         printf("Error: no BLE interface\n");
+    }
+
+
+    int16_t panID = 0x1234;
+    if (gnrc_netapi_set(netif->pid, NETOPT_NID, 0, &panID, sizeof(panID)) < 0) {
+        puts("Failed to set Pan ID!");
+    }
+    int16_t channel = 20;
+    if (gnrc_netapi_set(netif->pid, NETOPT_CHANNEL, 0, &channel, sizeof(channel)) < 0) {
+        puts("Failed to set Channel!");
     }
 
     // Handle incoming messages in separate thread
