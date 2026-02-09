@@ -267,7 +267,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    gnrc_pktbuf_release(pkt);
+    //gnrc_pktbuf_release(pkt);
 
     printf("[GNRC] Packet sent\n");
     return 0;
