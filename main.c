@@ -208,7 +208,7 @@ static void setup_ble_stack(void)
         int connect_start = NODEID + 1;
         int connect_stop = NODE_COUNT;
         int connect_i = i + connect_start;
-        if (connect_i == connect_stop) {
+        if (connect_i >= connect_stop) {
             connect_i = -1;
         }
         int adv_start = NODEID - 1;
@@ -221,17 +221,22 @@ static void setup_ble_stack(void)
         if (connect_i != -1) {
             printf("[BLE] Attempt to connect to node %d...\n", connect_i);
             rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
-            while (!nimble_netif_conn_connected(peer_addr[connect_i].val)) {
-              ztimer_sleep(ZTIMER_MSEC, 1000);
-            }
+            //while (!(rc = nimble_netif_conn_connected(peer_addr[connect_i].val))) {
+            //  printf("[BLE] Failed to connect: %d\n", rc);
+            //  ztimer_sleep(ZTIMER_MSEC, 1000);
+            //}
         }
+
+        ztimer_sleep(ZTIMER_MSEC, 3000);
 
         if (adv_i != -1) {
             advertise(&peer_addr[adv_i]);
             printf("[DEBUG] advertising to node %d\n", adv_i);
-            while (!nimble_netif_conn_connected(peer_addr[adv_i].val)) {
-              ztimer_sleep(ZTIMER_MSEC, 1000);
-            }
+            //while (!(rc = nimble_netif_conn_connected(peer_addr[adv_i].val))) {
+            //  printf("[BLE] Failed to advertise: %d\n", rc);
+            //  ztimer_sleep(ZTIMER_MSEC, 1000);
+            //}
+            ztimer_sleep(ZTIMER_MSEC, 3000);
             res = nimble_netif_accept_stop();
             if (res < 0) {
               printf("[BLE] Failed to stop advertising: %d\n", res);
