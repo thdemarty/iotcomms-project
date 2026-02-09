@@ -94,7 +94,7 @@ static void advertise(void)
         return;
     }
     /* start listening for incoming connections */
-    for(int n = NODEID; n >= 0; n--) {
+    for(int n = NODEID - 1; n >= 0; n--) {
         //res = nimble_netif_accept(ad.buf, ad.pos, &accept_cfg);
         res = nimble_netif_accept_direct(&peer_addr[n], &accept_cfg);
         assert(res == 0);
