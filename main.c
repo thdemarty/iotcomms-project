@@ -304,16 +304,13 @@ void *gnrc_receive_handler(void *args)
             uint16_t lqi_raw = (uint16_t) hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
             gnrc_netif_hdr_t *data = pkt->next->data;
-            size_t len = pkt->next->size;
             
             char node_id[8];
-            size_t n = (len < sizeof(node_id) - 1) ? len : (sizeof(node_id) - 1);
-            memcpy(node_id, data, n);
-            node_id[n] = '\0';
+            memcpy(node_id, data, 8);
             printf("Payload as string: \"%s\"\n", node_id);
 
             printf("[DEBUG] NODE: %s, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
-            printf("[DATA] %s, %d, %lu, %d\n", node_id, rssi_raw, timer, lqi_raw);
+            printf("[DATA] %s, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
         } else {
             printf("[DEBUG] wrong message type: %d\n", msg.type);
         }
@@ -383,10 +380,12 @@ int main(void)
     // Continuously send packets
     gnrc_netif_t *netif = find_ble_netif();
     char payload[8];
-    sprintf(payload, "%d", NODEID);
+    sprintf(payload, "NODE_%d", NODEID);
     while (1) {
         send_gnrc_packet(NULL, netif, payload);
         ztimer_sleep(ZTIMER_MSEC, 5000);
+
+        // FIXME: recovery is not working, need to properly release connections
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         while (count < (NODE_COUNT - 1)) {
             printf("[DEBUG] connection lost, retrying\n");
