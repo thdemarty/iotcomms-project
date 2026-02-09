@@ -224,29 +224,21 @@ static void setup_ble_stack(void)
     }
 }
 
-int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, int node_id)
+int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_str)
 {
     (void)dst_addr;
     gnrc_pktsnip_t *payload;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
-    char netif_name[20];
-
-    char pld[20];
-    sprintf(pld, "Packet from node: %d", node_id);
-
-    netif_get_name(&netif->netif, netif_name);
-    printf("[DEBUG] Netif name: %s\n",netif_name);
 
     int CUSTOM_PROTO_TYPE = 253;
 
-    payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), CUSTOM_PROTO_TYPE);
+    payload = gnrc_pktbuf_add(NULL, payload_str, strlen(payload_str), CUSTOM_PROTO_TYPE);
     if (!payload)
     {
         printf("[GNRC] Failed to allocate payload\n");
         return 1;
     }
-
 
     netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
     if (!netif_hdr)
@@ -275,6 +267,10 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, int node_id)
         return 1;
     }
 
+    // gnrc_pktbuf_release(payload);
+    // gnrc_pktbuf_release(netif_hdr);
+    // gnrc_pktbuf_release(pkt);
+
     printf("[GNRC] Packet sent\n");
     return 0;
 }
@@ -286,6 +282,7 @@ void *gnrc_receive_handler(void *args)
 
     msg_t msg;
     msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
+    printf("[DEBUG] init msg queue\n");
 
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
@@ -294,6 +291,7 @@ void *gnrc_receive_handler(void *args)
     gnrc_netreg_register(GNRC_NETTYPE_IPV6, &me_reg);
     gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
 
+    printf("[DEBUG] register\n");
     while (1)
     {
         msg_receive(&msg);
@@ -309,8 +307,15 @@ void *gnrc_receive_handler(void *args)
             uint8_t rssi_raw = (uint8_t) hdr->rssi;
             uint16_t lqi_raw = (uint16_t) hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
-            gnrc_netif_hdr_t *payload = pkt->next->data;
-            char* node_id = (char*) payload;
+            gnrc_netif_hdr_t *data = pkt->next->data;
+            size_t len = pkt->next->size;
+            
+            char node_id[32];
+            size_t n = (len < sizeof(node_id) - 1) ? len : (sizeof(node_id) - 1);
+            memcpy(node_id, data, n);
+            node_id[n] = '\0';
+            printf("Payload as string: \"%s\"\n", node_id);
+
             printf("[DEBUG] NODE: %s, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %s, %d, %lu, %d\n", node_id, rssi_raw, timer, lqi_raw);
         } else {
@@ -383,10 +388,14 @@ int main(void)
     gnrc_netif_t *netif = find_ble_netif();
     while (1) {
         for (int i = 0; i < NODE_COUNT; i++) {
-            send_gnrc_packet(NULL, netif, NODEID);
+            char payload[8];
+            sprintf(payload, "%d", NODEID);
+            send_gnrc_packet(NULL, netif, payload);
         }
         ztimer_sleep(ZTIMER_MSEC, 5000);
+        count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         if (count < (NODE_COUNT - 1)) {
+            printf("[DEBUG] connection lost, retrying\n");
             setup_ble_stack();
         }
     }
