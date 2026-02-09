@@ -2,12 +2,15 @@
 #include <stdio.h>
 
 #include "net/gnrc/nettype.h"
+#include "net/gnrc/pktbuf.h"
+#include "net/netif.h"
 #include "net/netopt.h"
 #include "ztimer.h"
 #include "assert.h"
 #include "net/gnrc.h"
 #include "net/gnrc/ipv6.h"
 #include "nimble_netif.h"
+#include "net/gnrc/netif.h"
 #include "nimble_netif_conn.h"
 #include "nimble_addr.h"
 #include "host/ble_hs.h"
@@ -27,8 +30,6 @@
 #define DEFAULT_CONN_ITVL_MS 75U
 #define DEFAULT_ADV_ITVL_MS 75U
 
-static const char *addr_node_str[] = {"2001:db8::1", "2001:db8::2", "2001:db8::3", "2001:db8::4", "2001:db8::5"};
-static ipv6_addr_t addr_node[NODE_COUNT];
 static char receive_thread_stack[THREAD_STACKSIZE_DEFAULT];
 static msg_t msg_queue[MSG_QUEUE_SIZE];
 
@@ -39,8 +40,6 @@ static ble_addr_t peer_addr[] = {
     {.type = BLE_ADDR_RANDOM, .val = {0xc3, 0xbb, 0xcc, 0xdd, 0xee, 0xff}},
     {.type = BLE_ADDR_RANDOM, .val = {0xc4, 0xbb, 0xcc, 0xdd, 0xee, 0xff}},
 };
-
-static gnrc_netif_t *ble_netif = NULL;
 
 static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
 
@@ -146,22 +145,6 @@ static void event_cb(int handle, nimble_netif_event_t event,
     }
 }
 
-static void assign_static_ipv6(gnrc_netif_t *netif, const ipv6_addr_t *addr)
-{
-    uint8_t flags = GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID;
-    int res = gnrc_netif_ipv6_addr_add(netif, addr, 64, flags);
-    if (res < 0)
-    {
-        printf("Failed to add IPv6 address to interface %u: %d\n",
-               netif->pid, res);
-    }
-    else
-    {
-        char str[IPV6_ADDR_MAX_STR_LEN];
-        printf("Added IPv6 address %s to interface %u\n",
-               ipv6_addr_to_str(str, addr, sizeof(str)), netif->pid);
-    }
-}
 
 static gnrc_netif_t *find_ble_netif(void)
 {
@@ -176,13 +159,6 @@ static gnrc_netif_t *find_ble_netif(void)
     return NULL;
 }
 
-ipv6_addr_t *get_node_addr(uint8_t node_id)
-{
-    ipv6_addr_t *rc;
-    rc = ipv6_addr_from_str(&addr_node[node_id], addr_node_str[node_id]);
-    assert(rc != NULL);
-    return &addr_node[node_id];
-}
 
 static void setup_ble_stack(void)
 {
@@ -248,16 +224,19 @@ static void setup_ble_stack(void)
     }
 }
 
-int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
+int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, int node_id)
 {
-    const char *pld = "Payload";
+    (void)dst_addr;
     gnrc_pktsnip_t *payload;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
+    char netif_name[20];
 
-    ipv6_addr_t *src_addr = &addr_node[NODEID];
+    char pld[20];
+    sprintf(pld, "Packet from node: %d", node_id);
 
-    (void)src_addr;
+    netif_get_name(&netif->netif, netif_name);
+    printf("[DEBUG] Netif name: %s\n",netif_name);
 
     int CUSTOM_PROTO_TYPE = 253;
 
@@ -268,16 +247,6 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
         return 1;
     }
 
-    /* Change commenting in this block to enable or disable IPv6 */
-    (void)dst_addr;
-    //gnrc_pktsnip_t *ip;
-    //ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
-    //if (ip == NULL) {
-    //    printf("[GNRC] Failed to allocate IPv6 header\n");
-    //    gnrc_pktbuf_release(payload);
-    //    return 1;
-    //}
-    //pkt = gnrc_pkt_prepend(payload, ip);
 
     netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
     if (!netif_hdr)
@@ -313,33 +282,37 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 void *gnrc_receive_handler(void *args)
 {
     (void)args;
+    printf("[DEBUG] entered receive handler\n");
 
     msg_t msg;
     msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
 
-    printf("[DEBUG] entered receive handler\n");
-
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
     gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
+    gnrc_netreg_register(GNRC_NETTYPE_NETIF, &me_reg);
+    gnrc_netreg_register(GNRC_NETTYPE_IPV6, &me_reg);
+    gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
 
     while (1)
     {
         msg_receive(&msg);
         printf("[DEBUG] received msg\n");
-        if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV)
-        {
+        if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
             gnrc_pktsnip_t *pkt = msg.content.ptr;
-            if (pkt->next)
-            {
-                if (pkt->next->next)
-                {
-                    gnrc_netif_hdr_t *hdr = pkt->next->next->data;
-                    int rssi_raw = (int)hdr->rssi;
-                    int lqi_raw = (int)hdr->lqi;
-                    printf("RSSI: %d, LQI: %d", rssi_raw, lqi_raw);
-                }
+            gnrc_netif_hdr_t *hdr = pkt->data;
+
+            if (!pkt->next) {
+              printf("[DEBUG] Packet malformed\n");
             }
+
+            uint8_t rssi_raw = (uint8_t) hdr->rssi;
+            uint16_t lqi_raw = (uint16_t) hdr->lqi;
+            uint32_t timer = ztimer_now(ZTIMER_MSEC);
+            gnrc_netif_hdr_t *payload = pkt->next->data;
+            char* node_id = (char*) payload;
+            printf("[DEBUG] NODE: %s, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
+            printf("[DATA] %s, %d, %lu, %d\n", node_id, rssi_raw, timer, lqi_raw);
         } else {
             printf("[DEBUG] wrong message type: %d\n", msg.type);
         }
@@ -393,40 +366,8 @@ int main(void)
     // print BLE MAC address
     uint8_t own_addr[6];
     ble_hs_id_copy_addr(BLE_ADDR_RANDOM, own_addr, NULL);
-    printf("Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n", own_addr[5],
+    printf("[DEBUG] Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n", own_addr[5],
            own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
-
-    printf("Got beyond nimble!\n");
-
-    // TODO: find out whether we can get away with raw GNRC without IPv6
-    for (int n = 0; n < NODE_COUNT; n++)
-    {
-        get_node_addr(n);
-    }
-
-    // Assign IPv6 address to own BLE interface
-    // Might need to wait for the BLE interface to come up
-    gnrc_netif_t *netif = find_ble_netif();
-    if (netif != NULL && netif != ble_netif)
-    {
-        ble_netif = netif;
-        const ipv6_addr_t *my_addr = &addr_node[NODEID];
-        assign_static_ipv6(ble_netif, my_addr);
-    }
-    else
-    {
-        printf("Error: no BLE interface\n");
-    }
-
-
-    int16_t panID = 0x1234;
-    if (gnrc_netapi_set(netif->pid, NETOPT_NID, 0, &panID, sizeof(panID)) < 0) {
-        puts("Failed to set Pan ID!");
-    }
-    int16_t channel = 20;
-    if (gnrc_netapi_set(netif->pid, NETOPT_CHANNEL, 0, &channel, sizeof(channel)) < 0) {
-        puts("Failed to set Channel!");
-    }
 
     // Handle incoming messages in separate thread
     thread_create(
@@ -439,33 +380,14 @@ int main(void)
         "receive_thread");
 
     // Continuously send packets
+    gnrc_netif_t *netif = find_ble_netif();
     while (1) {
         for (int i = 0; i < NODE_COUNT; i++) {
-            send_gnrc_packet(&addr_node[i], netif);
+            send_gnrc_packet(NULL, netif, NODEID);
         }
-        unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-        printf("[WARN] Waiting for connections... (%u/%u)\n", count,
-               (NODE_COUNT - 1));
-        printf("\t[DEBUG] L2CAP_CLIENT: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
-        printf("\t[DEBUG] L2CAP_SERVER: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));
-        printf("\t[DEBUG] L2CAP_CONNECTED: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
-        printf("\t[DEBUG] GAP_MASTER: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));
-        printf("\t[DEBUG] GAP_SLAVE: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
-        printf("\t[DEBUG] GAP_CONNECTED: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
-        printf("\t[DEBUG] ADV: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_ADV));
-        printf("\t[DEBUG] CONNECTING: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
-        printf("\t[DEBUG] UNUSED: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_UNUSED));
-        printf("\t[DEBUG] ANY: %u\n",
-               nimble_netif_conn_count(NIMBLE_NETIF_ANY));
         ztimer_sleep(ZTIMER_MSEC, 5000);
+        if (count < (NODE_COUNT - 1)) {
+            setup_ble_stack();
+        }
     }
 }
