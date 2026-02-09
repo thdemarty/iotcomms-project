@@ -394,7 +394,7 @@ int main(void)
         }
         ztimer_sleep(ZTIMER_MSEC, 5000);
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-        if (count < (NODE_COUNT - 1)) {
+        while (count < (NODE_COUNT - 1)) {
             printf("[DEBUG] connection lost, retrying\n");
             setup_ble_stack();
         }
