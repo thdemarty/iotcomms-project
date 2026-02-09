@@ -211,10 +211,10 @@ static void setup_ble_stack(void)
         if (connect_i == connect_stop) {
             connect_i = -1;
         }
-        int adv_start = 0;
-        int adv_stop = NODEID;
-        int adv_i = i + adv_start;
-        if (adv_i == adv_stop) {
+        int adv_start = NODEID - 1;
+        int adv_stop = 0;
+        int adv_i = adv_start - i;
+        if (adv_i < adv_stop) {
             adv_i = -1;
         }
 
