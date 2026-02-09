@@ -282,10 +282,15 @@ void *gnrc_receive_handler(void *args)
 
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
-    gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
-    gnrc_netreg_register(GNRC_NETTYPE_NETIF, &me_reg);
+    //gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
+    //gnrc_netreg_register(GNRC_NETTYPE_NETIF, &me_reg);
+    /*
+    ** Ok, this is stupid.
+    ** I did not get our custom protocol over BLE to work.
+    ** But the receive somehow treats this as IPv6 packets.
+     */
     gnrc_netreg_register(GNRC_NETTYPE_IPV6, &me_reg);
-    gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
+    //gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
 
     printf("[DEBUG] register\n");
     while (1)
@@ -296,21 +301,29 @@ void *gnrc_receive_handler(void *args)
             gnrc_pktsnip_t *pkt = msg.content.ptr;
             gnrc_netif_hdr_t *hdr = pkt->data;
 
-            if (!pkt->next) {
-              printf("[DEBUG] Packet malformed\n");
+            for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
+              printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
             }
 
             uint8_t rssi_raw = (uint8_t) hdr->rssi;
             uint16_t lqi_raw = (uint16_t) hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
-            gnrc_netif_hdr_t *data = pkt->next->data;
-            
-            char node_id[8];
-            memcpy(node_id, data, 8);
-            printf("Payload as string: \"%s\"\n", node_id);
 
-            printf("[DEBUG] NODE: %s, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
-            printf("[DATA] %s, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
+            // for (size_t i = 0; i < pkt->next->size; i++) {
+            //   printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
+            // }
+            // printf("\n");
+
+            size_t data_size = pkt->next->size;
+            int node_id = -1;
+            if (14 < data_size) {
+                node_id = (int)((uint8_t *)pkt->next->data)[13] & 0x0F;
+            }
+
+            printf("[DEBUG] payload as string: \"%d\"\n", node_id);
+
+            printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
+            printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
         } else {
             printf("[DEBUG] wrong message type: %d\n", msg.type);
         }
