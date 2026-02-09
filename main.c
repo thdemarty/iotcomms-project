@@ -66,7 +66,7 @@ void *led_status_thread(void *args)
     return NULL;
 }
 
-static void advertise(void)
+static void advertise(ble_addr_t *ble_addr)
 {
     int res;
     (void)res;
@@ -94,10 +94,11 @@ static void advertise(void)
         return;
     }
     /* start listening for incoming connections */
-    for(int n = NODEID - 1; n >= 0; n--) {
-        //res = nimble_netif_accept(ad.buf, ad.pos, &accept_cfg);
-        res = nimble_netif_accept_direct(&peer_addr[n], &accept_cfg);
-        assert(res == 0);
+    res = nimble_netif_accept_direct(ble_addr, &accept_cfg);
+
+    if (res != 0)
+    {
+        printf("[BLE] Failed to start advertising: %d\n", res);
     }
 }
 
@@ -111,12 +112,17 @@ static void event_cb(int handle, nimble_netif_event_t event,
         printf("[BLEE] Advertising\n");
         break;
 
+    
+    case NIMBLE_NETIF_ACCEPT_STOP:
+        printf("[BLEE] Stop Advertising\n");
+        break;
+
     case NIMBLE_NETIF_INIT_SLAVE:
         printf("[BLEE] Incoming connection attempt as slave\n");
         break;
 
     case NIMBLE_NETIF_CONNECTED_SLAVE:
-        printf("[BLEE] Connected as slave, handle=%d\n addr=%02x:%02x:%02x:%02x:%02x:%02x\n", handle, addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
+        printf("[BLEE] Connected as slave, handle=%d addr=%02x:%02x:%02x:%02x:%02x:%02x\n", handle, addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
         break;
 
     case NIMBLE_NETIF_CLOSED_SLAVE:
@@ -183,7 +189,6 @@ static void setup_ble_stack(void)
     // Set own static random address
     int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
 
-    advertise();
 
     ztimer_sleep(ZTIMER_MSEC, 200);
 
@@ -197,15 +202,24 @@ static void setup_ble_stack(void)
     };
 
     rc = -1;
+    int res;
     for (int target = NODEID + 1; target < NODE_COUNT; target++)
     {
         while (rc < 0)
         {
             printf("[BLE] Attempt to connect to node %d...\n", target);
+            advertise(&peer_addr[NODE_COUNT - target]);
+            printf("[DEBUG] advertising to node %d\n", NODE_COUNT - target);
             rc = nimble_netif_connect(&peer_addr[target], &connect_cfg);
             ztimer_sleep(ZTIMER_MSEC, 500);
         }
+        res = nimble_netif_accept_stop();
+        if (res < 0)
+        {
+            printf("[BLE] Failed to stop advertising: %d\n", res);
+        }
         ztimer_sleep(ZTIMER_MSEC, 1000);
+
     }
 }
 
