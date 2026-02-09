@@ -23,7 +23,7 @@
 // BLE connection parameters
 #define DEFAULT_SCAN_DURATION_MS 500U
 #define DEFAULT_CONN_TIMEOUT_MS 500U
-#define DEFAULT_SCAN_ITVL_MS 100U
+#define DEFAULT_SCAN_ITVL_MS 100U 
 #define DEFAULT_CONN_ITVL_MS 75U
 #define DEFAULT_ADV_ITVL_MS 75U
 
@@ -193,18 +193,20 @@ static void setup_ble_stack(void)
         .own_addr_type = BLE_ADDR_RANDOM,
     };
 
-    for (int target = NODEID + 1; target < NODE_COUNT; target++)
+    while (nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED) < (NODE_COUNT - 1))
     {
-        printf("[BLE] Attempt to connect to node %d...\n", target);
-
-        rc = nimble_netif_connect(&peer_addr[target], &connect_cfg);
-
-        if (rc < 0)
+        for (int target = NODEID + 1; target < NODE_COUNT; target++)
         {
-            printf("[BLE] Failed to initiate connection to node %d: %d\n", target, rc);
-        }
-
-        ztimer_sleep(ZTIMER_MSEC, 500);
+            printf("[BLE] Attempt to connect to node %d...\n", target);
+    
+            rc = nimble_netif_connect(&peer_addr[target], &connect_cfg);
+    
+            if (rc < 0)
+            {
+                printf("[BLE] Failed to initiate connection to node %d: %d\n", target, rc);
+            }
+        }    
+        ztimer_sleep(ZTIMER_MSEC, 100);
     }
 }
 
