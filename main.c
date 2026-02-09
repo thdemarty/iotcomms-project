@@ -42,21 +42,23 @@ static ble_addr_t peer_addr[] = {
 
 static gnrc_netif_t *ble_netif = NULL;
 
-
 static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
 
 void *led_status_thread(void *args)
 {
     (void)args;
 
-    while (1) {
+    while (1)
+    {
         unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
 
-        if (count >= (NODE_COUNT - 1)) {
+        if (count >= (NODE_COUNT - 1))
+        {
             LED1_ON;
             ztimer_sleep(ZTIMER_MSEC, 500);
         }
-        else {
+        else
+        {
             LED1_TOGGLE;
             ztimer_sleep(ZTIMER_MSEC, 500);
         }
@@ -78,9 +80,9 @@ static void advertise(void)
     res = bluetil_ad_init_with_flags(&ad, buf, BLE_HS_ADV_MAX_SZ,
                                      BLUETIL_AD_FLAGS_DEFAULT);
     assert(res == BLUETIL_AD_OK);
-    
+
     assert(res == BLUETIL_AD_OK);
-    
+
     // define name according to NODEID
     char name_buf[32];
     snprintf(name_buf, sizeof(name_buf), "LinkQuality-Node%d", NODEID);
@@ -111,7 +113,7 @@ static void event_cb(int handle, nimble_netif_event_t event,
         break;
 
     case NIMBLE_NETIF_CONNECTED_SLAVE:
-        printf("[BLEE] Connected as slave, handle=%d\n", handle);
+        printf("[BLEE] Connected as slave, handle=%d\n addr=%02x:%02x:%02x:%02x:%02x:%02x\n", handle, addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
         break;
 
     case NIMBLE_NETIF_CLOSED_SLAVE:
@@ -123,7 +125,7 @@ static void event_cb(int handle, nimble_netif_event_t event,
         break;
 
     case NIMBLE_NETIF_CONNECTED_MASTER:
-        printf("[BLEE] Connected as master, handle=%d\n", handle);
+        printf("[BLEE] Connected as master, handle=%d addr=%02x:%02x:%02x:%02x:%02x:%02x\n", handle, addr[5], addr[4], addr[3], addr[2], addr[1], addr[0]);
         break;
 
     case NIMBLE_NETIF_CLOSED_MASTER:
@@ -177,9 +179,9 @@ static void setup_ble_stack(void)
 {
     // Set own static random address
     int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
-    
+
     advertise();
-    
+
     ztimer_sleep(ZTIMER_MSEC, 200);
 
     nimble_netif_connect_cfg_t connect_cfg = {
@@ -210,32 +212,34 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 {
     const char *pld = "Payload";
     gnrc_pktsnip_t *payload;
-    //gnrc_pktsnip_t *ip;
+    // gnrc_pktsnip_t *ip;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
 
     ipv6_addr_t *src_addr = &addr_node[NODEID];
 
-    (void) src_addr;
-    (void) dst_addr;
-    
+    (void)src_addr;
+    (void)dst_addr;
+
     payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), GNRC_NETTYPE_UNDEF);
-    if (!payload) {
+    if (!payload)
+    {
         printf("[GNRC] Failed to allocate payload\n");
         return 1;
     }
 
-    //ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
-    //if (ip == NULL) {
-    //    printf("[GNRC] Failed to allocate IPv6 header\n");
-    //    gnrc_pktbuf_release(payload);
-    //    return 1;
-    //}
+    // ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
+    // if (ip == NULL) {
+    //     printf("[GNRC] Failed to allocate IPv6 header\n");
+    //     gnrc_pktbuf_release(payload);
+    //     return 1;
+    // }
 
     netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
-    if (!netif_hdr) {
+    if (!netif_hdr)
+    {
         printf("[GNRC] Failed to allocate netif header\n");
-        //gnrc_pktbuf_release(ip);
+        // gnrc_pktbuf_release(ip);
         return 1;
     }
 
@@ -245,13 +249,15 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST;
 
     pkt = gnrc_pkt_prepend(payload, netif_hdr);
-    if (!pkt) {
+    if (!pkt)
+    {
         printf("[GNRC] Failed to prepend netif header\n");
         gnrc_pktbuf_release(payload);
         return 1;
     }
 
-    if (gnrc_netif_send(netif, pkt) <= 0) {
+    if (gnrc_netif_send(netif, pkt) <= 0)
+    {
         // FIXME: failed to dispatch ipv6 packet
         printf("[GNRC] Failed to send gnrc packet\n");
         gnrc_pktbuf_release(pkt);
@@ -261,7 +267,6 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     printf("[GNRC] Packet sent\n");
     return 0;
 }
-
 
 void *gnrc_receive_handler(void *args)
 {
@@ -314,8 +319,7 @@ int main(void)
         THREAD_CREATE_NO_STACKTEST,
         led_status_thread,
         NULL,
-        "led_thread"
-    );
+        "led_thread");
 
     nimble_netif_eventcb(event_cb);
 
@@ -327,16 +331,16 @@ int main(void)
     {
         ztimer_sleep(ZTIMER_MSEC, 1000);
         printf("[WARN] Waiting for connections... (%u/%u)\n", count, (NODE_COUNT - 1));
-        printf("\t[DEBUG] L2CAP_CLIENT: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
-        printf("\t[DEBUG] L2CAP_SERVER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));   
-        printf("\t[DEBUG] L2CAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
-        printf("\t[DEBUG] GAP_MASTER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));     
-        printf("\t[DEBUG] GAP_SLAVE: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));      
-        printf("\t[DEBUG] GAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));  
-        printf("\t[DEBUG] ADV: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ADV));            
-        printf("\t[DEBUG] CONNECTING: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));     
-        printf("\t[DEBUG] UNUSED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_UNUSED));         
-        printf("\t[DEBUG] ANY: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY));
+        // printf("\t[DEBUG] L2CAP_CLIENT: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
+        // printf("\t[DEBUG] L2CAP_SERVER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));
+        // printf("\t[DEBUG] L2CAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
+        // printf("\t[DEBUG] GAP_MASTER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));
+        // printf("\t[DEBUG] GAP_SLAVE: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
+        // printf("\t[DEBUG] GAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
+        // printf("\t[DEBUG] ADV: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ADV));
+        // printf("\t[DEBUG] CONNECTING: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
+        // printf("\t[DEBUG] UNUSED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_UNUSED));
+        // printf("\t[DEBUG] ANY: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY));
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
     }
 
