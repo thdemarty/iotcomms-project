@@ -94,8 +94,11 @@ static void advertise(void)
         return;
     }
     /* start listening for incoming connections */
-    res = nimble_netif_accept(ad.buf, ad.pos, &accept_cfg);
-    assert(res == 0);
+    for(int n = NODEID; n >= 0; n--) {
+        //res = nimble_netif_accept(ad.buf, ad.pos, &accept_cfg);
+        res = nimble_netif_accept_direct(&peer_addr[n], &accept_cfg);
+        assert(res == 0);
+    }
 }
 
 static void event_cb(int handle, nimble_netif_event_t event,
