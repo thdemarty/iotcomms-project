@@ -267,9 +267,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    // gnrc_pktbuf_release(payload);
-    // gnrc_pktbuf_release(netif_hdr);
-    // gnrc_pktbuf_release(pkt);
+    gnrc_pktbuf_release(pkt);
 
     printf("[GNRC] Packet sent\n");
     return 0;
@@ -396,6 +394,9 @@ int main(void)
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         while (count < (NODE_COUNT - 1)) {
             printf("[DEBUG] connection lost, retrying\n");
+            for (int i = 0; i <= NODE_COUNT; i++) {
+                nimble_netif_close(i);
+            }
             setup_ble_stack();
             ztimer_sleep(ZTIMER_MSEC, 5000);
         }
