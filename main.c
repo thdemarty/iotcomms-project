@@ -310,7 +310,7 @@ void *gnrc_receive_handler(void *args)
             gnrc_netif_hdr_t *data = pkt->next->data;
             size_t len = pkt->next->size;
             
-            char node_id[32];
+            char node_id[8];
             size_t n = (len < sizeof(node_id) - 1) ? len : (sizeof(node_id) - 1);
             memcpy(node_id, data, n);
             node_id[n] = '\0';
@@ -397,6 +397,7 @@ int main(void)
         while (count < (NODE_COUNT - 1)) {
             printf("[DEBUG] connection lost, retrying\n");
             setup_ble_stack();
+            ztimer_sleep(ZTIMER_MSEC, 5000);
         }
     }
 }
