@@ -16,7 +16,7 @@
 #include "net/bluetil/ad.h"
 #include "board.h"
 
-#define NODE_COUNT 2
+#define NODE_COUNT 3
 #define MSG_QUEUE_SIZE 8
 #define BLE_TX_POWER 8
 
@@ -210,29 +210,32 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
 {
     const char *pld = "Payload";
     gnrc_pktsnip_t *payload;
-    gnrc_pktsnip_t *ip;
+    //gnrc_pktsnip_t *ip;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
 
     ipv6_addr_t *src_addr = &addr_node[NODEID];
+
+    (void) src_addr;
+    (void) dst_addr;
     
     payload = gnrc_pktbuf_add(NULL, pld, strlen(pld), GNRC_NETTYPE_UNDEF);
-    if (payload == NULL) {
-        printf("[IP] Failed to allocate payload\n");
+    if (!payload) {
+        printf("[GNRC] Failed to allocate payload\n");
         return 1;
     }
 
-    ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
-    if (ip == NULL) {
-        printf("[IP] Failed to allocate IPv6 header\n");
-        gnrc_pktbuf_release(payload);
-        return 1;
-    }
+    //ip = gnrc_ipv6_hdr_build(payload, src_addr, dst_addr);
+    //if (ip == NULL) {
+    //    printf("[GNRC] Failed to allocate IPv6 header\n");
+    //    gnrc_pktbuf_release(payload);
+    //    return 1;
+    //}
 
     netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
-    if (netif_hdr == NULL) {
-        printf("[IP] Failed to allocate netif header\n");
-        gnrc_pktbuf_release(ip);
+    if (!netif_hdr) {
+        printf("[GNRC] Failed to allocate netif header\n");
+        //gnrc_pktbuf_release(ip);
         return 1;
     }
 
@@ -241,21 +244,21 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif)
     gnrc_netif_hdr_t *neth = (gnrc_netif_hdr_t *)netif_hdr->data;
     neth->flags |= GNRC_NETIF_HDR_FLAGS_BROADCAST;
 
-    pkt = gnrc_pkt_prepend(ip, netif_hdr);
-    if (pkt == NULL) {
-        printf("[IP] Failed to prepend netif header\n");
-        gnrc_pktbuf_release(ip);
+    pkt = gnrc_pkt_prepend(payload, netif_hdr);
+    if (!pkt) {
+        printf("[GNRC] Failed to prepend netif header\n");
+        gnrc_pktbuf_release(payload);
         return 1;
     }
 
-    if (gnrc_netapi_dispatch_send(GNRC_NETTYPE_IPV6, 0, pkt) <= 0) {
+    if (gnrc_netif_send(netif, pkt) <= 0) {
         // FIXME: failed to dispatch ipv6 packet
-        printf("[IP] Failed to dispatch IPv6 packet\n");
+        printf("[GNRC] Failed to send gnrc packet\n");
         gnrc_pktbuf_release(pkt);
         return 1;
     }
 
-    printf("[IP] Packet sent\n");
+    printf("[GNRC] Packet sent\n");
     return 0;
 }
 
