@@ -203,6 +203,8 @@ static void setup_ble_stack(void)
 
     rc = -1;
     int res;
+    unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+    unsigned new_count = 0;
     for (int i = 0; i < NODE_COUNT; i++)
     {
         int connect_start = NODEID + 1;
@@ -223,7 +225,12 @@ static void setup_ble_stack(void)
             rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
         }
 
-        ztimer_sleep(ZTIMER_MSEC, 3000);
+        while (count == new_count) {
+            ztimer_sleep(ZTIMER_MSEC, 100);
+            new_count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+        }
+        count = new_count;
+
 
         if (adv_i != -1) {
             advertise(&peer_addr[adv_i]);
@@ -234,7 +241,12 @@ static void setup_ble_stack(void)
               printf("[BLE] Failed to stop advertising: %d\n", res);
             }
         }
-        ztimer_sleep(ZTIMER_MSEC, 1000);
+
+        while (count == new_count) {
+            ztimer_sleep(ZTIMER_MSEC, 100);
+            new_count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+        }
+        count = new_count;
     }
 }
 
