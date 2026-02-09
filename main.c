@@ -267,8 +267,6 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    //gnrc_pktbuf_release(pkt);
-
     printf("[GNRC] Packet sent\n");
     return 0;
 }
@@ -384,12 +382,10 @@ int main(void)
 
     // Continuously send packets
     gnrc_netif_t *netif = find_ble_netif();
+    char payload[8];
+    sprintf(payload, "%d", NODEID);
     while (1) {
-        for (int i = 0; i < NODE_COUNT; i++) {
-            char payload[8];
-            sprintf(payload, "%d", NODEID);
-            send_gnrc_packet(NULL, netif, payload);
-        }
+        send_gnrc_packet(NULL, netif, payload);
         ztimer_sleep(ZTIMER_MSEC, 5000);
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         while (count < (NODE_COUNT - 1)) {
