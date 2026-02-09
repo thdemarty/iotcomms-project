@@ -188,7 +188,7 @@ static void setup_ble_stack(void)
 {
     // Set own static random address
     int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
-
+    assert(rc == 0);
 
     ztimer_sleep(ZTIMER_MSEC, 200);
 
@@ -203,23 +203,41 @@ static void setup_ble_stack(void)
 
     rc = -1;
     int res;
-    for (int target = NODEID + 1; target < NODE_COUNT; target++)
+    for (int i = 0; i < NODE_COUNT; i++)
     {
-        while (rc < 0)
-        {
-            printf("[BLE] Attempt to connect to node %d...\n", target);
-            advertise(&peer_addr[NODE_COUNT - target]);
-            printf("[DEBUG] advertising to node %d\n", NODE_COUNT - target);
-            rc = nimble_netif_connect(&peer_addr[target], &connect_cfg);
-            ztimer_sleep(ZTIMER_MSEC, 500);
+        int connect_start = NODEID + 1;
+        int connect_stop = NODE_COUNT;
+        int connect_i = i + connect_start;
+        if (connect_i == connect_stop) {
+            connect_i = -1;
         }
-        res = nimble_netif_accept_stop();
-        if (res < 0)
-        {
-            printf("[BLE] Failed to stop advertising: %d\n", res);
+        int adv_start = 0;
+        int adv_stop = NODEID;
+        int adv_i = i + adv_start;
+        if (adv_i == adv_stop) {
+            adv_i = -1;
+        }
+
+        if (connect_i != -1) {
+            printf("[BLE] Attempt to connect to node %d...\n", connect_i);
+            rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
+            while (!nimble_netif_conn_connected(peer_addr[connect_i].val)) {
+              ztimer_sleep(ZTIMER_MSEC, 1000);
+            }
+        }
+
+        if (adv_i != -1) {
+            advertise(&peer_addr[adv_i]);
+            printf("[DEBUG] advertising to node %d\n", adv_i);
+            while (!nimble_netif_conn_connected(peer_addr[adv_i].val)) {
+              ztimer_sleep(ZTIMER_MSEC, 1000);
+            }
+            res = nimble_netif_accept_stop();
+            if (res < 0) {
+              printf("[BLE] Failed to stop advertising: %d\n", res);
+            }
         }
         ztimer_sleep(ZTIMER_MSEC, 1000);
-
     }
 }
 
