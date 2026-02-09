@@ -267,7 +267,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    printf("[GNRC] Packet sent\n");
+    //printf("[GNRC] Packet sent\n");
     return 0;
 }
 
@@ -278,7 +278,6 @@ void *gnrc_receive_handler(void *args)
 
     msg_t msg;
     msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
-    printf("[DEBUG] init msg queue\n");
 
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
@@ -292,27 +291,26 @@ void *gnrc_receive_handler(void *args)
     gnrc_netreg_register(GNRC_NETTYPE_IPV6, &me_reg);
     //gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
 
-    printf("[DEBUG] register\n");
     while (1)
     {
         msg_receive(&msg);
-        printf("[DEBUG] received msg\n");
+        //printf("[DEBUG] received msg\n");
         if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
             gnrc_pktsnip_t *pkt = msg.content.ptr;
             gnrc_netif_hdr_t *hdr = pkt->data;
 
-            for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
-              printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
-            }
+            //for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
+            //  printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
+            //}
 
             uint8_t rssi_raw = (uint8_t) hdr->rssi;
             uint16_t lqi_raw = (uint16_t) hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
 
-            // for (size_t i = 0; i < pkt->next->size; i++) {
-            //   printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
-            // }
-            // printf("\n");
+            //for (size_t i = 0; i < pkt->next->size; i++) {
+            //  printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
+            //}
+            //printf("\n");
 
             size_t data_size = pkt->next->size;
             int node_id = -1;
@@ -320,7 +318,7 @@ void *gnrc_receive_handler(void *args)
                 node_id = (int)((uint8_t *)pkt->next->data)[13] & 0x0F;
             }
 
-            printf("[DEBUG] payload as string: \"%d\"\n", node_id);
+            //printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
             printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
