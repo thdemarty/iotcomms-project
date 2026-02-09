@@ -428,11 +428,8 @@ int main(void)
         "receive_thread");
 
     // Continuously send packets
-    for (int n = 0; n < NODE_COUNT; n++)
-    {
-        if (n != NODEID)
-        {
-            send_gnrc_packet(&addr_node[n], netif);
-        }
+    while (1) {
+        send_gnrc_packet(NULL, netif);
+        ztimer_sleep(ZTIMER_MSEC, 1000);
     }
 }
