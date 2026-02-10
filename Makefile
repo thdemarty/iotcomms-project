@@ -3,17 +3,23 @@ APPLICATION = link-quality-fingerprint
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= adafruit-feather-nrf52840-sense
-
+		 
 # This has to be the absolute path to the RIOT base directory:
 RIOTBASE ?= $(CURDIR)/RIOT
 
-# Include NimBLE
 USEPKG += nimble
-
+USEMODULE += nimble
+USEMODULE += nimble_netif
+USEMODULE += nimble_addr
+USEMODULE += gnrc_netif
+USEMODULE += auto_init_gnrc_netif
+USEMODULE += gnrc_neterr
+USEMODULE += gnrc_pktdump
+USEMODULE += gnrc_ipv6
+USEMODULE += gnrc_icmpv6_echo
 USEMODULE += ztimer
-USEMODULE += ztimer_sec
-USEMODULE += nimble_svc_gap
-USEMODULE += nimble_svc_gatt
+USEMODULE += ztimer_msec
+USEMODULE += bluetil_ad
 
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the 
@@ -22,6 +28,13 @@ DEVELHELP ?= 1
 
 # Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
+
+NODEID ?= 0
+NODE_COUNT ?= 3
+
+# Specify NODEID when invoking make
+CFLAGS += -DNODEID=$(NODEID)
+CFLAGS += -DNODE_COUNT=$(NODE_COUNT)
 
 include $(RIOTBASE)/Makefile.include
 
