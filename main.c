@@ -21,6 +21,7 @@
 #include "board.h"
 #include "ws281x.h"
 #include "periph/gpio.h"
+#include "controller/ble_phy.h"
 
 #define NEOPIXEL_PIN GPIO_PIN(0, 16)
 
@@ -180,6 +181,12 @@ static void setup_ble_stack(void)
     // Set own static random address
     int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
     assert(rc == 0);
+
+    // Set tx power to max
+    rc = ble_phy_txpwr_set(BLE_TX_POWER);
+    if (rc != 0) {
+        printf("[WARN] Failed to set TX power: %d\n", rc);
+    }
 
     ztimer_sleep(ZTIMER_MSEC, 200);
 
@@ -391,6 +398,7 @@ int main(void)
 
     printf("[DEBUG] NODEID is: %d\n", NODEID);
 
+    // Set up RGB LED for NODEID
     ws281x_params_t params = {
         .buf = led_buffer,
         .pin = NEOPIXEL_PIN,
@@ -403,10 +411,10 @@ int main(void)
         printf("[ERROR] Failed to initialize ws281x device\n");
         return 1;
     }
-    
 
     ws281x_set(&dev, 0, peer_colors[NODEID]);
     ws281x_write(&dev);
+
 
     while (!ble_hs_synced())
     {

@@ -6,15 +6,11 @@
 # TODO
 ## µC-Code
 ### Establish Network [Thomas, Cedric]
-fix memory leak
-
-set transmission power
-
-RSSI use correct conn handle
-
-RGB LED to identify node
-
-NODE_COUNT make variable
+- [x] fix memory leak
+- [x] set transmission power
+- [x] RSSI use correct conn handle
+- [x] RGB LED to identify node
+- [x] NODE_COUNT make variable
 
 ### Collect Datapoints [Justus]
 write easily deployable version
