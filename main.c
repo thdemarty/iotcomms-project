@@ -420,9 +420,8 @@ int main(void)
     sprintf(payload, "NODE_%d", NODEID);
     while (1) {
         send_gnrc_packet(NULL, netif, payload);
-        ztimer_sleep(ZTIMER_MSEC, 5000);
+        ztimer_sleep(ZTIMER_MSEC, 100);
 
-        // FIXME: recovery is not working, need to properly release connections
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         while (count < (NODE_COUNT - 1)) {
             printf("[WARN] connection lost, retrying\n");
@@ -431,6 +430,7 @@ int main(void)
             }
             setup_ble_stack();
             ztimer_sleep(ZTIMER_MSEC, 5000);
+            count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         }
     }
 }
