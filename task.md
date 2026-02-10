@@ -1,36 +1,27 @@
 # Timeline 
-2026-02-10: 
-- finish work on subtasks
-- if everything is working: run dry test
+2026-02-18 afternoon: dry test
 
-between 2026-02-16 and 2026-02-20:
-- final measurement in Großer Garten
+2026-02-19: final measurement
 
 # TODO
 ## µC-Code
 ### Establish Network [Thomas, Cedric]
-steal some code from the BLE exercise
-issue: adapt to 5 nodes → BLE Broadcast?
+fix memory leak
 
 set transmission power
 
-RSSI and LQI → need to find values in RIOT
+RSSI use correct conn handle
 
-write easily deployable version
+RGB LED to identify node
 
-print CSV line by line
+NODE_COUNT make variable
 
 ### Collect Datapoints [Justus]
-- 5 env * 30 min/env * 60 s/min * 10 packet/s = 90000 packets (per µC)
- → practically nothing in terms of data
-- long-term storage
-	- reruns are insanely time consuming
-	- write data to persistent storage (should not be fragile, e.g., wiped on pressing reset)
-	- have some easy (and tested) way of getting data from to µC
-
-Try collecting printed data from µC and pipe to file using connected laptop
+write easily deployable version
 
 ## Data Collection
+can we use 5 nodes
+
 Design expriments to find maximum radio range
 
 Trial run in APB
@@ -44,18 +35,6 @@ Final collection
 
 
 ## ML Analysis [Teoman, Robert]
-For implementation: pure python is easier to collaborate on compared to jupyter notebooks
+[CNN] finalize data splitting
 
-Can be prepared in parallel using mock data (should be roughly ready by the time we get the actual data)
-
-### Preprocessing
-
-### Training/ Testing
-Scenarios: Identify environments + Identify sensor nodes
-Models: CNN model + ResNet model
-
-Evalute for precission and accuracy
-
-### Final report
-- Dargie only cares about the data → should not put too much effort in our own write up
-- Present dimensions in confusion matrix
+ResNet
