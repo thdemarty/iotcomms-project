@@ -267,7 +267,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    //printf("[GNRC] Packet sent\n");
+    // printf("[GNRC] Packet sent\n");
     return 0;
 }
 
@@ -318,8 +318,8 @@ void *gnrc_receive_handler(void *args)
                 node_id = (int)((uint8_t *)pkt->next->data)[13] & 0x0F;
             }
 
-            int rc;
-            int8_t rssi_gap;
+            int rc = 0;
+            int8_t rssi_gap = INT8_MAX;
             uint8_t ble_addr[6];
             for (int i = 0; i < 6; i++) {
                 ble_addr[i] = ((uint8_t *)pkt->next->data)[8+i];
@@ -337,7 +337,7 @@ void *gnrc_receive_handler(void *args)
 
             rc = ble_gap_conn_rssi(conn_handle,&rssi_gap);
             if (rc != 0) {
-                printf("[WARN] error reading gap rssi: %d\n", rc);
+                printf("[WARN] error reading gap rssi: %d for handle: %d\n", rc, conn_handle);
             }
 
             if (rssi_raw == 0) {
@@ -383,23 +383,23 @@ int main(void)
     setup_ble_stack();
 
     // Do not proceed until we have connected to all other nodes
-    unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-    while (count < (NODE_COUNT - 1))
-    {
-        ztimer_sleep(ZTIMER_MSEC, 1000);
-        printf("[WARN] Waiting for connections... (%u/%u)\n", count, (NODE_COUNT - 1));
-        // printf("\t[DEBUG] L2CAP_CLIENT: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
-        // printf("\t[DEBUG] L2CAP_SERVER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));
-        // printf("\t[DEBUG] L2CAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
-        // printf("\t[DEBUG] GAP_MASTER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));
-        // printf("\t[DEBUG] GAP_SLAVE: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
-        // printf("\t[DEBUG] GAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
-        // printf("\t[DEBUG] ADV: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ADV));
-        // printf("\t[DEBUG] CONNECTING: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
-        // printf("\t[DEBUG] UNUSED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_UNUSED));
-        // printf("\t[DEBUG] ANY: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY));
-        count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-    }
+    //unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+    //while (count < (NODE_COUNT - 1))
+    //{
+    //    ztimer_sleep(ZTIMER_MSEC, 1000);
+    //    printf("[WARN] Waiting for connections... (%u/%u)\n", count, (NODE_COUNT - 1));
+    //    printf("\t[DEBUG] L2CAP_CLIENT: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT));
+    //    printf("\t[DEBUG] L2CAP_SERVER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER));
+    //    printf("\t[DEBUG] L2CAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
+    //    printf("\t[DEBUG] GAP_MASTER: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER));
+    //    printf("\t[DEBUG] GAP_SLAVE: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
+    //    printf("\t[DEBUG] GAP_CONNECTED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
+    //    printf("\t[DEBUG] ADV: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ADV));
+    //    printf("\t[DEBUG] CONNECTING: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
+    //    printf("\t[DEBUG] UNUSED: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_UNUSED));
+    //    printf("\t[DEBUG] ANY: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY));
+    //    count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+    //}
 
     // print BLE MAC address
     uint8_t own_addr[6];
@@ -418,6 +418,7 @@ int main(void)
         "receive_thread");
 
     // Continuously send packets
+    unsigned count = 0;
     gnrc_netif_t *netif = find_ble_netif();
     char payload[8];
     sprintf(payload, "NODE_%d", NODEID);
