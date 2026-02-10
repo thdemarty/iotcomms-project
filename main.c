@@ -20,7 +20,6 @@
 #include "host/ble_gap.h"
 #include "board.h"
 
-#define NODE_COUNT 3
 #define MSG_QUEUE_SIZE 8
 #define BLE_TX_POWER 8
 

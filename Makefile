@@ -30,8 +30,11 @@ DEVELHELP ?= 1
 QUIET ?= 1
 
 NODEID ?= 0
+NODE_COUNT ?= 3
+
 # Specify NODEID when invoking make
 CFLAGS += -DNODEID=$(NODEID)
+CFLAGS += -DNODE_COUNT=$(NODE_COUNT)
 
 include $(RIOTBASE)/Makefile.include
 
