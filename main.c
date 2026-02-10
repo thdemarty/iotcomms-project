@@ -19,9 +19,14 @@
 #include "net/bluetil/ad.h"
 #include "host/ble_gap.h"
 #include "board.h"
+#include "ws281x.h"
+#include "periph/gpio.h"
+
+#define NEOPIXEL_PIN GPIO_PIN(0, 16)
 
 #define MSG_QUEUE_SIZE 8
 #define BLE_TX_POWER 8
+#define BRIGHTNESS 0.2f
 
 // BLE connection parameters
 #define DEFAULT_SCAN_DURATION_MS 500U
@@ -40,6 +45,16 @@ static ble_addr_t peer_addr[] = {
     {.type = BLE_ADDR_RANDOM, .val = {0xc3, 0xbb, 0xcc, 0xdd, 0xee, 0xff}},
     {.type = BLE_ADDR_RANDOM, .val = {0xc4, 0xbb, 0xcc, 0xdd, 0xee, 0xff}},
 };
+
+static ws281x_pixel_t peer_colors[] = {
+    {.r = 255 * BRIGHTNESS, .g =   0 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 0
+    {.r =   0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 1
+    {.r =   0 * BRIGHTNESS, .g =   0 * BRIGHTNESS, .b = 255 * BRIGHTNESS}, // node 2
+    {.r = 255 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 3
+    {.r =   0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b = 255 * BRIGHTNESS}, // node 4
+};
+
+static uint8_t led_buffer[1 * WS281X_BYTES_PER_DEVICE];
 
 static char led_thread_stack[THREAD_STACKSIZE_DEFAULT];
 
@@ -375,6 +390,23 @@ int main(void)
     ztimer_sleep(ZTIMER_MSEC, 3000);
 
     printf("[DEBUG] NODEID is: %d\n", NODEID);
+
+    ws281x_params_t params = {
+        .buf = led_buffer,
+        .pin = NEOPIXEL_PIN,
+        .numof = 1,
+    };
+
+    ws281x_t dev;
+
+    if (ws281x_init(&dev, &params) != 0) {
+        printf("[ERROR] Failed to initialize ws281x device\n");
+        return 1;
+    }
+    
+
+    ws281x_set(&dev, 0, peer_colors[NODEID]);
+    ws281x_write(&dev);
 
     while (!ble_hs_synced())
     {
