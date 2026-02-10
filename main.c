@@ -348,6 +348,9 @@ void *gnrc_receive_handler(void *args)
 
             //printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
+            
+            // fix memory leak here
+            gnrc_pktbuf_release(pkt);
         } else {
             printf("[WARN] wrong message type: %d\n", msg.type);
         }
