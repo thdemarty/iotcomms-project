@@ -224,9 +224,8 @@ static void setup_ble_stack(void)
     }
 }
 
-int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_str)
+int send_gnrc_packet(uint8_t *src_addr, gnrc_netif_t *netif, char* payload_str)
 {
-    (void)dst_addr;
     gnrc_pktsnip_t *payload;
     gnrc_pktsnip_t *netif_hdr;
     gnrc_pktsnip_t *pkt;
@@ -240,7 +239,7 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
         return 1;
     }
 
-    netif_hdr = gnrc_netif_hdr_build(NULL, 0, NULL, 0);
+    netif_hdr = gnrc_netif_hdr_build(src_addr, BLE_ADDR_LEN, NULL, 0);
     if (!netif_hdr)
     {
         printf("[GNRC] Failed to allocate netif header\n");
@@ -436,7 +435,7 @@ int main(void)
     char payload[8];
     sprintf(payload, "NODE_%d", NODEID);
     while (1) {
-        send_gnrc_packet(NULL, netif, payload);
+        send_gnrc_packet(own_addr, netif, payload);
         ztimer_sleep(ZTIMER_MSEC, 100);
 
         count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
