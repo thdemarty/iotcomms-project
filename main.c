@@ -321,8 +321,22 @@ void *gnrc_receive_handler(void *args)
 
             int rc;
             int8_t rssi_gap;
-            // FIXME: dynamically find correct handle (so replace the 1)
-            rc = ble_gap_conn_rssi(1,&rssi_gap);
+            uint8_t ble_addr[6];
+            for (int i = 0; i < 6; i++) {
+                ble_addr[i] = ((uint8_t *)pkt->next->data)[8+i];
+            }
+
+            // Print the source BLE addr
+            //printf("[DEBUG]");
+            //for (size_t i = 0; i < 6; i++) {
+            //  printf(" %02x", ble_addr[i]);
+            //}
+            //printf("\n");
+
+            int conn_handle = nimble_netif_conn_get_by_addr(ble_addr);
+            //printf("[DEBUG] Conn handle: %d\n", conn_handle);
+
+            rc = ble_gap_conn_rssi(conn_handle,&rssi_gap);
             if (rc != 0) {
                 printf("[WARN] error reading gap rssi: %d\n", rc);
             }
@@ -333,7 +347,7 @@ void *gnrc_receive_handler(void *args)
 
             //printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
-            printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
+            //printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
         } else {
             printf("[WARN] wrong message type: %d\n", msg.type);
