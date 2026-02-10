@@ -271,6 +271,15 @@ int send_gnrc_packet(ipv6_addr_t *dst_addr, gnrc_netif_t *netif, char* payload_s
     return 0;
 }
 
+// foreach connection callback
+// int foreach_conn_callback(nimble_netif_conn_t *conn, int conn_handle, void *arg)
+// {
+//     (void)arg;
+    
+//     printf("[DEBUG] Connection handle: %d state=%d\n", conn_handle, conn->state);
+//     return 0;
+// }
+
 void *gnrc_receive_handler(void *args)
 {
     (void)args;
@@ -298,6 +307,8 @@ void *gnrc_receive_handler(void *args)
         if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
             gnrc_pktsnip_t *pkt = msg.content.ptr;
             gnrc_netif_hdr_t *hdr = pkt->data;
+
+            // nimble_netif_conn_foreach(NIMBLE_NETIF_L2CAP_CONNECTED, foreach_conn_callback, NULL);
 
             //for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
             //  printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
@@ -333,9 +344,11 @@ void *gnrc_receive_handler(void *args)
             //printf("\n");
 
             int conn_handle = nimble_netif_conn_get_by_addr(ble_addr);
-            //printf("[DEBUG] Conn handle: %d\n", conn_handle);
 
-            rc = ble_gap_conn_rssi(conn_handle,&rssi_gap);
+            nimble_netif_conn_t *conn;
+            conn = nimble_netif_conn_get(conn_handle);
+            
+            rc = ble_gap_conn_rssi(conn->gaphandle ,&rssi_gap);
             if (rc != 0) {
                 printf("[WARN] error reading gap rssi: %d for handle: %d\n", rc, conn_handle);
             }
