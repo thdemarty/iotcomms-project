@@ -1,4 +1,4 @@
-from CNN import *
+from CNN_library import *
 from dotenv import load_dotenv
 import os
 import re
@@ -42,25 +42,18 @@ test_subset = torch.utils.data.Subset(dataset, test_idx)
 train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_subset, batch_size=BATCH_SIZE, shuffle=False)
 
-### Training loop (CPU only)
+### Training loop
 device = torch.device(DEVICE)
-model = BLECNN(num_devices=NUM_DEVICES, num_envs=NUM_ENVS).to(device)
+model = BLECNN(num_devices=NUM_DEVICES, num_envs=NUM_ENVS, device=device).to(device)
 
 ### Run training
 epochs = EPOCHS
 
-for epoch in range(epochs):
-    train_loss = model.train_epoch(train_loader)
-    dev_acc, env_acc = model.evaluate(test_loader)
+model.start_training(train_loader, test_loader, epochs)
 
-    print(
-        f"Epoch {epoch+1:02d} | "
-        f"Loss: {train_loss:.4f} | "
-        f"Device Acc: {dev_acc:.3f} | "
-        f"Env Acc: {env_acc:.3f}"
-    )
+plot_training_curve(model.get_training_curve())
 
-dev_true, dev_pred, env_true, env_pred = model.collect_predictions(test_loader, device)
+dev_true, dev_pred, env_true, env_pred = model.collect_predictions(test_loader)
 
 cm_device = confusion_matrix(dev_true, dev_pred)
 plot_confusion(cm_device, labels=dataset.device_encoder.classes_, title="Device Classification Confusion Matrix")

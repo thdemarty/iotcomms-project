@@ -38,6 +38,11 @@ Here are different possibilities of organising the datasets (scenario II is used
 
 Models:
 
+- CNN
+- ResNet
+
+Training:
+
 - train_CNN_scenario1_method1
 - train_CNN_scenario1_method2
 - train_CNN_scenario2_method1
