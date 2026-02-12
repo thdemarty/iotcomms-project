@@ -1,16 +1,51 @@
 import pandas as pd
 import numpy as np
+from enum import Enum
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from tqdm import tqdm
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
 import re
 
+def plot_confusion(cm, labels, title):
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=labels,
+        yticklabels=labels
+    )
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+    plt.title(title)
+    plt.tight_layout()
+    plt.show()
+
+class Method(Enum):
+    MIX4TRAIN = 0
+    MIX4TEST = 1
+
+class Mode(Enum):
+    NODE = 0
+    ENV = 1
+
 class BLEDataset(Dataset):
-    def __init__(self, csv_path, window_size=100, overlap=0.5):
+    def __init__(self, csv_path, method=None, mode=None, filter_id=None, window_size=100, overlap=0.5):
+        """
+        csv_path : path to csv
+        method : see in class Method. MIXALL, MIX4TRAIN, MIX4TEST
+        mode : filter for node or environment
+        filter_id : which environment or node to split off in scenario 1
+        window_size : samples per frame
+        overlap : how much the frames overlap with their neighbours
+        """
         self.window_size = window_size
         self.step_size = int(window_size * (1 - overlap))
 
@@ -24,32 +59,82 @@ class BLEDataset(Dataset):
         df["device_label"] = self.device_encoder.fit_transform(df["NodeID"])
         df["env_label"] = self.env_encoder.fit_transform(df["Environment"])
 
+        if mode == Mode.NODE:
+            primary_label = "device_label"
+            secondary_label = "env_label"
+        elif mode == Mode.ENV:
+            primary_label = "env_label"
+            secondary_label = "device_label"
+
         samples = []
         device_labels = []
         env_labels = []
 
-        # Create windows PER DEVICE (but mixed environments)
-        for device_id in df["device_label"].unique():
-            device_df = df[df["device_label"] == device_id]
+        if method == Method.MIX4TRAIN:
+            # if mode_id not given or not in dataset : # mix all belonging to node/environment X (randomise, split 75/25 later)
+            # if mode_id is given : # mix 4 belonging to node/environment X (use one environment/node belonging to node/environment X for training)
+            for id in df[primary_label].unique():
+                detached_df = df[df[primary_label] == id]
+                detached_df = detached_df[detached_df[secondary_label] != filter_id]
 
-            # Sort by time if timestamp exists
-            if "Timestamp" in device_df.columns:
-                device_df = device_df.sort_values("Timestamp")
+                # Sort by time if timestamp exists
+                if "Timestamp" in detached_df.columns:
+                    detached_df = detached_df.sort_values("Timestamp")
 
-            signal = device_df[["RSSI", "LQI"]].values
-            env = device_df["env_label"].values
-            dev = device_df["device_label"].values
+                signal = detached_df[["RSSI", "LQI"]].values
+                # differentiate
+                signal = np.diff(signal, axis=0)
+                signal = np.vstack([signal[0], signal])
+                # normalize
+                signal = (signal - np.min(signal, axis=0)) / (np.max(signal, axis=0) - np.min(signal, axis=0))
 
-            windows = self.create_windows(signal)
-            env_windows = self.create_windows(env)
-            dev_windows = self.create_windows(dev)
+                env = detached_df["env_label"].values
+                dev = detached_df["device_label"].values
 
-            print(windows, env_windows, dev_windows)
+                windows = self.create_windows(signal)
+                env_windows = self.create_windows(env)
+                dev_windows = self.create_windows(dev)
 
-            for i in range(len(windows)):
-                samples.append(windows[i])
-                env_labels.append(env_windows[i][0])   # environment of window
-                device_labels.append(dev_windows[i][0])
+                print(windows, env_windows, dev_windows)
+
+                for i in range(len(windows)):
+                    samples.append(windows[i])
+                    env_labels.append(env_windows[i][0])   # environment of window
+                    device_labels.append(dev_windows[i][0])
+        
+        elif method == Method.MIX4TEST:
+            for id in df[primary_label].unique():
+                detached_df = df[df[primary_label] == id]
+                detached_df = detached_df[detached_df[secondary_label] == filter_id]
+
+                # Sort by time if timestamp exists
+                if "Timestamp" in detached_df.columns:
+                    detached_df = detached_df.sort_values("Timestamp")
+
+                signal = detached_df[["RSSI", "LQI"]].values
+                # differentiate
+                signal = np.diff(signal, axis=0)
+                signal = np.vstack([signal[0], signal])
+                # normalize
+                signal = (signal - np.min(signal, axis=0)) / (np.max(signal, axis=0) - np.min(signal, axis=0))
+
+                env = detached_df["env_label"].values
+                dev = detached_df["device_label"].values
+
+                windows = self.create_windows(signal)
+                env_windows = self.create_windows(env)
+                dev_windows = self.create_windows(dev)
+
+                print(windows, env_windows, dev_windows)
+
+                for i in range(len(windows)):
+                    samples.append(windows[i])
+                    env_labels.append(env_windows[i][0])   # environment of window
+                    device_labels.append(dev_windows[i][0])
+
+        else:
+            print(f"ERROR! Method for BLEDataset either not given or wrong: {{{method}}}")
+            exit()
 
         self.X = torch.tensor(np.array(samples), dtype=torch.float32)
         self.y_device = torch.tensor(device_labels, dtype=torch.long)
@@ -147,37 +232,35 @@ class BLECNN(nn.Module):
                 total += y_dev.size(0)
 
         return correct_dev / total, correct_env / total
+    
+    def collect_predictions(self, loader, device):
+        self.eval()
+
+        dev_true, dev_pred = [], []
+        env_true, env_pred = [], []
+
+        with torch.no_grad():
+            for x, y_dev, y_env in loader:
+                x = x.to(device)
+
+                out_dev, out_env = self(x)
+
+                dev_pred.extend(out_dev.argmax(1).cpu().numpy())
+                env_pred.extend(out_env.argmax(1).cpu().numpy())
+
+                dev_true.extend(y_dev.numpy())
+                env_true.extend(y_env.numpy())
+
+        return (
+            np.array(dev_true),
+            np.array(dev_pred),
+            np.array(env_true),
+            np.array(env_pred),
+        )
+
 
 
 if __name__=="__main__":
-    ### Train / test split
-    dataset = BLEDataset("test_ts.csv")
-
-    indices = np.arange(len(dataset))
-    print(len(dataset))
-    train_idx, test_idx = train_test_split(indices, test_size=0.25, random_state=42, shuffle=True)
-    print(train_idx, test_idx)
-
-    train_subset = torch.utils.data.Subset(dataset, train_idx)
-    test_subset = torch.utils.data.Subset(dataset, test_idx)
-
-    train_loader = DataLoader(train_subset, batch_size=32, shuffle=True)
-    test_loader = DataLoader(test_subset, batch_size=32, shuffle=False)
-
-    ### Training loop (CPU only)
-    device = torch.device("cpu")
-    model = BLECNN(num_devices=5, num_envs=5).to(device)
-
-    ### Run training
-    epochs = 20
-
-    for epoch in tqdm(range(epochs)):
-        train_loss = model.train_epoch(train_loader)
-        dev_acc, env_acc = model.evaluate(test_loader)
-
-        print(
-            f"Epoch {epoch+1:02d} | "
-            f"Loss: {train_loss:.4f} | "
-            f"Device Acc: {dev_acc:.3f} | "
-            f"Env Acc: {env_acc:.3f}"
-        )
+    ### 
+    print("This is a custom library for training and testing CNNs enabled by pytorch and sklearn.\n"
+          "Nothing happens by running it directly.")

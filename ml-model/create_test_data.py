@@ -7,7 +7,7 @@ strategie = 1
 time_start = 0
 total_nodes = 5
 environments = ["forest", "garden", "river", "lake", "bridges"]
-duration = 30 * 60 * 10 * total_nodes * len(environments) # 30 minutes * 60 seconds/minute * 10 measurements/second * 5 senders * 5 environments = duration in measurements
+duration = 30 * 60 * 10 * total_nodes * (total_nodes - 1) * len(environments) # 30 minutes * 60 seconds/minute * 10 measurements/second * 5 senders * 4 receivers * 5 environments = duration in measurements
 
 file_pattern = r"/ml-model/create_test_data.py$"
 file_name = f"test_ts.csv"

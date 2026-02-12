@@ -19,26 +19,41 @@ Here are different possibilities of organising the datasets (scenario II is used
 - (1) You mix the data from all the deployment environments belonging to Node X in a single dataset. Use some portion of the dataset (say 75%) to train the models and the rest (25%) to test.
 - (2) Mix the data from 4 of the deployment environments belonging to Node X in a single dataset but the data of the fifth environment you keep in a different dataset. Use the first to train the model and the second to test the model. Use the same strategy for classifying the environments.
 
-## Run the modes
-
-Models:
-
-- CNN_strategie1
-- CNN_strategie2
-- ResNet_strategie1
-- ResNet_strategie2
+## Run the models
 
 ### Prerequisites
 
 `!pip3 install torch torchvision gensim`
 
+### Usage
+
+1. Dump your csv with the correct format into ../data/
+2. Train the model for your data (see [Train and Test](#train-and-test))
+3. Work in progress
+
 ### Train and Test
 
-`python <model>.py <options>`
+> [!IMPORTANT]
+> You have to train all of CNN so the combined CNN can load in all the trained weights.
 
-DESCRIPTION
+Models:
 
-`-n [NODE]`		The data of which node should be used for training. \
-`-e [EXCLUDED_ENV]`	ONLY FOR STRATEGIE 2!!!! Which of the environments should be used for testing and not training. \
-`-f [FRAMESIZE]`	Framesize for model inputs in measurements (10 per sec). \
-`-o [OVERLAP]`		Overlap of the frames in percent. E.g. 50
+- train_CNN_scenario1_method1
+- train_CNN_scenario1_method2
+- train_CNN_scenario2_method1
+- train_CNN_scenario2_method2
+
+`python <model>.py`
+
+#### .env file for settings
+
+`FILTER_ID`     : Id of the env or node left out for training with method 2. \
+`TEST_SIZE`     : Percentage of test data for method 1 training. \
+`RANDOM_STATE`  : Randomness for the test data extraction. \
+`BATCH_SIZE`    : Batch size for the training steps. \
+`DEVICE`        : Run the model on "cpu" or "gpu". \
+`NUM_DEVICES`   : How many sending nodes are in the data. \
+`NUM_ENVS`      : How many environments are in the data. \
+`EPOCHS`        : How long the Model should train. \
+`FRAMESIZE`	    : Framesize for model inputs in measurements (10 per sec -> 100 frames at 10 Hz). \
+`OVERLAP`		: Overlap of the frames in percent. E.g. 0.5
