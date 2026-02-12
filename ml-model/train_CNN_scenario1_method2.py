@@ -5,10 +5,10 @@ import re
 
 """
 Script for training the CNN.
-Scenario: 2
--> identify nodes
+Scenario: 1
+-> identify environments
 Method: 2
--> mix and train with 4 and split off one environment for testing
+-> mix and train with 4 and split off one node for testing
 """
 
 ### Load environment variables
@@ -29,8 +29,8 @@ FRAME_SIZE = int(os.getenv('FRAME_SIZE'))
 OVERLAP = float(os.getenv('OVERLAP'))
 
 ### Train / test split
-train_subset = BLEDataset("test_ts.csv", Method.MIX4TRAIN, Mode.NODE, filter_id=FILTER_ID, window_size=FRAME_SIZE, overlap=OVERLAP)
-test_subset = BLEDataset("test_ts.csv", Method.MIX4TEST, Mode.NODE, filter_id=FILTER_ID, window_size=FRAME_SIZE, overlap=OVERLAP)
+train_subset = BLEDataset("test_ts.csv", Method.MIX4TRAIN, Mode.ENV, filter_id=FILTER_ID, window_size=FRAME_SIZE, overlap=OVERLAP)
+test_subset = BLEDataset("test_ts.csv", Method.MIX4TEST, Mode.ENV, filter_id=FILTER_ID, window_size=FRAME_SIZE, overlap=OVERLAP)
 
 train_loader = DataLoader(train_subset, batch_size=BATCH_SIZE, shuffle=True)
 test_loader = DataLoader(test_subset, batch_size=BATCH_SIZE, shuffle=False)
