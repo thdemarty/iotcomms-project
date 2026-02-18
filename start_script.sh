@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LOG_FILE="${1:-log.txt}"
-DATA_FILE="${2:-data.csv}"
+LOG_FILE="${1:-log.txt +%Y%m%d_%H%M%S}"
+DATA_FILE="${2:-data.csv +%Y%m%d_%H%M%S}"
 
 
 echo "starting terminal"
