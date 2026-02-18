@@ -96,8 +96,6 @@ static void advertise(ble_addr_t *ble_addr)
                                      BLUETIL_AD_FLAGS_DEFAULT);
     assert(res == BLUETIL_AD_OK);
 
-    assert(res == BLUETIL_AD_OK);
-
     // define name according to NODEID
     char name_buf[32];
     snprintf(name_buf, sizeof(name_buf), "LinkQuality-Node%d", NODEID);
@@ -178,18 +176,6 @@ static gnrc_netif_t *find_ble_netif(void)
 
 static void setup_ble_stack(void)
 {
-    // Set own static random address
-    int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
-    assert(rc == 0);
-
-    // Set tx power to max
-    rc = ble_phy_txpwr_set(BLE_TX_POWER);
-    if (rc != 0) {
-        printf("[WARN] Failed to set TX power: %d\n", rc);
-    }
-
-    ztimer_sleep(ZTIMER_MSEC, 200);
-
     nimble_netif_connect_cfg_t connect_cfg = {
         .scan_itvl_ms = DEFAULT_SCAN_ITVL_MS,
         .scan_window_ms = DEFAULT_SCAN_ITVL_MS,
@@ -199,7 +185,6 @@ static void setup_ble_stack(void)
         .own_addr_type = BLE_ADDR_RANDOM,
     };
 
-    rc = -1;
     int res;
     unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
     unsigned new_count = 0;
@@ -220,7 +205,11 @@ static void setup_ble_stack(void)
 
         if (connect_i != -1) {
             printf("[BLE] Attempt to connect to node %d...\n", connect_i);
+            int rc = -1;
             rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
+            if (rc < 0) {
+                printf("[BLE] Failed to connect to node %d: %d", connect_i, rc);
+            }
             while (count == new_count) {
               ztimer_sleep(ZTIMER_MSEC, 100);
               new_count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
@@ -431,6 +420,18 @@ int main(void)
         "led_thread");
 
     nimble_netif_eventcb(event_cb);
+
+    // Set own static random address
+    int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
+    assert(rc == 0);
+
+    // Set tx power to max
+    rc = ble_phy_txpwr_set(BLE_TX_POWER);
+    if (rc != 0) {
+        printf("[WARN] Failed to set TX power: %d\n", rc);
+    }
+
+    ztimer_sleep(ZTIMER_MSEC, 200);
 
     setup_ble_stack();
 
