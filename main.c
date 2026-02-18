@@ -91,7 +91,7 @@ static void advertise(ble_addr_t *ble_addr)
     bluetil_ad_t ad;
     nimble_netif_accept_cfg_t accept_cfg = {
         .own_addr_type = BLE_ADDR_RANDOM,
-        .timeout_ms = UINT32_MAX,
+        .timeout_ms = 60000,
     };
     /* build advertising data */
     res = bluetil_ad_init_with_flags(&ad, buf, BLE_HS_ADV_MAX_SZ,
@@ -185,7 +185,7 @@ static void setup_ble_stack(void)
         .conn_itvl_max_ms = DEFAULT_CONN_ITVL_MS,
         .conn_supervision_timeout_ms = DEFAULT_CONN_ITVL_MS * 20,
         .own_addr_type = BLE_ADDR_RANDOM,
-        .timeout_ms = UINT32_MAX,
+        .timeout_ms = 60000,
     };
 
     int res;
