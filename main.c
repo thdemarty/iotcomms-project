@@ -18,6 +18,7 @@
 #include "thread.h"
 #include "msg.h"
 #include "net/bluetil/ad.h"
+#include "net/bluetil/addr.h"
 #include "host/ble_gap.h"
 #include "board.h"
 #include "ws281x.h"
@@ -27,15 +28,14 @@
 #define NEOPIXEL_PIN GPIO_PIN(0, 16)
 
 #define MSG_QUEUE_SIZE 8
-#define BLE_TX_POWER 8
 #define BRIGHTNESS 0.2f
 
 // BLE connection parameters
 #define DEFAULT_SCAN_DURATION_MS 500U
 #define DEFAULT_CONN_TIMEOUT_MS 500U
-#define DEFAULT_SCAN_ITVL_MS 100U 
-#define DEFAULT_CONN_ITVL_MS 75U
-#define DEFAULT_ADV_ITVL_MS 75U
+#define DEFAULT_SCAN_ITVL_MS 100U
+#define DEFAULT_CONN_ITVL_MS 15U
+#define DEFAULT_ADV_ITVL_MS 30U
 
 static char receive_thread_stack[THREAD_STACKSIZE_DEFAULT];
 static msg_t msg_queue[MSG_QUEUE_SIZE];
@@ -49,11 +49,11 @@ static ble_addr_t peer_addr[] = {
 };
 
 static ws281x_pixel_t peer_colors[] = {
-    {.r = 255 * BRIGHTNESS, .g =   0 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 0
-    {.r =   0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 1
-    {.r =   0 * BRIGHTNESS, .g =   0 * BRIGHTNESS, .b = 255 * BRIGHTNESS}, // node 2
-    {.r = 255 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b =   0 * BRIGHTNESS}, // node 3
-    {.r =   0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b = 255 * BRIGHTNESS}, // node 4
+    {.r = 255 * BRIGHTNESS, .g = 0 * BRIGHTNESS, .b = 0 * BRIGHTNESS},   // node 0
+    {.r = 0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b = 0 * BRIGHTNESS},   // node 1
+    {.r = 0 * BRIGHTNESS, .g = 0 * BRIGHTNESS, .b = 255 * BRIGHTNESS},   // node 2
+    {.r = 255 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b = 0 * BRIGHTNESS}, // node 3
+    {.r = 0 * BRIGHTNESS, .g = 255 * BRIGHTNESS, .b = 255 * BRIGHTNESS}, // node 4
 };
 
 static uint8_t led_buffer[1 * WS281X_BYTES_PER_DEVICE];
@@ -82,38 +82,22 @@ void *led_status_thread(void *args)
     return NULL;
 }
 
-static void advertise(ble_addr_t *ble_addr)
+static void advertise_to(ble_addr_t *ble_addr)
 {
     int res;
     (void)res;
 
-    uint8_t buf[BLE_HS_ADV_MAX_SZ];
-    bluetil_ad_t ad;
     nimble_netif_accept_cfg_t accept_cfg = {
         .own_addr_type = BLE_ADDR_RANDOM,
-        .timeout_ms = 60000,
+        .timeout_ms = 0,
     };
-    /* build advertising data */
-    res = bluetil_ad_init_with_flags(&ad, buf, BLE_HS_ADV_MAX_SZ,
-                                     BLUETIL_AD_FLAGS_DEFAULT);
-    assert(res == BLUETIL_AD_OK);
 
-    // define name according to NODEID
-    char name_buf[32];
-    snprintf(name_buf, sizeof(name_buf), "LinkQuality-Node%d", NODEID);
-    const char *name = name_buf;
-    res = bluetil_ad_add(&ad, BLE_GAP_AD_NAME, name, strlen(name));
-    if (res != BLUETIL_AD_OK)
-    {
-        puts("err: the given name is too long");
-        return;
-    }
-    /* start listening for incoming connections */
+    // direct advertising (non-scannable)
     res = nimble_netif_accept_direct(ble_addr, &accept_cfg);
 
     if (res != 0)
     {
-        printf("[BLE] Failed to start advertising: %d\n", res);
+        printf("[BLE] Direct Advertising error: %d\n", res);
     }
 }
 
@@ -127,7 +111,6 @@ static void event_cb(int handle, nimble_netif_event_t event,
         printf("[BLEE] Advertising\n");
         break;
 
-    
     case NIMBLE_NETIF_ACCEPT_STOP:
         printf("[BLEE] Stop Advertising\n");
         break;
@@ -161,7 +144,6 @@ static void event_cb(int handle, nimble_netif_event_t event,
     }
 }
 
-
 static gnrc_netif_t *find_ble_netif(void)
 {
     gnrc_netif_t *netif = NULL;
@@ -175,69 +157,60 @@ static gnrc_netif_t *find_ble_netif(void)
     return NULL;
 }
 
-
 static void setup_ble_stack(void)
 {
     nimble_netif_connect_cfg_t connect_cfg = {
-        .scan_itvl_ms = DEFAULT_SCAN_ITVL_MS,
-        .scan_window_ms = DEFAULT_SCAN_ITVL_MS,
+        .scan_itvl_ms = 100,
+        .scan_window_ms = 50,
         .conn_itvl_min_ms = DEFAULT_CONN_ITVL_MS,
         .conn_itvl_max_ms = DEFAULT_CONN_ITVL_MS,
-        .conn_supervision_timeout_ms = DEFAULT_CONN_ITVL_MS * 20,
+        .conn_supervision_timeout_ms = 2000,
         .own_addr_type = BLE_ADDR_RANDOM,
-        .timeout_ms = 60000,
+        .timeout_ms = 2000,
     };
 
-    int res;
-    unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-    unsigned new_count = 0;
-    for (int i = 0; i < NODE_COUNT; i++)
+    for (int i = 0; i < NODEID; i++)
     {
-        int connect_start = NODEID + 1;
-        int connect_stop = NODE_COUNT;
-        int connect_i = i + connect_start;
-        if (connect_i >= connect_stop) {
-            connect_i = -1;
-        }
-        int adv_start = NODEID - 1;
-        int adv_stop = 0;
-        int adv_i = adv_start - i;
-        if (adv_i < adv_stop) {
-            adv_i = -1;
-        }
+        uint8_t reversed_addr[6];
+        bluetil_addr_swapped_cp(peer_addr[i].val, reversed_addr);
 
-        if (connect_i != -1) {
-            printf("[BLE] Attempt to connect to node %d...\n", connect_i);
-            int rc = -1;
-            rc = nimble_netif_connect(&peer_addr[connect_i], &connect_cfg);
-            if (rc < 0) {
-                printf("[BLE] Failed to connect to node %d: %d", connect_i, rc);
-            }
-            while (count == new_count) {
-              ztimer_sleep(ZTIMER_MSEC, 1000);
-              new_count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-            }
-            count = new_count;
+        if (nimble_netif_conn_get_by_addr(reversed_addr) == NIMBLE_NETIF_CONN_INVALID)
+        {
+            printf("[BLECONN] Advertising to peer %d (not connected)\n", i);
+            // clean up any previous advertising
+            nimble_netif_accept_stop();
+            // start advertising to this peer
+            advertise_to(&peer_addr[i]);
+
+            ztimer_sleep(ZTIMER_MSEC, 3000);
+
+            nimble_netif_accept_stop();
+            ztimer_sleep(ZTIMER_MSEC, 500);
         }
+    }
 
+    for (int i = NODEID + 1; i < NODE_COUNT; i++)
+    {
+        uint8_t reversed_addr[6];
+        bluetil_addr_swapped_cp(peer_addr[i].val, reversed_addr);
 
-        if (adv_i != -1) {
-            advertise(&peer_addr[adv_i]);
-            printf("[DEBUG] advertising to node %d\n", adv_i);
-            while (count == new_count) {
-              ztimer_sleep(ZTIMER_MSEC, 1000);
-              new_count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+        if (nimble_netif_conn_get_by_addr(reversed_addr) == NIMBLE_NETIF_CONN_INVALID)
+        {
+            printf("[BLECONN] Connecting to to peer %d (not connected)\n", i);
+
+            int rc = nimble_netif_connect(&peer_addr[i], &connect_cfg);
+
+            if (rc < 0)
+            {
+                printf("[BLECONN] Connection error: %d\n", rc);
             }
-            count = new_count;
-            res = nimble_netif_accept_stop();
-            if (res < 0) {
-              printf("[BLE] Failed to stop advertising: %d\n", res);
-            }
+
+            ztimer_sleep(ZTIMER_MSEC, 3000);
         }
     }
 }
 
-int send_gnrc_packet(uint8_t *src_addr, gnrc_netif_t *netif, char* payload_str)
+int send_gnrc_packet(uint8_t *src_addr, gnrc_netif_t *netif, char *payload_str)
 {
     gnrc_pktsnip_t *payload;
     gnrc_pktsnip_t *netif_hdr;
@@ -287,7 +260,7 @@ int send_gnrc_packet(uint8_t *src_addr, gnrc_netif_t *netif, char* payload_str)
 // int foreach_conn_callback(nimble_netif_conn_t *conn, int conn_handle, void *arg)
 // {
 //     (void)arg;
-    
+
 //     printf("[DEBUG] Connection handle: %d state=%d\n", conn_handle, conn->state);
 //     return 0;
 // }
@@ -302,82 +275,85 @@ void *gnrc_receive_handler(void *args)
 
     struct gnrc_netreg_entry me_reg =
         GNRC_NETREG_ENTRY_INIT_PID(GNRC_NETREG_DEMUX_CTX_ALL, thread_getpid());
-    //gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
-    //gnrc_netreg_register(GNRC_NETTYPE_NETIF, &me_reg);
+    // gnrc_netreg_register(GNRC_NETTYPE_UNDEF, &me_reg);
+    // gnrc_netreg_register(GNRC_NETTYPE_NETIF, &me_reg);
     /*
     ** Ok, this is stupid.
     ** I did not get our custom protocol over BLE to work.
     ** But the receive somehow treats this as IPv6 packets.
-     */
+    */
     gnrc_netreg_register(GNRC_NETTYPE_IPV6, &me_reg);
-    //gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
+    // gnrc_netreg_register(GNRC_NETTYPE_L2_DISCOVERY, &me_reg);
 
     while (1)
     {
         msg_receive(&msg);
-        //printf("[DEBUG] received msg\n");
-        if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV) {
+        // printf("[DEBUG] received msg\n");
+        if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV)
+        {
             gnrc_pktsnip_t *pkt = msg.content.ptr;
             gnrc_netif_hdr_t *hdr = pkt->data;
 
             // nimble_netif_conn_foreach(NIMBLE_NETIF_L2CAP_CONNECTED, foreach_conn_callback, NULL);
 
-            //for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
-            //  printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
-            //}
+            // for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
+            //   printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
+            // }
 
             int rssi_raw = hdr->rssi;
             int lqi_raw = hdr->lqi;
             uint32_t timer = ztimer_now(ZTIMER_MSEC);
 
-            //for (size_t i = 0; i < pkt->next->size; i++) {
-            //  printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
-            //}
-            //printf("\n");
+            // for (size_t i = 0; i < pkt->next->size; i++) {
+            //   printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
+            // }
+            // printf("\n");
 
             size_t data_size = pkt->next->size;
             int node_id = -1;
-            if (14 < data_size) {
+            if (14 < data_size)
+            {
                 node_id = (int)((uint8_t *)pkt->next->data)[13] & 0x0F;
             }
 
             int rc = 0;
             int8_t rssi_gap = INT8_MAX;
             uint8_t ble_addr[6];
-            for (int i = 0; i < 6; i++) {
-                ble_addr[i] = ((uint8_t *)pkt->next->data)[8+i];
+            for (int i = 0; i < 6; i++)
+            {
+                ble_addr[i] = ((uint8_t *)pkt->next->data)[8 + i];
             }
 
             // Print the source BLE addr
-            //printf("[DEBUG]");
-            //for (size_t i = 0; i < 6; i++) {
+            // printf("[DEBUG]");
+            // for (size_t i = 0; i < 6; i++) {
             //  printf(" %02x", ble_addr[i]);
             //}
-            //printf("\n");
+            // printf("\n");
 
             int conn_handle = nimble_netif_conn_get_by_addr(ble_addr);
 
             nimble_netif_conn_t *conn;
             conn = nimble_netif_conn_get(conn_handle);
-            
-            rc = ble_gap_conn_rssi(conn->gaphandle ,&rssi_gap);
-            if (rc != 0) {
+
+            rc = ble_gap_conn_rssi(conn->gaphandle, &rssi_gap);
+            if (rc != 0)
+            {
                 printf("[WARN] error reading gap rssi: %d for handle: %d\n", rc, conn_handle);
             }
 
-            if (rssi_raw == 0) {
+            if (rssi_raw == 0)
+            {
                 rssi_raw = rssi_gap;
             }
 
-            //printf("[DEBUG] payload as string: \"%d\"\n", node_id);
+            // printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
-            //printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
+            // printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
             printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
-            
+
             // fix memory leak here
             gnrc_pktbuf_release(pkt);
-        } else {
-            printf("[WARN] wrong message type: %d\n", msg.type);
         }
     }
 }
@@ -398,14 +374,14 @@ int main(void)
 
     ws281x_t dev;
 
-    if (ws281x_init(&dev, &params) != 0) {
+    if (ws281x_init(&dev, &params) != 0)
+    {
         printf("[ERROR] Failed to initialize ws281x device\n");
         return 1;
     }
 
     ws281x_set(&dev, 0, peer_colors[NODEID]);
     ws281x_write(&dev);
-
 
     while (!ble_hs_synced())
     {
@@ -427,11 +403,11 @@ int main(void)
     int rc = ble_hs_id_set_rnd(peer_addr[NODEID].val);
     assert(rc == 0);
 
-    // Set tx power to max
-    rc = ble_phy_txpwr_set(BLE_TX_POWER);
-    if (rc != 0) {
-        printf("[WARN] Failed to set TX power: %d\n", rc);
-    }
+    // print BLE MAC address
+    uint8_t own_addr[6];
+    ble_hs_id_copy_addr(BLE_ADDR_RANDOM, own_addr, NULL);
+    printf("[DEBUG] Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n", own_addr[5],
+           own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
 
     ztimer_sleep(ZTIMER_MSEC, 200);
 
@@ -463,12 +439,6 @@ int main(void)
     //    nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
     //}
 
-    // print BLE MAC address
-    uint8_t own_addr[6];
-    ble_hs_id_copy_addr(BLE_ADDR_RANDOM, own_addr, NULL);
-    printf("[DEBUG] Own BLE address: %02x:%02x:%02x:%02x:%02x:%02x\n", own_addr[5],
-           own_addr[4], own_addr[3], own_addr[2], own_addr[1], own_addr[0]);
-
     // Handle incoming messages in separate thread
     thread_create(
         receive_thread_stack,
@@ -480,23 +450,26 @@ int main(void)
         "receive_thread");
 
     // Continuously send packets
-    unsigned count = 0;
     gnrc_netif_t *netif = find_ble_netif();
     char payload[8];
     sprintf(payload, "NODE_%d", NODEID);
-    while (1) {
-        send_gnrc_packet(own_addr, netif, payload);
-        ztimer_sleep(ZTIMER_MSEC, 100);
 
-        count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-        while (count < (NODE_COUNT - 1)) {
-            printf("[WARN] connection lost, retrying\n");
-            for (int i = 0; i <= NODE_COUNT; i++) {
-                nimble_netif_close(i);
-            }
+    setup_ble_stack();
+
+    while (1)
+    {
+        unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
+
+        // Send data only if we are connected to all other nodes, otherwise keep trying to connect
+        if (count == (NODE_COUNT - 1))
+        {
+            send_gnrc_packet(own_addr, netif, payload);
+            ztimer_sleep(ZTIMER_MSEC, 100);
+        }
+        else
+        {
+            printf("[DEBUG] Waiting for mesh to form... (%u/2)\n", count);
             setup_ble_stack();
-            ztimer_sleep(ZTIMER_MSEC, 5000);
-            count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
         }
     }
 }

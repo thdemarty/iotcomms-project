@@ -37,6 +37,9 @@ NODE_COUNT ?= 3
 CFLAGS += -DNODEID=$(NODEID)
 CFLAGS += -DNODE_COUNT=$(NODE_COUNT)
 
+# Increase the default pktbuf size to be able to hold large throughput bursts of packets
+CFLAGS += -DCONFIG_GNRC_PKTBUF_SIZE=24576
+CFLAGS += -DMYNEWT_VAL_BLE_LL_TX_PWR_DBM=8
 include $(RIOTBASE)/Makefile.include
 
 
