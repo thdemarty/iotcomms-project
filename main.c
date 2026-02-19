@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/_types.h>
@@ -268,7 +269,6 @@ int send_gnrc_packet(uint8_t *src_addr, gnrc_netif_t *netif, char *payload_str)
 void *gnrc_receive_handler(void *args)
 {
     (void)args;
-    printf("[DEBUG] entered receive handler\n");
 
     msg_t msg;
     msg_init_queue(msg_queue, MSG_QUEUE_SIZE);
@@ -288,26 +288,24 @@ void *gnrc_receive_handler(void *args)
     while (1)
     {
         msg_receive(&msg);
-        // printf("[DEBUG] received msg\n");
         if (msg.type == GNRC_NETAPI_MSG_TYPE_RCV)
         {
             gnrc_pktsnip_t *pkt = msg.content.ptr;
-            gnrc_netif_hdr_t *hdr = pkt->data;
+            uint32_t timer = ztimer_now(ZTIMER_MSEC);
+            
+            gnrc_pktsnip_t *netif_snip = gnrc_pktsnip_search_type(pkt, GNRC_NETTYPE_NETIF);
+            
+            if (netif_snip == NULL) {
+                printf("[WARN] No NETIF header found in packet\n");
+                gnrc_pktbuf_release(pkt);
+                continue;
+            }
 
-            // nimble_netif_conn_foreach(NIMBLE_NETIF_L2CAP_CONNECTED, foreach_conn_callback, NULL);
-
-            // for (gnrc_pktsnip_t *s = pkt; s; s = s->next) {
-            //   printf("[DEBUG] snip type=%u size=%u\n", s->type, s->size);
-            // }
+            // gnrc_netif_hdr_t *hdr = pkt->data;
+            gnrc_netif_hdr_t *hdr = (gnrc_netif_hdr_t *)netif_snip->data;
 
             int rssi_raw = hdr->rssi;
             int lqi_raw = hdr->lqi;
-            uint32_t timer = ztimer_now(ZTIMER_MSEC);
-
-            // for (size_t i = 0; i < pkt->next->size; i++) {
-            //   printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
-            // }
-            // printf("\n");
 
             size_t data_size = pkt->next->size;
             int node_id = -1;
@@ -324,29 +322,24 @@ void *gnrc_receive_handler(void *args)
                 ble_addr[i] = ((uint8_t *)pkt->next->data)[8 + i];
             }
 
-            // Print the source BLE addr
-            // printf("[DEBUG]");
-            // for (size_t i = 0; i < 6; i++) {
-            //  printf(" %02x", ble_addr[i]);
-            //}
-            // printf("\n");
-
             int conn_handle = nimble_netif_conn_get_by_addr(ble_addr);
 
             nimble_netif_conn_t *conn;
             conn = nimble_netif_conn_get(conn_handle);
-
             rc = ble_gap_conn_rssi(conn->gaphandle, &rssi_gap);
             if (rc != 0)
             {
                 printf("[WARN] error reading gap rssi: %d for handle: %d\n", rc, conn_handle);
             }
 
-            if (rssi_raw == 0)
+            if (rssi_raw == GNRC_NETIF_HDR_NO_RSSI)
             {
                 rssi_raw = rssi_gap;
             }
-
+            if (lqi_raw == GNRC_NETIF_HDR_NO_LQI)
+            {
+                lqi_raw = 0; // LQI not available, set to 0 or some default value
+            }
             // printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
             // printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
@@ -412,32 +405,6 @@ int main(void)
     ztimer_sleep(ZTIMER_MSEC, 200);
 
     setup_ble_stack();
-
-    // Do not proceed until we have connected to all other nodes
-    // unsigned count = nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-    // while (count < (NODE_COUNT - 1))
-    //{
-    //    ztimer_sleep(ZTIMER_MSEC, 1000);
-    //    printf("[WARN] Waiting for connections... (%u/%u)\n", count,
-    //    (NODE_COUNT - 1)); printf("\t[DEBUG] L2CAP_CLIENT: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CLIENT)); printf("\t[DEBUG]
-    //    L2CAP_SERVER: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_SERVER)); printf("\t[DEBUG]
-    //    L2CAP_CONNECTED: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED));
-    //    printf("\t[DEBUG] GAP_MASTER: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_GAP_MASTER)); printf("\t[DEBUG]
-    //    GAP_SLAVE: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_GAP_SLAVE));
-    //    printf("\t[DEBUG] GAP_CONNECTED: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_GAP_CONNECTED));
-    //    printf("\t[DEBUG] ADV: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_ADV)); printf("\t[DEBUG]
-    //    CONNECTING: %u\n", nimble_netif_conn_count(NIMBLE_NETIF_CONNECTING));
-    //    printf("\t[DEBUG] UNUSED: %u\n",
-    //    nimble_netif_conn_count(NIMBLE_NETIF_UNUSED)); printf("\t[DEBUG] ANY:
-    //    %u\n", nimble_netif_conn_count(NIMBLE_NETIF_ANY)); count =
-    //    nimble_netif_conn_count(NIMBLE_NETIF_L2CAP_CONNECTED);
-    //}
 
     // Handle incoming messages in separate thread
     thread_create(
