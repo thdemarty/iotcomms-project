@@ -37,6 +37,9 @@ NODE_COUNT ?= 3
 CFLAGS += -DNODEID=$(NODEID)
 CFLAGS += -DNODE_COUNT=$(NODE_COUNT)
 
+# Set the maximum number of connections allowed by nimble
+CFLAGS += -DNIMBLE_MAX_CONN=$(NODE_COUNT)-1
+
 # Increase the default pktbuf size to be able to hold large throughput bursts of packets
 CFLAGS += -DCONFIG_GNRC_PKTBUF_SIZE=24576
 CFLAGS += -DMYNEWT_VAL_BLE_LL_TX_PWR_DBM=8
