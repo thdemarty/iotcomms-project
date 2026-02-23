@@ -301,11 +301,15 @@ void *gnrc_receive_handler(void *args)
                 continue;
             }
 
-            // gnrc_netif_hdr_t *hdr = pkt->data;
             gnrc_netif_hdr_t *hdr = (gnrc_netif_hdr_t *)netif_snip->data;
 
             int rssi_raw = hdr->rssi;
             int lqi_raw = hdr->lqi;
+
+            // for (size_t i = 0; i < pkt->next->size; i++) {
+            //   printf(" %02x", ((uint8_t *)pkt->next->data)[i]);
+            // }
+            // printf("\n");
 
             size_t data_size = pkt->next->size;
             int node_id = -1;
@@ -336,14 +340,25 @@ void *gnrc_receive_handler(void *args)
             {
                 rssi_raw = rssi_gap;
             }
+
             if (lqi_raw == GNRC_NETIF_HDR_NO_LQI)
             {
                 lqi_raw = 0; // LQI not available, set to 0 or some default value
             }
+
+            struct ble_gap_conn_desc desc;
+            rc = ble_gap_conn_find(conn->gaphandle, &desc);
+            if (rc != 0)
+            {
+                printf("[WARN] error reading gap connection: %d for handle: %d\n", rc, conn_handle);
+            }
+
+            uint16_t latency = desc.conn_latency;
+
             // printf("[DEBUG] payload as string: \"%d\"\n", node_id);
 
-            // printf("[DEBUG] NODE: %d, RSSI: %d, LQI: %d\n", node_id, rssi_raw, lqi_raw);
-            printf("[DATA] %d, %lu, %d, %d\n", node_id, timer, rssi_raw, lqi_raw);
+            // printf("[DEBUG] NODE: %d, RSSI: %d, Latency: %u\n", node_id, rssi_raw, latency);
+            printf("[DATA] %d, %lu, %d, %u\n", node_id, timer, rssi_raw, latency);
 
             // fix memory leak here
             gnrc_pktbuf_release(pkt);
