@@ -450,7 +450,7 @@ int main(void)
         }
         else
         {
-            printf("[DEBUG] Waiting for mesh to form... (%u/2)\n", count);
+            printf("[DEBUG] Waiting for mesh to form... (%u/%d)\n", count, NODE_COUNT-1);
             setup_ble_stack();
         }
     }
