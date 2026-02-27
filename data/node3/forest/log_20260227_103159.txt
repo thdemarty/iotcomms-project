@@ -1,0 +1,9 @@
+Script started on 2026-02-27 10:31:59+01:00 [COMMAND="PORT=/dev/ttyACM0 make term" TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="105" LINES="47"]
+/home/cilu/dev/riot/iotcomms-project/RIOT/dist/tools/pyterm/pyterm -p "/dev/ttyACM0" -b "115200" -ln "/tmp/pyterm-cilu" -rn "2026-02-27_10.31.59-link-quality-fingerprint-adafruit-feather-nrf52840-sense"  
+Twisted not available, please install it if you want to use pyterm's JSON capabilities
+2026-02-27 10:31:59,857 # Connect to serial port /dev/ttyACM0
+Welcome to pyterm!
+Type '/exit' to exit.
+2026-02-27 10:32:06,018 # Exiting Pyterm
+
+Script done on 2026-02-27 10:32:06+01:00 [COMMAND_EXIT_CODE="130"]

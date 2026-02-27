@@ -1,0 +1,8 @@
+Script started on 2026-02-27 10:46:30+01:00 [COMMAND="PORT=/dev/ttyACM0 make term" TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="45" LINES="47"]
+/home/cilu/dev/riot/iotcomms-project/RIOT/dist/tools/pyterm/pyterm -p "/dev/ttyACM0" -b "115200" -ln "/tmp/pyterm-cilu" -rn "2026-02-27_10.46.31-link-quality-fingerprint-adafruit-feather-nrf52840-sense"  
+Twisted not available, please install it if you want to use pyterm's JSON capabilities
+2026-02-27 10:46:31,178 # Connect to serial port /dev/ttyACM0
+2026-02-27 10:46:31,178 # could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+make: *** [/home/cilu/dev/riot/iotcomms-project/RIOT/Makefile.include:870: term] Error 2
+
+Script done on 2026-02-27 10:46:31+01:00 [COMMAND_EXIT_CODE="2"]

@@ -1,0 +1,97 @@
+Script started on 2026-02-27 10:47:53+01:00 [COMMAND="PORT=/dev/ttyACM0 make term" TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="45" LINES="47"]
+/home/cilu/dev/riot/iotcomms-project/RIOT/dist/tools/pyterm/pyterm -p "/dev/ttyACM0" -b "115200" -ln "/tmp/pyterm-cilu" -rn "2026-02-27_10.47.53-link-quality-fingerprint-adafruit-feather-nrf52840-sense"  
+Twisted not available, please install it if you want to use pyterm's JSON capabilities
+2026-02-27 10:47:53,942 # Connect to serial port /dev/ttyACM0
+Welcome to pyterm!
+Type '/exit' to exit.
+2026-02-27 10:47:56,762 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:47:56,763 # [BLEE] Advertising
+2026-02-27 10:47:59,766 # [BLEE] Stop Advertising
+2026-02-27 10:48:00,270 # [BLECONN] Advertising to peer 1 (not connected)
+2026-02-27 10:48:00,271 # [BLEE] Advertising
+2026-02-27 10:48:03,274 # [BLEE] Stop Advertising
+2026-02-27 10:48:03,779 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-27 10:48:03,783 # [BLEE] Starting connection attempt as master
+2026-02-27 10:48:06,786 # [DEBUG] Waiting for mesh to form... (1/4)
+2026-02-27 10:48:06,791 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:48:06,792 # [BLEE] Advertising
+2026-02-27 10:48:09,795 # [BLEE] Stop Advertising
+2026-02-27 10:48:10,299 # [BLECONN] Advertising to peer 1 (not connected)
+2026-02-27 10:48:10,301 # [BLEE] Advertising
+2026-02-27 10:48:13,303 # [BLEE] Stop Advertising
+2026-02-27 10:48:13,808 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-27 10:48:13,812 # [BLEE] Starting connection attempt as master
+2026-02-27 10:48:16,816 # [DEBUG] Waiting for mesh to form... (1/4)
+2026-02-27 10:48:16,820 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:48:16,822 # [BLEE] Advertising
+2026-02-27 10:48:16,896 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:48:16,904 # [BLEE] Connected as slave, handle=1 addr=c0:bb:cc:dd:ee:ff
+2026-02-27 10:48:20,326 # [BLECONN] Advertising to peer 1 (not connected)
+2026-02-27 10:48:20,327 # [BLEE] Advertising
+2026-02-27 10:48:20,340 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:48:20,341 # [BLEE] Connected as slave, handle=2 addr=c1:bb:cc:dd:ee:ff
+2026-02-27 10:48:23,832 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-27 10:48:23,836 # [BLEE] Starting connection attempt as master
+2026-02-27 10:48:25,754 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:48:26,755 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:48:26,759 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:48:38,938 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:48:39,938 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:48:39,942 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:48:41,982 # [DEBUG] NODEID is: 4
+2026-02-27 10:48:41,987 # [DEBUG] Own BLE address: ff:ee:dd:cc:bb:c4
+2026-02-27 10:48:42,191 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:48:42,193 # [BLEE] Advertising
+2026-02-27 10:48:45,196 # [BLEE] Stop Advertising
+2026-02-27 10:48:45,700 # [BLECONN] Advertising to peer 1 (not connected)
+2026-02-27 10:48:45,702 # [BLEE] Advertising
+2026-02-27 10:48:45,716 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:48:45,716 # [BLEE] Connected as slave, handle=0 addr=c1:bb:cc:dd:ee:ff
+2026-02-27 10:48:49,209 # [BLECONN] Advertising to peer 2 (not connected)
+2026-02-27 10:48:49,210 # [BLEE] Advertising
+2026-02-27 10:48:50,778 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:48:50,779 # [BLEE] Connected as slave, handle=1 addr=c2:bb:cc:dd:ee:ff
+2026-02-27 10:48:52,715 # [BLECONN] Advertising to peer 3 (not connected)
+2026-02-27 10:48:52,716 # [BLEE] Advertising
+2026-02-27 10:48:55,719 # [BLEE] Stop Advertising
+2026-02-27 10:48:56,224 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:48:56,225 # [BLEE] Advertising
+2026-02-27 10:48:58,471 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:48:58,472 # [BLEE] Connected as slave, handle=2 addr=c0:bb:cc:dd:ee:ff
+2026-02-27 10:48:59,730 # [BLECONN] Advertising to peer 3 (not connected)
+2026-02-27 10:48:59,732 # [BLEE] Advertising
+2026-02-27 10:49:01,175 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:49:02,175 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:49:02,179 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:49:05,548 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:49:06,549 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:49:06,553 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:49:08,592 # [DEBUG] NODEID is: 4
+2026-02-27 10:49:08,597 # [DEBUG] Own BLE address: ff:ee:dd:cc:bb:c4
+2026-02-27 10:49:08,801 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:49:08,803 # [BLEE] Advertising
+2026-02-27 10:49:10,217 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:49:10,225 # [BLEE] Connected as slave, handle=0 addr=c0:bb:cc:dd:ee:ff
+2026-02-27 10:49:12,308 # [BLECONN] Advertising to peer 1 (not connected)
+2026-02-27 10:49:12,310 # [BLEE] Advertising
+2026-02-27 10:49:12,315 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:49:12,321 # [BLEE] Connected as slave, handle=1 addr=c1:bb:cc:dd:ee:ff
+2026-02-27 10:49:15,814 # [BLECONN] Advertising to peer 2 (not connected)
+2026-02-27 10:49:15,816 # [BLEE] Advertising
+2026-02-27 10:49:17,989 # [BLEE] Incoming connection attempt as slave
+2026-02-27 10:49:17,990 # [BLEE] Connected as slave, handle=2 addr=c2:bb:cc:dd:ee:ff
+2026-02-27 10:49:19,321 # [BLECONN] Advertising to peer 3 (not connected)
+2026-02-27 10:49:19,322 # [BLEE] Advertising
+2026-02-27 10:49:21,457 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:49:22,458 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:49:22,462 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:49:25,287 # Serial port disconnected, waiting to get reconnected...
+2026-02-27 10:49:26,287 # Try to reconnect to /dev/ttyACM0 again...
+2026-02-27 10:49:26,291 # Reconnected to serial port /dev/ttyACM0
+2026-02-27 10:49:28,331 # [DEBUG] NODEID is: 4
+2026-02-27 10:49:28,336 # [DEBUG] Own BLE address: ff:ee:dd:cc:bb:c4
+2026-02-27 10:49:28,540 # [BLECONN] Advertising to peer 0 (not connected)
+2026-02-27 10:49:28,541 # [BLEE] Advertising
+2026-02-27 10:49:30,707 # Exiting Pyterm
+
+Script done on 2026-02-27 10:49:30+01:00 [COMMAND_EXIT_CODE="130"]
