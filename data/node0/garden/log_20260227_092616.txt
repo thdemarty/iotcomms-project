@@ -1,0 +1,38 @@
+Script started on 2026-02-27 09:26:16+01:00 [COMMAND="make term" TERM="alacritty" TTY="/dev/pts/1" COLUMNS="192" LINES="47"]
+/home/thomas/tud/ws25/iot/project/RIOT/dist/tools/pyterm/pyterm -p "/dev/ttyACM0" -b "115200" -ln "/tmp/pyterm-thomas" -rn "2026-02-27_09.26.17-link-quality-fingerprint-adafruit-feather-nrf52840-sense"  
+Twisted not available, please install it if you want to use pyterm's JSON capabilities
+2026-02-27 09:26:17,434 # Connect to serial port /dev/ttyACM0
+Welcome to pyterm!
+Type '/exit' to exit.
+2026-02-27 09:26:18,438 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,439 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,440 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,441 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,441 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,442 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,442 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,443 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,444 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,444 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,534 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,637 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,740 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,843 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:18,947 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,050 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,153 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,256 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,359 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,462 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,565 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,668 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,771 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,875 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:19,977 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:20,081 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:20,184 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:20,286 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:20,389 # [GNRC] Failed to send gnrc packet
+2026-02-27 09:26:20,429 # Exiting Pyterm
+
+Script done on 2026-02-27 09:26:20+01:00 [COMMAND_EXIT_CODE="130"]
