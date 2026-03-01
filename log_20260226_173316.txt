@@ -1,0 +1,54 @@
+Script started on 2026-02-26 17:33:16+01:00 [COMMAND="make term" TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="80" LINES="24"]
+/bin/sh: 1: arm-none-eabi-gcc: not found
+/home/aliteo/iotcomms-project/RIOT/dist/tools/pyterm/pyterm -p "/dev/ttyACM0" -b "115200" -ln "/tmp/pyterm-aliteo" -rn "2026-02-26_17.33.16-link-quality-fingerprint-adafruit-feather-nrf52840-sense"  
+Twisted not available, please install it if you want to use pyterm's JSON capabilities
+2026-02-26 17:33:17,021 # Connect to serial port /dev/ttyACM0
+2026-02-26 17:33:19,957 # [DEBUG] Waiting for mesh to form... (2/2)
+Welcome to pyterm!
+Type '/exit' to exit.
+2026-02-26 17:33:19,959 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:19,959 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:22,432 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:22,437 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:25,442 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:25,447 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:25,451 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:28,456 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:28,461 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:31,466 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:31,471 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:31,475 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:34,481 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:34,486 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:37,490 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:37,494 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:37,499 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:40,504 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:40,509 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:43,513 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:43,517 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:43,523 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:46,526 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:46,531 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:49,536 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:49,540 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:49,546 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:52,551 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:52,556 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:55,560 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:33:55,563 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:33:55,568 # [BLEE] Starting connection attempt as master
+2026-02-26 17:33:58,572 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:33:58,577 # [BLEE] Starting connection attempt as master
+2026-02-26 17:34:01,580 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:34:01,584 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:34:01,589 # [BLEE] Starting connection attempt as master
+2026-02-26 17:34:04,592 # [BLECONN] Connecting to to peer 4 (not connected)
+2026-02-26 17:34:04,598 # [BLEE] Starting connection attempt as master
+2026-02-26 17:34:07,600 # [DEBUG] Waiting for mesh to form... (2/2)
+2026-02-26 17:34:07,604 # [BLECONN] Connecting to to peer 3 (not connected)
+2026-02-26 17:34:07,610 # [BLEE] Starting connection attempt as master
+2026-02-26 17:34:08,910 # Exiting Pyterm
+make: *** [/home/aliteo/iotcomms-project/RIOT/Makefile.include:870: term] Interrupt
+
+Script done on 2026-02-26 17:34:08+01:00 [COMMAND_EXIT_CODE="130"]
