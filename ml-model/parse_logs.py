@@ -7,11 +7,11 @@ import pandas as pd
 # 1. Environment Mapping
 # ==========================================
 LOCATION_MAPPING = {
-    'bridge': 0,
+    'garden': 0,
     'forest': 1,
-    'garden': 2,
-    'lake': 3,
-    'river': 4
+    'lake': 2,
+    'river': 3,
+    'bridge': 4
 }
 
 def extract_node_id(name):
