@@ -97,3 +97,5 @@ keys/
 # Rust generated files
 target/
 Cargo.lock
+
+.venv
