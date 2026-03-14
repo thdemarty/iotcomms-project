@@ -8,6 +8,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 from dotenv import load_dotenv
+from query_script import dataframe_query
 
 # ==========================================
 # 1. Load Configurations from .env
@@ -62,7 +63,7 @@ class ResNet1D(nn.Module):
         self.in_channels = 16
         
         # Initial Convolution: (Batch, 1, FRAMESIZE) -> (Batch, 16, FRAMESIZE/2)
-        self.conv1 = nn.Conv1d(1, 16, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv1d(2, 16, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm1d(16)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
@@ -98,62 +99,79 @@ class ResNet1D(nn.Module):
 # ==========================================
 # 3. Data Processing & Framing
 # ==========================================
-def create_frames(df, target_col):
-    """Applies sliding window over RSSI values."""
+
+
+from query_script import dataframe_query # Import Justus's script
+
+def create_frames_from_query(df, target_col):
+    """Applies sliding window over BOTH timestep and rssi values."""
     step = int(FRAMESIZE * (1 - OVERLAP))
     frames, labels = [], []
     
-    # Group by env and node so windows don't cross over different physical recordings
-    for (env, node), group in df.groupby(['env_id', 'node_id']):
-        rssi_vals = group['rssi'].values
-        target_vals = group[target_col].values
-        
-        for i in range(0, len(rssi_vals) - FRAMESIZE + 1, step):
-            frames.append(rssi_vals[i : i + FRAMESIZE])
-            labels.append(target_vals[i]) # Target is identical across this specific frame
+    # We now extract two columns: timestep and rssi
+    features = df[['timestep', 'rssi']].values
+    target_vals = df[target_col].values
+    
+    for i in range(0, len(features) - FRAMESIZE + 1, step):
+        # We transpose so the shape becomes (2 channels, framesize)
+        frame_data = features[i : i + FRAMESIZE].T 
+        frames.append(frame_data)
+        labels.append(target_vals[i])
             
     return np.array(frames), np.array(labels)
 
 def load_and_prepare_data(scenario, method):
     csv_path = os.path.join(script_dir, '../data/dataset.csv')
-    print(f"Loading data from {os.path.abspath(csv_path)}...")
-    df = pd.read_csv(csv_path)
+    print(f"Loading data for Scenario {scenario}, Method {method}...")
     
-    # 1. SCENARIO CONFIGURATION
+    all_nodes = [0, 1, 2, 3, 4]
+    all_envs = [0, 1, 2, 3, 4]
+
+    # 1. Determine Target Column and Classes
     if scenario == 1:
-        print("Scenario I: Classifying Environments")
         target_col = 'env_id'
         num_classes = NUM_ENVS
-        filter_col = 'node_id' # Leave a NODE out to test unseen data
-    else:
-        print("Scenario II: Classifying Nodes")
-        target_col = 'node_id'
+    else: # Scenario 2
+        target_col = 'tx_node_id'
         num_classes = NUM_DEVICES
-        filter_col = 'env_id'  # Leave an ENVIRONMENT out to test unseen data
 
-    # 2. METHOD CONFIGURATION
+    # 2. Query Data using Justus's script
     if method == 1:
-        print(f"Method 1: Random {int((1-TEST_SIZE)*100)}/{int(TEST_SIZE*100)} split from same dataset")
-        X, y = create_frames(df, target_col)
+        # Standard Split: Get all data
+        df = dataframe_query(csv_path, all_nodes, all_envs)
+        
+        # Ensure target column exists (dataframe_query might drop them)
+        original_df = pd.read_csv(csv_path)
+        if target_col not in df.columns:
+            df[target_col] = original_df[target_col]
+        
+        X, y = create_frames_from_query(df, target_col)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE)
         
     elif method == 2:
-        print(f"Method 2: Unseen data. Leaving out {filter_col} == {FILTER_ID} for testing")
-        df_train = df[df[filter_col] != FILTER_ID]
-        df_test = df[df[filter_col] == FILTER_ID]
+        # Leave-one-out: Train on others, test on FILTER_ID
+        train_nodes = [n for n in all_nodes if n != FILTER_ID]
         
-        X_train, y_train = create_frames(df_train, target_col)
-        X_test, y_test = create_frames(df_test, target_col)
+        df_train = dataframe_query(csv_path, train_nodes, all_envs)
+        df_test = dataframe_query(csv_path, [FILTER_ID], all_envs)
         
-        if len(X_test) == 0:
-            raise ValueError(f"Error: No testing data found for {filter_col} == {FILTER_ID}. Check your FILTER_ID in .env")
+        # Re-attach target labels via merge
+        orig = pd.read_csv(csv_path)
+        # Note: adjust merge keys if Justus's query script changed column names
+        df_train = df_train.merge(orig[['tx_node_id', 'timestamp', 'env_id']], 
+                                 left_on=['tx_node_id', 'timestep'], 
+                                 right_on=['tx_node_id', 'timestamp'])
+        df_test = df_test.merge(orig[['tx_node_id', 'timestamp', 'env_id']], 
+                                left_on=['tx_node_id', 'timestep'], 
+                                right_on=['tx_node_id', 'timestamp'])
 
-    print(f"Generated {len(X_train)} Training frames and {len(X_test)} Testing frames.\n")
+        X_train, y_train = create_frames_from_query(df_train, target_col)
+        X_test, y_test = create_frames_from_query(df_test, target_col)
 
-    # 3. Convert to PyTorch Tensors: Shape -> (Batch, Channels=1, Framesize)
-    X_train_t = torch.tensor(X_train, dtype=torch.float32).unsqueeze(1)
+    # 3. Convert to PyTorch Tensors
+    X_train_t = torch.tensor(X_train, dtype=torch.float32)
     y_train_t = torch.tensor(y_train, dtype=torch.long)
-    X_test_t = torch.tensor(X_test, dtype=torch.float32).unsqueeze(1)
+    X_test_t = torch.tensor(X_test, dtype=torch.float32)
     y_test_t = torch.tensor(y_test, dtype=torch.long)
 
     train_loader = DataLoader(TensorDataset(X_train_t, y_train_t), batch_size=BATCH_SIZE, shuffle=True)
