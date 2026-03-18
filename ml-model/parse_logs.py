@@ -43,9 +43,9 @@ def parse_txt_file(filepath, folder_node_id, env_id):
                     rssi = int(parts[2].strip())
                     
                     parsed_data.append({
-                        'node_id': folder_node_id, 
+                        'receiver_id': folder_node_id, 
                         'env_id': env_id,          
-                        'tx_node_id': tx_node_id,  
+                        'sender_id': tx_node_id,  
                         'timestamp': timestamp,
                         'rssi': rssi
                     })
@@ -105,7 +105,7 @@ def main():
         final_df = pd.DataFrame(all_rows)
         
         # Sort chronologically
-        final_df.sort_values(by=['env_id', 'node_id', 'timestamp'], inplace=True)
+        final_df.sort_values(by=['sender_id', 'env_id'], inplace=True)
         
         os.makedirs(os.path.dirname(output_csv), exist_ok=True)
         final_df.to_csv(output_csv, index=False)

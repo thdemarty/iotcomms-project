@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 
 # node:y, env:x
 
+# not quite correct anymore
+
 data = np.array([[[[24754, 24844, 24949], [1040302, 1040305, 1040332]],
 [[57505, 61495, 166490], [1409140, 1409170, 1409200]],
 [[21930, 22050, 22140], [732630, 732660, 732870]],
@@ -37,7 +39,7 @@ node4col = ['#9e38a3', '#b66aba']
 nodecols = [node0col, node1col, node2col, node3col, node4col]
 nodemarkers = ["s", "o", "^", "P", "*"]
 
-environments = ['bridge', 'forest', 'garden', 'lake', 'river']
+environments = ['garden', 'forest', 'lake', 'river', 'bridge']
 labeled = [False, False, False, False, False]
 
 for n, node in enumerate(data):
