@@ -51,6 +51,65 @@ TODO: add precise distances per environment
 
 
 ## Machine Learning Analysis
-TODO
-### Models & Parameters
-### Results
+
+Machine Learning models were trained to get correlations between sender or environment and the signals rssi.
+Therefore 2 scenarios had to be analysed:
+
+- Scenario 1: The goal is to uniquely identify the deployment environments. For this scenario, mix all the RSSI time series belonging to the same environments.
+- Scenario 2: The goal is to uniquely identify the sensor nodes. For this scenario, mix all the RSSI time series belonging to the same sensor node.
+
+Also the data had to be slpit into training and testing data.
+
+> [!IMPORTANT]  
+> Written for scenario 2. For scenario 1, exchange Node and Environment.
+
+- Method 1: Mix all datapoints sent from Node X and do it for every Node. Use say 75% for training and the rest 25% for testing. 
+- Method 2: Mix the data from 4 of the environments belonging to Node X and do it for every Node. Use this for training and the remaining fifth environment for testing.
+
+### CNN
+
+The CNN is a 1D convolutional neural network that consists of two convolutional blocks, each comprising a 1D convolution with kernel size 5 and padding 2, followed by ReLU activation and 1D max pooling with a stride of 2. The feature maps are then flattened and passed through a fully connected layer with ReLU activation and 30% dropout, followed by a final linear layer mapping to the output classes.
+
+```
+self.net = nn.Sequential(
+    nn.Conv1d(1, 16, kernel_size=5, padding=2),
+    nn.ReLU(),
+    nn.MaxPool1d(2),
+
+    nn.Conv1d(16, 32, kernel_size=5, padding=2),
+    nn.ReLU(),
+    nn.MaxPool1d(2),
+
+    nn.Flatten(),
+
+    nn.Linear((input_size // 4) * 32, 128),
+    nn.ReLU(),
+    nn.Dropout(0.3),
+    nn.Linear(128, num_classes)
+)
+```
+
+Additionaly giving the model timesteps (how much time passed since the last packet) in `train_cnn_timestep.py` proved to be ineffective and rather removed learning altogether. So it was not further pursued.
+
+#### Train & Test
+
+For training the data was prepared to be **differentiated and normalized** from 0 to 1.
+This data was split into **frames of 100** consecutive datapoints with an **overlap of 50%**.
+The **batch size** was set to 64 and then decreased to **32** in the pursuit of getting method 2 to work (which helped a little bit).
+Training was prolonged from 20 to **40 epochs** with a minor effect on method 1 and no real effect on method 2, since there was almost no learning effect.
+The **learning rate** was changed from 1e-3 to in the end **5e-4**.
+
+Scenarios 1 and 2 were trained with methods 1 and 2 respectively.
+Also for method 2, all ids were left out for testing once.
+
+#### Results
+Likewise, you r report should have confusion matrices as well as performance tables F-score, accuracy, etc.
+
+The results for CNN can be found in its entirety -> [link to CNN results](ml-model/CNN_resulst.md)
+
+What can be seen is, that with a classic split of 75%/25% there is a diagonal forming on the confusion matrix for both scenarios and the accuracy is far above 20% (20% means basically guessing, since 100%/5 classes=20%). So the characteristics of the rssi per node and environment are something that was learned and is therefore learnable and distinct. However the minor amount of learning for method 2 shows, that the network has to see every node and every environment at least a few times for classification. So the nodes behave differently in environments and vice versa. But some leaving out some of the id's performes better than ohers, leading to some of the diagonal in the confusion matrix forming and accuracy above 20% at around 30%. That shows that some level of abstraction can be made overall, but is not reliable.
+
+### ResNet
+
+
+### Comparison
