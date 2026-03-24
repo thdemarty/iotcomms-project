@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix
 from sklearn.utils import shuffle
+from sklearn.metrics import f1_score
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -20,9 +21,9 @@ import seaborn as sns
 # =========================
 FRAME_SIZE = 100
 OVERLAP = 0.5
-BATCH_SIZE = 64
-EPOCHS = 20
-LR = 1e-3
+BATCH_SIZE = 32
+EPOCHS = 40
+LR = 5e-4
 
 file_pattern = r"/ml-model/.*\.py$"
 
@@ -172,7 +173,12 @@ def train_model(X_train, y_train, X_test, y_test):
     y_true, y_pred = get_predictions(model, test_loader, device)
     cm = confusion_matrix(y_true, y_pred)
     labels = list(np.unique(y_true))
-    plot_confusion(cm, labels, f"Confusion_s{SCENARIO}_m{METHOD}")
+    plot_confusion(cm, labels, f"Confusionmatrix")
+
+    # f-score per label
+    f1_per_class = f1_score(y_true, y_pred, average=None)
+    for i, f1 in enumerate(f1_per_class):
+        print(f"Class {labels[i]} F1-score: {f1:.4f}")
 
     return model
 
@@ -219,13 +225,25 @@ def get_predictions(model, loader, device):
 # PLOTTING FUNCTIONS
 # =========================
 def plot_confusion(cm, labels, title):
+    # define labels
+    if SCENARIO == 1:
+        # map numeric environment labels to names
+        env_map = {0: "garden", 1: "forest", 2: "lake", 3: "river", 4: "bridge"}
+        labels = [env_map[i] for i in labels]
+    else:
+        # Scenario 2: prepend "node " to numeric labels
+        labels = ["node " + str(i) for i in labels]
+
     plt.figure(figsize=(6, 5))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=labels, yticklabels=labels)
     plt.xlabel("Predicted")
     plt.ylabel("True")
     plt.title(title)
     plt.tight_layout()
-    filename = f"cnn_confusionmatrix_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
+    if METHOD==2:
+        filename = f"cnn_confusionmatrix_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}_id{ID}.png"
+    else:
+        filename = f"cnn_confusionmatrix_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
     path = re.sub(file_pattern, "/ml-model/saves/" + filename, __file__)
     plt.savefig(path, dpi=300)
     plt.show()
@@ -245,7 +263,10 @@ def plot_training_curve(epoch_data):
     ax[1].legend()
     ax[1].grid(True)
     plt.tight_layout()
-    filename = f"cnn_trainingcurve_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
+    if METHOD==2:
+        filename = f"cnn_trainingcurve_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}_id{ID}.png"
+    else:
+        filename = f"cnn_trainingcurve_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
     path = re.sub(file_pattern, "/ml-model/saves/" + filename, __file__)
     plt.savefig(path, dpi=300)
     plt.show()
@@ -255,7 +276,10 @@ def plot_training_curve(epoch_data):
 # SAVE WEIGHTS
 # =========================
 def save_model(model):
-    filename = f"cnn_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.pth"
+    if METHOD==2:
+        filename = f"cnn_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}_id{ID}.pth"
+    else:
+        filename = f"cnn_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.pth"
     path = re.sub(file_pattern, "/ml-model/saves/" + filename, __file__)
 
     torch.save(model.state_dict(), path)
@@ -287,10 +311,6 @@ if __name__ == "__main__":
     # BATCH_SIZE = args.batch_size
     # EPOCHS = args.epochs
     # LR = args.lr
-
-    LR = 5e-4
-    BATCH_SIZE = 32
-    EPOCHS = 40 # 40–50
 
     print(FRAME_SIZE, OVERLAP, BATCH_SIZE, EPOCHS, LR)
     print(type(FRAME_SIZE), type(OVERLAP), type(BATCH_SIZE), type(EPOCHS), type(LR))
