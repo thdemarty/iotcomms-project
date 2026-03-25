@@ -23,7 +23,7 @@ class ResNet1D(nn.Module):
     def __init__(self, num_classes):
         super(ResNet1D, self).__init__()
         self.in_channels = 16
-        self.conv1 = nn.Conv1d(1, 16, kernel_size=7, stride=2, padding=3, bias=False)
+        self.conv1 = nn.Conv1d(2, 16, kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm1d(16); self.relu = nn.ReLU(inplace=True); self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
         self.layer1, self.layer2, self.layer3 = self._make_layer(16, 2, 1), self._make_layer(32, 2, 2), self._make_layer(64, 2, 2)
         self.avgpool = nn.AdaptiveAvgPool1d(1); self.fc = nn.Linear(64, num_classes)
@@ -39,12 +39,23 @@ class ResNet1D(nn.Module):
 def create_frames(df, target_col):
     step = int(FRAMESIZE * (1 - OVERLAP))
     frames, labels = [], []
-    features = df['rssi'].values
+    
+    # Check which time column name exists
+    time_col = 'timestamp' if 'timestamp' in df.columns else 'timestep'
+    
+    if time_col not in df.columns:
+        raise KeyError(f"Neither 'timestamp' nor 'timestep' found in CSV. Columns are: {df.columns.tolist()}")
+
+    # Extract both columns for the 2-channel input
+    features = df[[time_col, 'rssi']].values
     target_vals = df[target_col].values
+    
     for i in range(0, len(features) - FRAMESIZE + 1, step):
-        frames.append(features[i : i + FRAMESIZE])
+        # Transpose so shape is (2, FRAMESIZE)
+        frames.append(features[i : i + FRAMESIZE].T)
         labels.append(target_vals[i])
-    return np.expand_dims(np.array(frames), 1), np.array(labels)
+            
+    return np.array(frames), np.array(labels)
 def load_and_prepare_data(scenario, method):
     csv_path = os.path.join(script_dir, '../data/dataset.csv')
     
@@ -95,7 +106,7 @@ def train_model(scenario, method):
             inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
             optimizer.zero_grad(); criterion(model(inputs), labels).backward(); optimizer.step()
         print(f"Epoch {epoch+1} complete")
-    os.makedirs("saves", exist_ok=True); torch.save(model.state_dict(), f"saves/resnet_S{scenario}_M{method}.pth")
+    os.makedirs("saves", exist_ok=True); torch.save(model.state_dict(), f"saves/resnet_timestep_S{scenario}_M{method}.pth")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(); parser.add_argument("--scenario", type=int); parser.add_argument("--method", type=int)
