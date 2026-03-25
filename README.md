@@ -52,13 +52,13 @@ TODO: add precise distances per environment
 
 ## Machine Learning Analysis
 
-Machine Learning models were trained to get correlations between sender or environment and the signals rssi.
+Machine Learning models were trained to get correlations between sender or environment and the signals RSSI.
 Therefore 2 scenarios had to be analysed:
 
 - Scenario 1: The goal is to uniquely identify the deployment environments. For this scenario, mix all the RSSI time series belonging to the same environments.
 - Scenario 2: The goal is to uniquely identify the sensor nodes. For this scenario, mix all the RSSI time series belonging to the same sensor node.
 
-Also the data had to be slpit into training and testing data.
+Also the data had to be split into training and testing data.
 
 > [!IMPORTANT]  
 > Written for scenario 2. For scenario 1, exchange Node and Environment.
@@ -89,7 +89,7 @@ self.net = nn.Sequential(
 )
 ```
 
-Additionaly giving the model timesteps (how much time passed since the last packet) in `train_cnn_timestep.py` proved to be ineffective and rather removed learning altogether. So it was not further pursued.
+Additionally giving the model timesteps (how much time passed since the last packet) in `train_cnn_timestep.py` proved to be ineffective and rather removed learning altogether. So it was not further pursued.
 
 #### Train & Test
 
@@ -100,14 +100,25 @@ Training was prolonged from 20 to **40 epochs** with a minor effect on method 1 
 The **learning rate** was changed from 1e-3 to in the end **5e-4**.
 
 Scenarios 1 and 2 were trained with methods 1 and 2 respectively.
-Also for method 2, all ids were left out for testing once.
+Also for method 2, all IDs were left out for testing once.
 
 #### Results
-Likewise, you r report should have confusion matrices as well as performance tables F-score, accuracy, etc.
 
 The results for CNN can be found in its entirety -> [link to CNN results](ml-model/CNN_resulst.md)
 
-What can be seen is, that with a classic split of 75%/25% there is a diagonal forming on the confusion matrix for both scenarios and the accuracy is far above 20% (20% means basically guessing, since 100%/5 classes=20%). So the characteristics of the rssi per node and environment are something that was learned and is therefore learnable and distinct. However the minor amount of learning for method 2 shows, that the network has to see every node and every environment at least a few times for classification. So the nodes behave differently in environments and vice versa. But some leaving out some of the id's performes better than ohers, leading to some of the diagonal in the confusion matrix forming and accuracy above 20% at around 30%. That shows that some level of abstraction can be made overall, but is not reliable.
+With a classic split of 75% / 25% (training / testing) there is a diagonal forming on the confusion matrix for both scenarios and the accuracy is far above 20% (where 20% means basically guessing, since 100% / 5 classes = 20%).
+Our general goal of this project was to practically investigate the existence of device imperfection in Bluetooth Low Energy radios and whether they lead
+to the unique identification of individual sensor platforms and if the influence of the environment on the transmission can also be classified.
+This thesis is proven as the characteristics of the RSSI per node and environment are something that was learned.
+
+However, with method 2 it becomes apparent that the CNN does need to see the signal for all nodes and all environments during training.
+Otherwise, a new deployment area or a new node is not well recognized - or not at all.
+But leaving out some of the IDs performs better than others, leading an accuracy of above 20% at around 30%.
+That shows that generalization of the RSSI patterns for the CNN is not reliable.
+
+Other factors may also contribute to this unreliability.
+For example the direction of the boards played a huge role in connection losses during our experiments.
+So variation on the pointing of the boards during one measurment and from measurement to measurement could impact the results.
 
 ### ResNet
 
