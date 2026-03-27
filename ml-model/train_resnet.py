@@ -270,7 +270,7 @@ def plot_confusion(cm, labels, title):
         filename = f"resnet_confusionmatrix_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
     path = re.sub(file_pattern, "/ml-model/saves/" + filename, __file__)
     plt.savefig(path, dpi=300)
-    plt.show()
+    # plt.show()
 
 
 def plot_training_curve(epoch_data):
@@ -293,7 +293,7 @@ def plot_training_curve(epoch_data):
         filename = f"resnet_trainingcurve_s{SCENARIO}_m{METHOD}_f{FRAME_SIZE}_o{int(OVERLAP*100)}.png"
     path = re.sub(file_pattern, "/ml-model/saves/" + filename, __file__)
     plt.savefig(path, dpi=300)
-    plt.show()
+    # plt.show()
 
 
 # =========================
