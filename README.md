@@ -138,7 +138,7 @@ The ResNet (Residual Network) architecture was implemented to evaluate if skip c
 
 #### Train & Test
 
-Data preparation for the ResNet model utilized raw RSSI values to maintain physical signal characteristics. Similar to the CNN, the data was processed into frames of 100 consecutive datapoints with an overlap of 50%. The model was trained for 20 epochs using a batch size of 32 and the Adam optimizer with a learning rate of 1e-3.
+Data preparation for the ResNet model utilized RSSI values processed into frames of 100 consecutive datapoints with an overlap of 50%. The model was trained for 20 epochs using a batch size of 32 and the Adam optimizer with a learning rate of 1e-3.
 
 Experiments were conducted for both Scenario 1 and Scenario 2 using Methods 1 and 2. Additionally, a multi-channel variation was tested by stacking Timestamps with RSSI values, though this configuration showed a decrease in generalization performance.
 
