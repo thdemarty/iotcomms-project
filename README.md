@@ -66,6 +66,8 @@ Also the data had to be split into training and testing data.
 - Method 1: Mix all datapoints sent from Node X and do it for every Node. Use say 75% for training and the rest 25% for testing. 
 - Method 2: Mix the data from 4 of the environments belonging to Node X and do it for every Node. Use this for training and the remaining fifth environment for testing.
 
+We tested several overlaps and frame sizes but ultimately settled on 100 samples per frame with a 50-sample overlap due to only minor differences.
+
 ### CNN
 
 The CNN is a 1D convolutional neural network that consists of two convolutional blocks, each comprising a 1D convolution with kernel size 5 and padding 2, followed by ReLU activation and 1D max pooling with a stride of 2. The feature maps are then flattened and passed through a fully connected layer with ReLU activation and 30% dropout, followed by a final linear layer mapping to the output classes.
