@@ -5,15 +5,16 @@ mkdir -p saves
 
 # Output file for results
 RESULT_FILE="results.txt"
-echo "RESULTS" > $RESULT_FILE
-echo "Generated on: $(date)" >> $RESULT_FILE
-echo "------------------------------------------------" >> $RESULT_FILE
+echo "RESULTS" | tee $RESULT_FILE
+echo "Generated on: $(date)" | tee -a $RESULT_FILE
+echo "------------------------------------------------" | tee -a $RESULT_FILE
 
 # Function to run training and evaluation
 run_experiment() {
     MODEL=$1 # "CNN" or "ResNet"
     SCENARIO=$2
     METHOD=$3
+    ID=$4
 
     if [ "$MODEL" = "CNN" ]; then
         SCRIPT="train_cnn.py"
@@ -21,9 +22,14 @@ run_experiment() {
         SCRIPT="train_resnet.py"
     fi
 
-    echo "Running: $MODEL | Scenario $SCENARIO | Method $METHOD"
-    python "$SCRIPT" --scenario "$SCENARIO " --method "$METHOD" | tee -a $RESULT_FILE
-    echo "------------------------------------------------" >> $RESULT_FILE
+    if [ "$ID" = '' ]; then
+        echo "Running: $MODEL | Scenario $SCENARIO | Method $METHOD" | tee -a $RESULT_FILE
+        python "$SCRIPT" --scenario "$SCENARIO" --method "$METHOD" | tee -a $RESULT_FILE
+    else
+        echo "Running: $MODEL | Scenario $SCENARIO | Method $METHOD | ID $ID" | tee -a $RESULT_FILE
+        python "$SCRIPT" --scenario "$SCENARIO" --method "$METHOD" --id "$ID" | tee -a $RESULT_FILE
+    fi
+    echo "------------------------------------------------" | tee -a $RESULT_FILE
 }
 
 # --- EXECUTION LOOP ---
@@ -32,9 +38,9 @@ run_experiment() {
 
 for model in "CNN" "ResNet"; do
     for s in 1 2; do
-        for m in 1 2; do
-            # Run Standard RSSI
-            run_experiment $model $s $m "false"
+        run_experiment $model $s 1
+        for ID in {0..4}; do
+            run_experiment $model $s 2 $ID
         done
     done
 done
