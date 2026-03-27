@@ -122,5 +122,41 @@ So variation on the pointing of the boards during one measurment and from measur
 
 ### ResNet
 
+The ResNet (Residual Network) architecture was implemented to evaluate if skip connections and a deeper structure could improve generalization across environments and nodes. The model utilizes a 1D ResNet design featuring an initial convolutional layer followed by three residual blocks. Each block contains two convolutional layers with batch normalization and ReLU activation, utilizing a shortcut connection to mitigate the vanishing gradient problem. An adaptive average pooling layer ensures a consistent output shape before the final fully connected layer.
+
+    self.conv1 = nn.Conv1d(input_channels, 16, kernel_size=7, stride=2, padding=3, bias=False)
+    self.bn1 = nn.BatchNorm1d(16)
+    self.relu = nn.ReLU(inplace=True)
+    self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
+
+    self.layer1 = self._make_layer(16, 2, stride=1)
+    self.layer2 = self._make_layer(32, 2, stride=2)
+    self.layer3 = self._make_layer(64, 2, stride=2)
+
+    self.avgpool = nn.AdaptiveAvgPool1d(1)
+    self.fc = nn.Linear(64, num_classes)
+
+#### Train & Test
+
+Data preparation for the ResNet model utilized raw RSSI values to maintain physical signal characteristics. Similar to the CNN, the data was processed into frames of 100 consecutive datapoints with an overlap of 50%. The model was trained for 20 epochs using a batch size of 32 and the Adam optimizer with a learning rate of 1e-3.
+
+Experiments were conducted for both Scenario 1 and Scenario 2 using Methods 1 and 2. Additionally, a multi-channel variation was tested by stacking Timestamps with RSSI values, though this configuration showed a decrease in generalization performance.
+
+#### Results
+
+The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/results.md).
+
+In Method 1 (Random Split), the ResNet achieved a weighted average F1-score of 50.41% for environment classification, demonstrating high performance in specific environments such as the River (F1-score of 0.81).
+
+In Method 2 (Leave-One-Out), the model maintained a weighted average F1-score of 44.31%. While there is a performance gap compared to Method 1, the relative stability of the scores indicates that the residual architecture is capable of extracting environmental features that persist across different hardware deployments.
+
+In Scenario 2, Method 2, the model returned 0% accuracy as expected, confirming that the model cannot identify a specific Node ID that was entirely excluded from the training set.
 
 ### Comparison
+
+A comparative analysis of the two architectures reveals distinct characteristics:
+
+* **Environment Classification:** The CNN architecture generally demonstrated higher average performance during Method 1 (Random Split). However, the ResNet showed superior feature extraction in high-interference environments, specifically the River, where it outperformed the CNN's F1-score significantly.
+* **Generalization Stability:** The ResNet architecture exhibited more stable performance metrics when transitioning from Method 1 to Method 2. While the CNN scores showed higher volatility when facing unseen nodes, the ResNet's residual blocks provided more consistent classification across different deployment nodes.
+* **Input Features:** Both models confirmed that RSSI is the most reliable feature for these classification tasks. The inclusion of temporal data (Timesteps) was found to be detrimental to the accuracy of both models, suggesting that the networks were overfitting to packet timing rather than learning signal physics.
+* **Application Suitability:** For large-scale environmental mapping where the model must generalize to new hardware in known environments, the ResNet's stability is advantageous. For localized node identification where computational overhead is a constraint, the CNN provides a highly effective and lower-complexity solution.
