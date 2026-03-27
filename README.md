@@ -118,7 +118,7 @@ That shows that generalization of the RSSI patterns for the CNN is not reliable.
 
 Other factors may also contribute to this unreliability.
 For example the direction of the boards played a huge role in connection losses during our experiments.
-So variation on the pointing of the boards during one measurment and from measurement to measurement could impact the results.
+So variation on the pointing of the boards during one measurement and from measurement to measurement could impact the results.
 
 ### ResNet
 
