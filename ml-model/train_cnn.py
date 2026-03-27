@@ -5,9 +5,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report, f1_score
 from sklearn.utils import shuffle
-from sklearn.metrics import f1_score
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -175,10 +174,23 @@ def train_model(X_train, y_train, X_test, y_test):
     labels = list(np.unique(y_true))
     plot_confusion(cm, labels, f"Confusionmatrix")
 
-    # f-score per label
-    f1_per_class = f1_score(y_true, y_pred, average=None)
-    for i, f1 in enumerate(f1_per_class):
-        print(f"Class {labels[i]} F1-score: {f1:.4f}")
+    # 5. Metrics (Thomas's F-score requirement)
+    f1 = f1_score(y_true, y_pred, average='weighted')
+
+    # define labels
+    if SCENARIO == 1:
+        # map numeric environment labels to names
+        env_map = {0: "garden", 1: "forest", 2: "lake", 3: "river", 4: "bridge"}
+        labels = [env_map[i] for i in labels]
+    else:
+        # Scenario 2: prepend "node " to numeric labels
+        labels = ["node " + str(i) for i in labels]
+    
+    print("-" * 40)
+    print(f"Accuracy:  {acc * 100:.2f}%")
+    print(f"F-Score:   {f1 * 100:.2f}%")
+    print("-" * 40)
+    print(classification_report(y_true, y_pred, target_names=labels))
 
     return model
 
