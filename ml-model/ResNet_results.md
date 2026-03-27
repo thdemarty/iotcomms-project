@@ -1,15 +1,15 @@
 # ResNet Model: Final Evaluation Results
 
-This document presents the results for the **1D ResNet** architecture. Following the consensus of the project team, all RSSI values were processed as raw data (unnormalized) to preserve the physical signal characteristics.
+This document presents the performance metrics for the 1D ResNet architecture. All experiments were conducted using the same dataset as the CNN models to ensure a controlled comparison.
 
 ---
 
 ## Scenario 1: Environment Prediction
-**Objective:** Categorize the signal location into one of five environments: **Bridge, Forest, Garden, Lake, and River**.
+**Objective:** Categorize the signal location into one of five environments: Bridge, Forest, Garden, Lake, and River.
 
 ### Method 1: Random Split
 * **Overall Accuracy:** 51.71%
-* **Overall F-Score:** 50.41%
+* **Weighted Average F1-Score:** 50.41%
 
 | Class | Precision | Recall | F1-Score | Support |
 | :--- | :--- | :--- | :--- | :--- |
@@ -17,14 +17,15 @@ This document presents the results for the **1D ResNet** architecture. Following
 | **Forest** | 0.38 | 0.54 | 0.44 | 1718 |
 | **Garden** | 0.46 | 0.39 | 0.42 | 1448 |
 | **Lake** | 0.36 | 0.21 | 0.26 | 1386 |
-| **River** | 0.75 | 0.88 | **0.81** | 1680 |
+| **River** | 0.75 | 0.88 | 0.81 | 1680 |
 
 **Visual Analysis:**
+![Training Curves](saves/resnet_S1_M1_curves.png)
 ![Confusion Matrix S1 M1](saves/CM_S1_M1_RSSI.png)
 
 ### Method 2: Leave-One-Out (Generalization to New Nodes)
 * **Overall Accuracy:** 46.16%
-* **Overall F-Score:** 44.31%
+* **Weighted Average F1-Score:** 44.31%
 
 | Class | Precision | Recall | F1-Score | Support |
 | :--- | :--- | :--- | :--- | :--- |
@@ -32,9 +33,10 @@ This document presents the results for the **1D ResNet** architecture. Following
 | **Forest** | 0.39 | 0.21 | 0.28 | 1303 |
 | **Garden** | 0.22 | 0.18 | 0.20 | 1110 |
 | **Lake** | 0.29 | 0.43 | 0.35 | 1073 |
-| **River** | 0.72 | 0.91 | **0.81** | 1274 |
+| **River** | 0.72 | 0.91 | 0.81 | 1274 |
 
 **Visual Analysis:**
+![Training Curves](saves/resnet_S1_M2_curves.png)
 ![Confusion Matrix S1 M2](saves/CM_S1_M2_RSSI.png)
 
 ---
@@ -44,7 +46,7 @@ This document presents the results for the **1D ResNet** architecture. Following
 
 ### Method 1: Random Split
 * **Overall Accuracy:** 29.84%
-* **Overall F-Score:** 28.92%
+* **Weighted Average F1-Score:** 28.92%
 
 | Class | Precision | Recall | F1-Score | Support |
 | :--- | :--- | :--- | :--- | :--- |
@@ -55,15 +57,16 @@ This document presents the results for the **1D ResNet** architecture. Following
 | **Node 4** | 0.28 | 0.37 | 0.32 | 1484 |
 
 **Visual Analysis:**
+![Training Curves](saves/resnet_S2_M1_curves.png)
 ![Confusion Matrix S2 M1](saves/CM_S2_M1_RSSI.png)
 
 ---
 
 ## Technical Comparison: CNN vs. ResNet
 
-Based on the CNN results provided by the team and the ResNet evaluation, the following conclusions have been reached:
+A comparative analysis between the CNN and ResNet architectures yields the following observations:
 
-1.  **Feature Extraction Performance:** Both architectures demonstrate optimal performance within the **River** environment. The ResNet achieved a significantly higher F1-score (**0.81**) compared to the CNN's **0.67**, indicating that residual blocks are more effective at identifying the distinct multi-path RSSI features characteristic of riparian environments.
-2.  **Generalization Stability:** The CNN's F1-scores showed high volatility in Method 2 testing. In contrast, the ResNet demonstrated superior stability; for instance, the **River** F1-score remained constant at **0.81** when generalizing to a previously unseen node.
-3.  **Temporal Feature Analysis:** Experimental results for the **ResNet + Timestep** configuration showed a marked decrease in performance (28–32% accuracy). This validates the decision to prioritize **RSSI Only** as the primary feature, as temporal data appears to introduce noise rather than actionable spatial information.
-4.  **Project Recommendation:** It is recommended that the ResNet architecture be utilized for **Environment Mapping** due to its robust generalization capabilities. The standard CNN architecture remains a viable, lower-complexity alternative for localized **Node Verification** tasks where computational efficiency is prioritized.
+1.  **Baseline Performance (Scenario 1, Method 1):** The CNN architecture demonstrates high performance in the initial random split environment classification. While ResNet shows high recall in specific classes like the River environment, the CNN maintains a higher weighted average F1-score across all categories for this method.
+2.  **Architecture Specifics:** The ResNet architecture utilizes residual blocks to mitigate the vanishing gradient problem, which is beneficial for identifying specific signal patterns in certain environments. However, the CNN remains highly effective for general classification tasks across the broader dataset.
+3.  **Generalization (Scenario 1, Method 2):** ResNet demonstrates stability when tested on unseen nodes, maintaining a Weighted Average F1-score of 44.31%. This indicates the architecture's ability to learn environmental features that generalize across different hardware deployments.
+4.  **Temporal Features:** Experimental results for the ResNet + Timestep configuration showed a decrease in performance. Consequently, the primary evaluation focuses on signal-based features to ensure the models are classifying based on environmental characteristics rather than packet timing.
