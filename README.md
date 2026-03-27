@@ -124,17 +124,19 @@ So variation on the pointing of the boards during one measurment and from measur
 
 The ResNet (Residual Network) architecture was implemented to evaluate if skip connections and a deeper structure could improve generalization across environments and nodes. The model utilizes a 1D ResNet design featuring an initial convolutional layer followed by three residual blocks. Each block contains two convolutional layers with batch normalization and ReLU activation, utilizing a shortcut connection to mitigate the vanishing gradient problem. An adaptive average pooling layer ensures a consistent output shape before the final fully connected layer.
 
-    self.conv1 = nn.Conv1d(input_channels, 16, kernel_size=7, stride=2, padding=3, bias=False)
-    self.bn1 = nn.BatchNorm1d(16)
-    self.relu = nn.ReLU(inplace=True)
-    self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
+```python
+self.conv1 = nn.Conv1d(input_channels, 16, kernel_size=7, stride=2, padding=3, bias=False)
+self.bn1 = nn.BatchNorm1d(16)
+self.relu = nn.ReLU(inplace=True)
+self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
 
-    self.layer1 = self._make_layer(16, 2, stride=1)
-    self.layer2 = self._make_layer(32, 2, stride=2)
-    self.layer3 = self._make_layer(64, 2, stride=2)
+self.layer1 = self._make_layer(16, 2, stride=1)
+self.layer2 = self._make_layer(32, 2, stride=2)
+self.layer3 = self._make_layer(64, 2, stride=2)
 
-    self.avgpool = nn.AdaptiveAvgPool1d(1)
-    self.fc = nn.Linear(64, num_classes)
+self.avgpool = nn.AdaptiveAvgPool1d(1)
+self.fc = nn.Linear(64, num_classes)
+```
 
 #### Train & Test
 
@@ -144,7 +146,7 @@ Experiments were conducted for both Scenario 1 and Scenario 2 using Methods 1 an
 
 #### Results
 
-The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/results.md).
+The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/ResNet_results.md).
 
 In Method 1 (Random Split), the ResNet achieved a weighted average F1-score of 50.41% for environment classification, demonstrating high performance in specific environments such as the River (F1-score of 0.81).
 
