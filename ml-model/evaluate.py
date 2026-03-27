@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 # ==========================================
 script_dir = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(script_dir, '.env'))
-DEVICE = torch.device(os.getenv("DEVICE", "cpu"))
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def run_eval(scenario, method, use_timestep):
     # 2. Dynamic Import based on the flag
@@ -59,7 +59,7 @@ def run_eval(scenario, method, use_timestep):
 
     # 5. Metrics (Thomas's F-score requirement)
     acc = accuracy_score(y_true, y_pred)
-    f1 = f1_score(y_true, y_pred, average='weighted')
+    f1 = f1_score(y_true, y_pred, average=None)
     
     print("-" * 40)
     print(f"Accuracy:  {acc * 100:.2f}%")

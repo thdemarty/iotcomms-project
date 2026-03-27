@@ -6,7 +6,7 @@ from query_script import dataframe_query
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 load_dotenv(os.path.join(script_dir, '.env'))
-FILTER_ID, TEST_SIZE, RANDOM_STATE, BATCH_SIZE, DEVICE, EPOCHS, FRAMESIZE, OVERLAP = int(os.getenv("FILTER_ID", 4)), float(os.getenv("TEST_SIZE", 0.25)), int(os.getenv("RANDOM_STATE", 42)), int(os.getenv("BATCH_SIZE", 32)), os.getenv("DEVICE", "cpu"), int(os.getenv("EPOCHS", 20)), int(os.getenv("FRAMESIZE", 100)), float(os.getenv("OVERLAP", 0.5))
+FILTER_ID, TEST_SIZE, RANDOM_STATE, BATCH_SIZE, DEVICE, EPOCHS, FRAMESIZE, OVERLAP = int(os.getenv("FILTER_ID", 4)), float(os.getenv("TEST_SIZE", 0.25)), int(os.getenv("RANDOM_STATE", 42)), int(os.getenv("BATCH_SIZE", 32)), torch.device("cuda" if torch.cuda.is_available() else "cpu"), int(os.getenv("EPOCHS", 20)), int(os.getenv("FRAMESIZE", 100)), float(os.getenv("OVERLAP", 0.5))
 
 class ResidualBlock1D(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
@@ -55,6 +55,7 @@ def load_and_prepare_data(scenario, method):
     actual_node_col = 'sender_id' 
     actual_env_col = 'env_id'
     target_col = actual_env_col if scenario == 1 else actual_node_col
+    other_col = actual_env_col if scenario == 2 else actual_node_col
 
     # 3. Filtering logic (Standard Method 1)
     if method == 1:
@@ -70,8 +71,8 @@ def load_and_prepare_data(scenario, method):
     
     # 4. Filtering logic (Leave-one-out Method 2)
     else:
-        df_train = df[df[actual_node_col] != FILTER_ID]
-        df_test = df[df[actual_node_col] == FILTER_ID]
+        df_train = df[df[other_col] != FILTER_ID]
+        df_test = df[df[other_col] == FILTER_ID]
         
         X_train, y_train = create_frames(df_train, target_col)
         X_test, y_test = create_frames(df_test, target_col)
