@@ -106,7 +106,7 @@ Also for method 2, all IDs were left out for testing once.
 
 #### Results
 
-The results for CNN can be found in its entirety -> [link to CNN results](ml-model/CNN_resulst.md)
+The results for CNN can be found in its entirety -> [link to CNN results](ml-model/results.md#CNN)
 
 With a classic split of 75% / 25% (training / testing) there is a diagonal forming on the confusion matrix for both scenarios and the accuracy is far above 20% (where 20% means basically guessing, since 100% / 5 classes = 20%).
 Our general goal of this project was to practically investigate the existence of device imperfection in Bluetooth Low Energy radios and whether they lead
@@ -148,7 +148,7 @@ Experiments were conducted for both Scenario 1 and Scenario 2 using Methods 1 an
 
 #### Results
 
-The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/ResNet_results.md).
+The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/results.md#ResNet).
 
 In Method 1 (Random Split), the ResNet achieved a weighted average F1-score of 50.41% for environment classification, demonstrating high performance in specific environments such as the River (F1-score of 0.81).
 

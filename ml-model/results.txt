@@ -1,0 +1,1635 @@
+RESULTS
+Generated on: 2026-03-27T22:43:29 CET
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 1     : Using random split 75/25
+
+        
+Epoch 1/40, Loss: 1036.3014, Test Acc: 0.4597
+Epoch 2/40, Loss: 848.4716, Test Acc: 0.5649
+Epoch 3/40, Loss: 789.9082, Test Acc: 0.5895
+Epoch 4/40, Loss: 755.8477, Test Acc: 0.5755
+Epoch 5/40, Loss: 731.8930, Test Acc: 0.6022
+Epoch 6/40, Loss: 711.7077, Test Acc: 0.6350
+Epoch 7/40, Loss: 696.0035, Test Acc: 0.6360
+Epoch 8/40, Loss: 686.9760, Test Acc: 0.6330
+Epoch 9/40, Loss: 674.8008, Test Acc: 0.6111
+Epoch 10/40, Loss: 666.7154, Test Acc: 0.6421
+Epoch 11/40, Loss: 653.9496, Test Acc: 0.6454
+Epoch 12/40, Loss: 645.4229, Test Acc: 0.6411
+Epoch 13/40, Loss: 641.3464, Test Acc: 0.6260
+Epoch 14/40, Loss: 632.3032, Test Acc: 0.6587
+Epoch 15/40, Loss: 629.5946, Test Acc: 0.6640
+Epoch 16/40, Loss: 620.2593, Test Acc: 0.6599
+Epoch 17/40, Loss: 615.3939, Test Acc: 0.6813
+Epoch 18/40, Loss: 612.4900, Test Acc: 0.6684
+Epoch 19/40, Loss: 606.0090, Test Acc: 0.6783
+Epoch 20/40, Loss: 603.4865, Test Acc: 0.6503
+Epoch 21/40, Loss: 600.2641, Test Acc: 0.6565
+Epoch 22/40, Loss: 593.7469, Test Acc: 0.6351
+Epoch 23/40, Loss: 590.1080, Test Acc: 0.6782
+Epoch 24/40, Loss: 583.6659, Test Acc: 0.6730
+Epoch 25/40, Loss: 579.8263, Test Acc: 0.6954
+Epoch 26/40, Loss: 578.4519, Test Acc: 0.6872
+Epoch 27/40, Loss: 571.4476, Test Acc: 0.6955
+Epoch 28/40, Loss: 569.4706, Test Acc: 0.6865
+Epoch 29/40, Loss: 563.4198, Test Acc: 0.6836
+Epoch 30/40, Loss: 564.2574, Test Acc: 0.7040
+Epoch 31/40, Loss: 554.8269, Test Acc: 0.6967
+Epoch 32/40, Loss: 551.8398, Test Acc: 0.7117
+Epoch 33/40, Loss: 544.4974, Test Acc: 0.7121
+Epoch 34/40, Loss: 544.3412, Test Acc: 0.7088
+Epoch 35/40, Loss: 543.4534, Test Acc: 0.7143
+Epoch 36/40, Loss: 536.6728, Test Acc: 0.7289
+Epoch 37/40, Loss: 533.7615, Test Acc: 0.6877
+Epoch 38/40, Loss: 526.6985, Test Acc: 0.7339
+Epoch 39/40, Loss: 517.8185, Test Acc: 0.7343
+Epoch 40/40, Loss: 510.9702, Test Acc: 0.7406
+----------------------------------------
+Accuracy:  74.06%
+F-Score:   73.87%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.59      0.82      0.68      1513
+      forest       0.84      0.83      0.83      1675
+        lake       0.80      0.54      0.64      1469
+       river       0.82      0.64      0.72      1385
+      bridge       0.75      0.85      0.79      1637
+
+    accuracy                           0.74      7679
+   macro avg       0.76      0.73      0.73      7679
+weighted avg       0.76      0.74      0.74      7679
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m1_f100_o50.pth
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 2 | ID 0
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 0 for testing
+
+        
+Epoch 1/40, Loss: 976.5576, Test Acc: 0.2493
+Epoch 2/40, Loss: 836.4817, Test Acc: 0.2317
+Epoch 3/40, Loss: 805.9273, Test Acc: 0.2477
+Epoch 4/40, Loss: 790.4129, Test Acc: 0.2575
+Epoch 5/40, Loss: 776.4125, Test Acc: 0.2682
+Epoch 6/40, Loss: 763.9123, Test Acc: 0.2857
+Epoch 7/40, Loss: 758.1918, Test Acc: 0.2365
+Epoch 8/40, Loss: 743.0739, Test Acc: 0.2563
+Epoch 9/40, Loss: 731.9482, Test Acc: 0.2530
+Epoch 10/40, Loss: 725.4389, Test Acc: 0.2506
+Epoch 11/40, Loss: 711.0857, Test Acc: 0.2520
+Epoch 12/40, Loss: 707.0524, Test Acc: 0.2636
+Epoch 13/40, Loss: 691.3370, Test Acc: 0.2520
+Epoch 14/40, Loss: 680.5906, Test Acc: 0.2500
+Epoch 15/40, Loss: 674.9272, Test Acc: 0.2782
+Epoch 16/40, Loss: 665.5466, Test Acc: 0.2372
+Epoch 17/40, Loss: 660.9181, Test Acc: 0.2478
+Epoch 18/40, Loss: 650.9279, Test Acc: 0.2670
+Epoch 19/40, Loss: 646.6936, Test Acc: 0.2348
+Epoch 20/40, Loss: 638.4003, Test Acc: 0.2840
+Epoch 21/40, Loss: 627.4550, Test Acc: 0.2986
+Epoch 22/40, Loss: 624.7448, Test Acc: 0.2621
+Epoch 23/40, Loss: 619.6742, Test Acc: 0.2641
+Epoch 24/40, Loss: 618.4707, Test Acc: 0.2779
+Epoch 25/40, Loss: 615.7146, Test Acc: 0.2860
+Epoch 26/40, Loss: 610.5311, Test Acc: 0.2788
+Epoch 27/40, Loss: 607.1383, Test Acc: 0.2917
+Epoch 28/40, Loss: 595.8013, Test Acc: 0.2914
+Epoch 29/40, Loss: 598.5527, Test Acc: 0.2420
+Epoch 30/40, Loss: 593.8684, Test Acc: 0.3054
+Epoch 31/40, Loss: 581.7170, Test Acc: 0.2716
+Epoch 32/40, Loss: 580.0922, Test Acc: 0.2739
+Epoch 33/40, Loss: 579.9664, Test Acc: 0.2728
+Epoch 34/40, Loss: 570.7575, Test Acc: 0.2615
+Epoch 35/40, Loss: 573.0301, Test Acc: 0.2512
+Epoch 36/40, Loss: 568.6589, Test Acc: 0.2790
+Epoch 37/40, Loss: 555.6051, Test Acc: 0.2782
+Epoch 38/40, Loss: 553.2389, Test Acc: 0.2667
+Epoch 39/40, Loss: 557.1605, Test Acc: 0.2470
+Epoch 40/40, Loss: 545.3377, Test Acc: 0.2920
+----------------------------------------
+Accuracy:  29.20%
+F-Score:   28.79%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.39      0.54      0.45      1318
+      forest       0.00      0.00      0.00      1397
+        lake       0.43      0.26      0.32      1251
+       river       0.51      0.20      0.29      1172
+      bridge       0.34      0.46      0.39      1379
+
+    accuracy                           0.29      6517
+   macro avg       0.33      0.29      0.29      6517
+weighted avg       0.32      0.29      0.29      6517
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m2_f100_o50_id0.pth
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 2 | ID 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 1 for testing
+
+        
+Epoch 1/40, Loss: 1191.4467, Test Acc: 0.2683
+Epoch 2/40, Loss: 1041.1867, Test Acc: 0.2653
+Epoch 3/40, Loss: 951.9067, Test Acc: 0.2163
+Epoch 4/40, Loss: 910.5981, Test Acc: 0.2230
+Epoch 5/40, Loss: 878.9949, Test Acc: 0.2115
+Epoch 6/40, Loss: 845.4188, Test Acc: 0.2174
+Epoch 7/40, Loss: 820.1342, Test Acc: 0.2483
+Epoch 8/40, Loss: 803.9710, Test Acc: 0.2020
+Epoch 9/40, Loss: 778.5097, Test Acc: 0.2271
+Epoch 10/40, Loss: 761.4344, Test Acc: 0.2496
+Epoch 11/40, Loss: 739.5704, Test Acc: 0.2123
+Epoch 12/40, Loss: 726.2889, Test Acc: 0.2065
+Epoch 13/40, Loss: 711.6215, Test Acc: 0.2228
+Epoch 14/40, Loss: 689.8103, Test Acc: 0.2438
+Epoch 15/40, Loss: 685.1448, Test Acc: 0.2589
+Epoch 16/40, Loss: 678.8074, Test Acc: 0.2228
+Epoch 17/40, Loss: 664.5780, Test Acc: 0.2451
+Epoch 18/40, Loss: 658.6146, Test Acc: 0.2362
+Epoch 19/40, Loss: 657.1125, Test Acc: 0.2359
+Epoch 20/40, Loss: 644.8214, Test Acc: 0.2432
+Epoch 21/40, Loss: 647.5800, Test Acc: 0.2820
+Epoch 22/40, Loss: 638.3056, Test Acc: 0.2745
+Epoch 23/40, Loss: 631.1930, Test Acc: 0.2750
+Epoch 24/40, Loss: 621.2072, Test Acc: 0.2741
+Epoch 25/40, Loss: 631.0831, Test Acc: 0.2966
+Epoch 26/40, Loss: 612.4054, Test Acc: 0.2763
+Epoch 27/40, Loss: 607.9608, Test Acc: 0.2847
+Epoch 28/40, Loss: 613.2027, Test Acc: 0.2702
+Epoch 29/40, Loss: 598.7961, Test Acc: 0.2449
+Epoch 30/40, Loss: 593.5762, Test Acc: 0.2690
+Epoch 31/40, Loss: 600.2365, Test Acc: 0.3157
+Epoch 32/40, Loss: 592.7158, Test Acc: 0.2978
+Epoch 33/40, Loss: 589.6774, Test Acc: 0.2793
+Epoch 34/40, Loss: 587.5359, Test Acc: 0.2421
+Epoch 35/40, Loss: 577.8174, Test Acc: 0.2876
+Epoch 36/40, Loss: 585.1015, Test Acc: 0.2661
+Epoch 37/40, Loss: 576.2973, Test Acc: 0.2457
+Epoch 38/40, Loss: 567.6217, Test Acc: 0.2844
+Epoch 39/40, Loss: 577.9947, Test Acc: 0.3264
+Epoch 40/40, Loss: 561.7066, Test Acc: 0.2831
+----------------------------------------
+Accuracy:  28.31%
+F-Score:   25.80%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.19      0.06      0.09      1247
+      forest       0.36      0.28      0.32      1344
+        lake       0.25      0.50      0.33      1239
+       river       0.04      0.03      0.03      1134
+      bridge       0.45      0.51      0.48      1323
+
+    accuracy                           0.28      6287
+   macro avg       0.26      0.28      0.25      6287
+weighted avg       0.27      0.28      0.26      6287
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m2_f100_o50_id1.pth
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 2 | ID 2
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 2 for testing
+
+        
+Epoch 1/40, Loss: 1139.0582, Test Acc: 0.2580
+Epoch 2/40, Loss: 1007.7596, Test Acc: 0.2448
+Epoch 3/40, Loss: 905.4558, Test Acc: 0.2713
+Epoch 4/40, Loss: 840.8942, Test Acc: 0.2529
+Epoch 5/40, Loss: 802.5135, Test Acc: 0.2598
+Epoch 6/40, Loss: 777.6075, Test Acc: 0.2548
+Epoch 7/40, Loss: 757.2212, Test Acc: 0.2627
+Epoch 8/40, Loss: 731.0298, Test Acc: 0.2553
+Epoch 9/40, Loss: 718.8945, Test Acc: 0.2557
+Epoch 10/40, Loss: 712.2352, Test Acc: 0.2557
+Epoch 11/40, Loss: 699.5599, Test Acc: 0.2557
+Epoch 12/40, Loss: 692.9399, Test Acc: 0.2468
+Epoch 13/40, Loss: 677.8597, Test Acc: 0.2384
+Epoch 14/40, Loss: 680.0804, Test Acc: 0.2547
+Epoch 15/40, Loss: 666.1516, Test Acc: 0.2453
+Epoch 16/40, Loss: 661.7818, Test Acc: 0.2713
+Epoch 17/40, Loss: 648.5364, Test Acc: 0.2570
+Epoch 18/40, Loss: 640.9388, Test Acc: 0.2286
+Epoch 19/40, Loss: 641.0311, Test Acc: 0.2356
+Epoch 20/40, Loss: 625.8237, Test Acc: 0.2184
+Epoch 21/40, Loss: 618.9269, Test Acc: 0.2259
+Epoch 22/40, Loss: 617.1672, Test Acc: 0.2269
+Epoch 23/40, Loss: 598.4857, Test Acc: 0.2297
+Epoch 24/40, Loss: 592.5491, Test Acc: 0.2317
+Epoch 25/40, Loss: 584.0504, Test Acc: 0.2069
+Epoch 26/40, Loss: 579.0705, Test Acc: 0.2279
+Epoch 27/40, Loss: 566.6448, Test Acc: 0.1591
+Epoch 28/40, Loss: 570.5452, Test Acc: 0.1783
+Epoch 29/40, Loss: 554.3583, Test Acc: 0.2146
+Epoch 30/40, Loss: 562.7315, Test Acc: 0.2087
+Epoch 31/40, Loss: 552.6615, Test Acc: 0.1847
+Epoch 32/40, Loss: 554.1237, Test Acc: 0.2066
+Epoch 33/40, Loss: 546.4008, Test Acc: 0.2161
+Epoch 34/40, Loss: 539.2167, Test Acc: 0.2422
+Epoch 35/40, Loss: 537.8216, Test Acc: 0.2207
+Epoch 36/40, Loss: 524.5363, Test Acc: 0.2296
+Epoch 37/40, Loss: 523.7120, Test Acc: 0.2080
+Epoch 38/40, Loss: 523.4648, Test Acc: 0.2496
+Epoch 39/40, Loss: 513.4960, Test Acc: 0.2169
+Epoch 40/40, Loss: 518.7377, Test Acc: 0.2149
+----------------------------------------
+Accuracy:  21.49%
+F-Score:   17.04%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.23      0.25      0.24      1198
+      forest       0.00      0.00      0.00      1358
+        lake       0.19      0.07      0.10      1175
+       river       0.18      0.26      0.21      1086
+      bridge       0.23      0.51      0.31      1273
+
+    accuracy                           0.21      6090
+   macro avg       0.17      0.22      0.17      6090
+weighted avg       0.16      0.21      0.17      6090
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m2_f100_o50_id2.pth
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 2 | ID 3
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 3 for testing
+
+        
+Epoch 1/40, Loss: 1239.1249, Test Acc: 0.1615
+Epoch 2/40, Loss: 1187.4467, Test Acc: 0.2172
+Epoch 3/40, Loss: 1115.9031, Test Acc: 0.3025
+Epoch 4/40, Loss: 1077.3851, Test Acc: 0.2204
+Epoch 5/40, Loss: 1045.4193, Test Acc: 0.3166
+Epoch 6/40, Loss: 1010.8560, Test Acc: 0.1559
+Epoch 7/40, Loss: 977.3973, Test Acc: 0.2642
+Epoch 8/40, Loss: 952.2795, Test Acc: 0.3003
+Epoch 9/40, Loss: 926.5396, Test Acc: 0.2942
+Epoch 10/40, Loss: 917.0415, Test Acc: 0.2827
+Epoch 11/40, Loss: 895.9853, Test Acc: 0.2703
+Epoch 12/40, Loss: 884.9244, Test Acc: 0.1866
+Epoch 13/40, Loss: 887.3800, Test Acc: 0.3256
+Epoch 14/40, Loss: 878.1683, Test Acc: 0.2969
+Epoch 15/40, Loss: 865.8538, Test Acc: 0.3142
+Epoch 16/40, Loss: 865.6246, Test Acc: 0.2163
+Epoch 17/40, Loss: 861.0478, Test Acc: 0.2628
+Epoch 18/40, Loss: 852.9229, Test Acc: 0.3096
+Epoch 19/40, Loss: 840.8347, Test Acc: 0.2625
+Epoch 20/40, Loss: 834.5026, Test Acc: 0.2430
+Epoch 21/40, Loss: 830.1417, Test Acc: 0.2956
+Epoch 22/40, Loss: 828.8511, Test Acc: 0.3032
+Epoch 23/40, Loss: 824.8723, Test Acc: 0.3100
+Epoch 24/40, Loss: 820.6768, Test Acc: 0.2538
+Epoch 25/40, Loss: 809.0373, Test Acc: 0.2759
+Epoch 26/40, Loss: 807.0629, Test Acc: 0.2876
+Epoch 27/40, Loss: 808.3681, Test Acc: 0.3229
+Epoch 28/40, Loss: 813.0715, Test Acc: 0.2966
+Epoch 29/40, Loss: 804.0032, Test Acc: 0.2542
+Epoch 30/40, Loss: 797.5638, Test Acc: 0.2728
+Epoch 31/40, Loss: 790.0032, Test Acc: 0.3195
+Epoch 32/40, Loss: 783.4811, Test Acc: 0.3101
+Epoch 33/40, Loss: 775.8209, Test Acc: 0.2816
+Epoch 34/40, Loss: 767.8051, Test Acc: 0.2201
+Epoch 35/40, Loss: 766.9275, Test Acc: 0.2776
+Epoch 36/40, Loss: 757.3399, Test Acc: 0.2039
+Epoch 37/40, Loss: 758.3795, Test Acc: 0.2788
+Epoch 38/40, Loss: 751.9775, Test Acc: 0.3088
+Epoch 39/40, Loss: 732.8739, Test Acc: 0.3086
+Epoch 40/40, Loss: 737.3233, Test Acc: 0.2640
+----------------------------------------
+Accuracy:  26.40%
+F-Score:   27.31%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.10      0.18      0.13      1150
+      forest       0.40      0.44      0.42      1297
+        lake       0.32      0.29      0.30      1095
+       river       0.16      0.10      0.12      1068
+      bridge       0.50      0.27      0.35      1284
+
+    accuracy                           0.26      5894
+   macro avg       0.29      0.26      0.27      5894
+weighted avg       0.30      0.26      0.27      5894
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m2_f100_o50_id3.pth
+------------------------------------------------
+Running: CNN | Scenario 1 | Method 2 | ID 4
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 4 for testing
+
+        
+Epoch 1/40, Loss: 1171.6865, Test Acc: 0.2898
+Epoch 2/40, Loss: 1010.2711, Test Acc: 0.2980
+Epoch 3/40, Loss: 953.0819, Test Acc: 0.2714
+Epoch 4/40, Loss: 918.6275, Test Acc: 0.2559
+Epoch 5/40, Loss: 884.8938, Test Acc: 0.3231
+Epoch 6/40, Loss: 856.0222, Test Acc: 0.2714
+Epoch 7/40, Loss: 834.2424, Test Acc: 0.3109
+Epoch 8/40, Loss: 804.8753, Test Acc: 0.3603
+Epoch 9/40, Loss: 786.3999, Test Acc: 0.3407
+Epoch 10/40, Loss: 759.7749, Test Acc: 0.3240
+Epoch 11/40, Loss: 742.2807, Test Acc: 0.3508
+Epoch 12/40, Loss: 734.3321, Test Acc: 0.3506
+Epoch 13/40, Loss: 720.0784, Test Acc: 0.3420
+Epoch 14/40, Loss: 711.0326, Test Acc: 0.3362
+Epoch 15/40, Loss: 701.8944, Test Acc: 0.3350
+Epoch 16/40, Loss: 698.4034, Test Acc: 0.3450
+Epoch 17/40, Loss: 695.6124, Test Acc: 0.3441
+Epoch 18/40, Loss: 690.6175, Test Acc: 0.3377
+Epoch 19/40, Loss: 680.5785, Test Acc: 0.3439
+Epoch 20/40, Loss: 682.7910, Test Acc: 0.3207
+Epoch 21/40, Loss: 675.6002, Test Acc: 0.2984
+Epoch 22/40, Loss: 671.0819, Test Acc: 0.2308
+Epoch 23/40, Loss: 669.1794, Test Acc: 0.3199
+Epoch 24/40, Loss: 669.3129, Test Acc: 0.3362
+Epoch 25/40, Loss: 662.3511, Test Acc: 0.3484
+Epoch 26/40, Loss: 661.5648, Test Acc: 0.3051
+Epoch 27/40, Loss: 653.5240, Test Acc: 0.3001
+Epoch 28/40, Loss: 650.3536, Test Acc: 0.3041
+Epoch 29/40, Loss: 654.1153, Test Acc: 0.3109
+Epoch 30/40, Loss: 652.2290, Test Acc: 0.3085
+Epoch 31/40, Loss: 639.5248, Test Acc: 0.3312
+Epoch 32/40, Loss: 641.0489, Test Acc: 0.3077
+Epoch 33/40, Loss: 635.7208, Test Acc: 0.3209
+Epoch 34/40, Loss: 637.0142, Test Acc: 0.3078
+Epoch 35/40, Loss: 635.8140, Test Acc: 0.3092
+Epoch 36/40, Loss: 637.0943, Test Acc: 0.3212
+Epoch 37/40, Loss: 631.5389, Test Acc: 0.3195
+Epoch 38/40, Loss: 624.7278, Test Acc: 0.3171
+Epoch 39/40, Loss: 619.6731, Test Acc: 0.2996
+Epoch 40/40, Loss: 621.0826, Test Acc: 0.2917
+----------------------------------------
+Accuracy:  29.17%
+F-Score:   28.70%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.23      0.22      0.23      1118
+      forest       0.37      0.41      0.39      1281
+        lake       0.43      0.32      0.37      1091
+       river       0.09      0.07      0.08      1061
+      bridge       0.30      0.39      0.34      1267
+
+    accuracy                           0.29      5818
+   macro avg       0.28      0.28      0.28      5818
+weighted avg       0.29      0.29      0.29      5818
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s1_m2_f100_o50_id4.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 1     : Using random split 75/25
+
+        
+Epoch 1/40, Loss: 1091.4097, Test Acc: 0.4283
+Epoch 2/40, Loss: 881.4850, Test Acc: 0.4523
+Epoch 3/40, Loss: 825.6147, Test Acc: 0.4496
+Epoch 4/40, Loss: 802.2918, Test Acc: 0.4717
+Epoch 5/40, Loss: 780.4597, Test Acc: 0.5077
+Epoch 6/40, Loss: 772.1365, Test Acc: 0.5300
+Epoch 7/40, Loss: 760.2132, Test Acc: 0.5196
+Epoch 8/40, Loss: 756.7151, Test Acc: 0.4985
+Epoch 9/40, Loss: 750.6219, Test Acc: 0.5202
+Epoch 10/40, Loss: 741.7657, Test Acc: 0.5170
+Epoch 11/40, Loss: 741.1981, Test Acc: 0.4994
+Epoch 12/40, Loss: 741.7121, Test Acc: 0.5262
+Epoch 13/40, Loss: 742.9937, Test Acc: 0.5546
+Epoch 14/40, Loss: 736.8439, Test Acc: 0.5282
+Epoch 15/40, Loss: 734.4939, Test Acc: 0.5369
+Epoch 16/40, Loss: 726.4022, Test Acc: 0.5406
+Epoch 17/40, Loss: 722.2001, Test Acc: 0.4661
+Epoch 18/40, Loss: 722.5502, Test Acc: 0.5256
+Epoch 19/40, Loss: 717.0049, Test Acc: 0.4857
+Epoch 20/40, Loss: 719.3001, Test Acc: 0.5395
+Epoch 21/40, Loss: 712.5520, Test Acc: 0.5324
+Epoch 22/40, Loss: 712.3060, Test Acc: 0.5352
+Epoch 23/40, Loss: 708.4730, Test Acc: 0.5520
+Epoch 24/40, Loss: 708.3579, Test Acc: 0.5766
+Epoch 25/40, Loss: 702.6843, Test Acc: 0.5380
+Epoch 26/40, Loss: 713.7150, Test Acc: 0.5192
+Epoch 27/40, Loss: 700.5549, Test Acc: 0.5533
+Epoch 28/40, Loss: 707.6000, Test Acc: 0.5708
+Epoch 29/40, Loss: 695.6022, Test Acc: 0.5486
+Epoch 30/40, Loss: 702.2496, Test Acc: 0.5485
+Epoch 31/40, Loss: 698.8014, Test Acc: 0.5889
+Epoch 32/40, Loss: 696.4409, Test Acc: 0.5609
+Epoch 33/40, Loss: 693.8444, Test Acc: 0.5512
+Epoch 34/40, Loss: 698.2625, Test Acc: 0.5843
+Epoch 35/40, Loss: 694.0894, Test Acc: 0.5900
+Epoch 36/40, Loss: 695.0353, Test Acc: 0.5833
+Epoch 37/40, Loss: 693.2103, Test Acc: 0.5640
+Epoch 38/40, Loss: 690.7726, Test Acc: 0.5761
+Epoch 39/40, Loss: 689.6614, Test Acc: 0.5656
+Epoch 40/40, Loss: 688.8231, Test Acc: 0.5493
+----------------------------------------
+Accuracy:  54.93%
+F-Score:   53.60%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.40      0.38      0.39      1636
+      node 1       0.62      0.41      0.50      1577
+      node 2       0.49      0.60      0.54      1528
+      node 3       0.71      0.96      0.82      1480
+      node 4       0.49      0.42      0.45      1460
+
+    accuracy                           0.55      7681
+   macro avg       0.54      0.55      0.54      7681
+weighted avg       0.54      0.55      0.54      7681
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m1_f100_o50.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 2 | ID 0
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 0 for testing
+
+        
+Epoch 1/40, Loss: 1176.7136, Test Acc: 0.2129
+Epoch 2/40, Loss: 924.4405, Test Acc: 0.2059
+Epoch 3/40, Loss: 864.4674, Test Acc: 0.2202
+Epoch 4/40, Loss: 833.6751, Test Acc: 0.2661
+Epoch 5/40, Loss: 813.4684, Test Acc: 0.2421
+Epoch 6/40, Loss: 805.8082, Test Acc: 0.1859
+Epoch 7/40, Loss: 794.9781, Test Acc: 0.2306
+Epoch 8/40, Loss: 786.3779, Test Acc: 0.2290
+Epoch 9/40, Loss: 782.4799, Test Acc: 0.2555
+Epoch 10/40, Loss: 787.0381, Test Acc: 0.1842
+Epoch 11/40, Loss: 773.4335, Test Acc: 0.1756
+Epoch 12/40, Loss: 772.1086, Test Acc: 0.1719
+Epoch 13/40, Loss: 767.1537, Test Acc: 0.2049
+Epoch 14/40, Loss: 770.5391, Test Acc: 0.2363
+Epoch 15/40, Loss: 763.9061, Test Acc: 0.2212
+Epoch 16/40, Loss: 757.8342, Test Acc: 0.2315
+Epoch 17/40, Loss: 765.1781, Test Acc: 0.2364
+Epoch 18/40, Loss: 756.8915, Test Acc: 0.2295
+Epoch 19/40, Loss: 758.5445, Test Acc: 0.2076
+Epoch 20/40, Loss: 754.1104, Test Acc: 0.2200
+Epoch 21/40, Loss: 754.0962, Test Acc: 0.1955
+Epoch 22/40, Loss: 750.1148, Test Acc: 0.2587
+Epoch 23/40, Loss: 756.1011, Test Acc: 0.2033
+Epoch 24/40, Loss: 743.7502, Test Acc: 0.2151
+Epoch 25/40, Loss: 746.9956, Test Acc: 0.1975
+Epoch 26/40, Loss: 756.7336, Test Acc: 0.2282
+Epoch 27/40, Loss: 742.1695, Test Acc: 0.2086
+Epoch 28/40, Loss: 744.1823, Test Acc: 0.2006
+Epoch 29/40, Loss: 740.6402, Test Acc: 0.2116
+Epoch 30/40, Loss: 738.4581, Test Acc: 0.1671
+Epoch 31/40, Loss: 747.2942, Test Acc: 0.2068
+Epoch 32/40, Loss: 737.0144, Test Acc: 0.2418
+Epoch 33/40, Loss: 735.1858, Test Acc: 0.2335
+Epoch 34/40, Loss: 742.9892, Test Acc: 0.1973
+Epoch 35/40, Loss: 741.1254, Test Acc: 0.1753
+Epoch 36/40, Loss: 735.0835, Test Acc: 0.2291
+Epoch 37/40, Loss: 734.8190, Test Acc: 0.2000
+Epoch 38/40, Loss: 729.9657, Test Acc: 0.1990
+Epoch 39/40, Loss: 729.3794, Test Acc: 0.1912
+Epoch 40/40, Loss: 729.7809, Test Acc: 0.2424
+----------------------------------------
+Accuracy:  24.24%
+F-Score:   19.67%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.48      0.57      0.52      1318
+      node 1       0.02      0.02      0.02      1247
+      node 2       0.18      0.09      0.12      1198
+      node 3       0.20      0.51      0.29      1150
+      node 4       0.00      0.00      0.00      1118
+
+    accuracy                           0.24      6031
+   macro avg       0.18      0.24      0.19      6031
+weighted avg       0.18      0.24      0.20      6031
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m2_f100_o50_id0.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 2 | ID 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 1 for testing
+
+        
+Epoch 1/40, Loss: 1201.0656, Test Acc: 0.2643
+Epoch 2/40, Loss: 988.6797, Test Acc: 0.2443
+Epoch 3/40, Loss: 883.3463, Test Acc: 0.2649
+Epoch 4/40, Loss: 844.3142, Test Acc: 0.3136
+Epoch 5/40, Loss: 821.2675, Test Acc: 0.3436
+Epoch 6/40, Loss: 804.9919, Test Acc: 0.2825
+Epoch 7/40, Loss: 789.3349, Test Acc: 0.3227
+Epoch 8/40, Loss: 783.8040, Test Acc: 0.3133
+Epoch 9/40, Loss: 773.8182, Test Acc: 0.2962
+Epoch 10/40, Loss: 768.9063, Test Acc: 0.3340
+Epoch 11/40, Loss: 768.4826, Test Acc: 0.3407
+Epoch 12/40, Loss: 758.8827, Test Acc: 0.3533
+Epoch 13/40, Loss: 760.4009, Test Acc: 0.2464
+Epoch 14/40, Loss: 749.6972, Test Acc: 0.2911
+Epoch 15/40, Loss: 748.2437, Test Acc: 0.3443
+Epoch 16/40, Loss: 745.3434, Test Acc: 0.3012
+Epoch 17/40, Loss: 743.3453, Test Acc: 0.3412
+Epoch 18/40, Loss: 736.6648, Test Acc: 0.3168
+Epoch 19/40, Loss: 740.9646, Test Acc: 0.3376
+Epoch 20/40, Loss: 731.6421, Test Acc: 0.3238
+Epoch 21/40, Loss: 727.9228, Test Acc: 0.3123
+Epoch 22/40, Loss: 733.6784, Test Acc: 0.2826
+Epoch 23/40, Loss: 723.4399, Test Acc: 0.3469
+Epoch 24/40, Loss: 725.5751, Test Acc: 0.2883
+Epoch 25/40, Loss: 722.3531, Test Acc: 0.3153
+Epoch 26/40, Loss: 717.5956, Test Acc: 0.2865
+Epoch 27/40, Loss: 719.9561, Test Acc: 0.2988
+Epoch 28/40, Loss: 716.2823, Test Acc: 0.3093
+Epoch 29/40, Loss: 711.3278, Test Acc: 0.2712
+Epoch 30/40, Loss: 714.9137, Test Acc: 0.2956
+Epoch 31/40, Loss: 709.5641, Test Acc: 0.2735
+Epoch 32/40, Loss: 708.9334, Test Acc: 0.3066
+Epoch 33/40, Loss: 705.4589, Test Acc: 0.2672
+Epoch 34/40, Loss: 700.1078, Test Acc: 0.2700
+Epoch 35/40, Loss: 700.0707, Test Acc: 0.3060
+Epoch 36/40, Loss: 694.5476, Test Acc: 0.2862
+Epoch 37/40, Loss: 695.0166, Test Acc: 0.2913
+Epoch 38/40, Loss: 689.4998, Test Acc: 0.2991
+Epoch 39/40, Loss: 695.1291, Test Acc: 0.2870
+Epoch 40/40, Loss: 697.6419, Test Acc: 0.2888
+----------------------------------------
+Accuracy:  28.88%
+F-Score:   27.18%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.49      0.26      0.34      1397
+      node 1       0.23      0.25      0.24      1344
+      node 2       0.00      0.00      0.00      1358
+      node 3       0.45      0.79      0.57      1297
+      node 4       0.34      0.16      0.22      1281
+
+    accuracy                           0.29      6677
+   macro avg       0.30      0.29      0.27      6677
+weighted avg       0.30      0.29      0.27      6677
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m2_f100_o50_id1.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 2 | ID 2
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 2 for testing
+
+        
+Epoch 1/40, Loss: 1221.8215, Test Acc: 0.2593
+Epoch 2/40, Loss: 983.0968, Test Acc: 0.2941
+Epoch 3/40, Loss: 909.9780, Test Acc: 0.3459
+Epoch 4/40, Loss: 871.9452, Test Acc: 0.1889
+Epoch 5/40, Loss: 846.8912, Test Acc: 0.2516
+Epoch 6/40, Loss: 822.6407, Test Acc: 0.2967
+Epoch 7/40, Loss: 820.6764, Test Acc: 0.2213
+Epoch 8/40, Loss: 809.3921, Test Acc: 0.2653
+Epoch 9/40, Loss: 795.4721, Test Acc: 0.2429
+Epoch 10/40, Loss: 794.0009, Test Acc: 0.2343
+Epoch 11/40, Loss: 799.3882, Test Acc: 0.2793
+Epoch 12/40, Loss: 784.0219, Test Acc: 0.2386
+Epoch 13/40, Loss: 781.4561, Test Acc: 0.2940
+Epoch 14/40, Loss: 766.5076, Test Acc: 0.2415
+Epoch 15/40, Loss: 766.0035, Test Acc: 0.2266
+Epoch 16/40, Loss: 758.1723, Test Acc: 0.2065
+Epoch 17/40, Loss: 762.6547, Test Acc: 0.2321
+Epoch 18/40, Loss: 752.4711, Test Acc: 0.2224
+Epoch 19/40, Loss: 751.1226, Test Acc: 0.2487
+Epoch 20/40, Loss: 750.5273, Test Acc: 0.2386
+Epoch 21/40, Loss: 739.5321, Test Acc: 0.2518
+Epoch 22/40, Loss: 737.3175, Test Acc: 0.2571
+Epoch 23/40, Loss: 742.4619, Test Acc: 0.2300
+Epoch 24/40, Loss: 734.0250, Test Acc: 0.1947
+Epoch 25/40, Loss: 739.7646, Test Acc: 0.2294
+Epoch 26/40, Loss: 739.5978, Test Acc: 0.2278
+Epoch 27/40, Loss: 732.9665, Test Acc: 0.2413
+Epoch 28/40, Loss: 727.5660, Test Acc: 0.2176
+Epoch 29/40, Loss: 726.0127, Test Acc: 0.2514
+Epoch 30/40, Loss: 722.6948, Test Acc: 0.2651
+Epoch 31/40, Loss: 720.6680, Test Acc: 0.2601
+Epoch 32/40, Loss: 719.4392, Test Acc: 0.2278
+Epoch 33/40, Loss: 716.4593, Test Acc: 0.2454
+Epoch 34/40, Loss: 711.4152, Test Acc: 0.2024
+Epoch 35/40, Loss: 711.0039, Test Acc: 0.2567
+Epoch 36/40, Loss: 708.1155, Test Acc: 0.2297
+Epoch 37/40, Loss: 712.6879, Test Acc: 0.2027
+Epoch 38/40, Loss: 706.8814, Test Acc: 0.2398
+Epoch 39/40, Loss: 711.0105, Test Acc: 0.2324
+Epoch 40/40, Loss: 701.8933, Test Acc: 0.2637
+----------------------------------------
+Accuracy:  26.37%
+F-Score:   24.23%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.37      0.32      0.34      1251
+      node 1       0.22      0.25      0.24      1239
+      node 2       0.25      0.23      0.24      1175
+      node 3       0.25      0.48      0.33      1095
+      node 4       0.20      0.03      0.05      1091
+
+    accuracy                           0.26      5851
+   macro avg       0.26      0.26      0.24      5851
+weighted avg       0.26      0.26      0.24      5851
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m2_f100_o50_id2.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 2 | ID 3
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 3 for testing
+
+        
+Epoch 1/40, Loss: 1203.8413, Test Acc: 0.3512
+Epoch 2/40, Loss: 947.2321, Test Acc: 0.3431
+Epoch 3/40, Loss: 885.8457, Test Acc: 0.3485
+Epoch 4/40, Loss: 851.7869, Test Acc: 0.3597
+Epoch 5/40, Loss: 831.8528, Test Acc: 0.3811
+Epoch 6/40, Loss: 836.7218, Test Acc: 0.3546
+Epoch 7/40, Loss: 818.6803, Test Acc: 0.3483
+Epoch 8/40, Loss: 813.6678, Test Acc: 0.3255
+Epoch 9/40, Loss: 810.1933, Test Acc: 0.2657
+Epoch 10/40, Loss: 805.3897, Test Acc: 0.2967
+Epoch 11/40, Loss: 802.2075, Test Acc: 0.2516
+Epoch 12/40, Loss: 798.1082, Test Acc: 0.2739
+Epoch 13/40, Loss: 795.6183, Test Acc: 0.3074
+Epoch 14/40, Loss: 795.8939, Test Acc: 0.2804
+Epoch 15/40, Loss: 793.5718, Test Acc: 0.2724
+Epoch 16/40, Loss: 790.8826, Test Acc: 0.2483
+Epoch 17/40, Loss: 789.2410, Test Acc: 0.2476
+Epoch 18/40, Loss: 785.6501, Test Acc: 0.3072
+Epoch 19/40, Loss: 786.4379, Test Acc: 0.2820
+Epoch 20/40, Loss: 784.8966, Test Acc: 0.3032
+Epoch 21/40, Loss: 779.7725, Test Acc: 0.2581
+Epoch 22/40, Loss: 778.4294, Test Acc: 0.2664
+Epoch 23/40, Loss: 780.9923, Test Acc: 0.2485
+Epoch 24/40, Loss: 774.3062, Test Acc: 0.3407
+Epoch 25/40, Loss: 774.1432, Test Acc: 0.2945
+Epoch 26/40, Loss: 784.6136, Test Acc: 0.3298
+Epoch 27/40, Loss: 769.4218, Test Acc: 0.2847
+Epoch 28/40, Loss: 771.9450, Test Acc: 0.2829
+Epoch 29/40, Loss: 765.7424, Test Acc: 0.3186
+Epoch 30/40, Loss: 764.5501, Test Acc: 0.2822
+Epoch 31/40, Loss: 768.6602, Test Acc: 0.2961
+Epoch 32/40, Loss: 764.9131, Test Acc: 0.2938
+Epoch 33/40, Loss: 767.0104, Test Acc: 0.3132
+Epoch 34/40, Loss: 760.7981, Test Acc: 0.3043
+Epoch 35/40, Loss: 762.6736, Test Acc: 0.3353
+Epoch 36/40, Loss: 771.0026, Test Acc: 0.2715
+Epoch 37/40, Loss: 752.5680, Test Acc: 0.3054
+Epoch 38/40, Loss: 755.5595, Test Acc: 0.3041
+Epoch 39/40, Loss: 754.5049, Test Acc: 0.2998
+Epoch 40/40, Loss: 750.9841, Test Acc: 0.2958
+----------------------------------------
+Accuracy:  29.58%
+F-Score:   25.04%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.39      0.32      0.35      1172
+      node 1       0.23      0.23      0.23      1134
+      node 2       0.23      0.18      0.20      1086
+      node 3       0.33      0.75      0.45      1068
+      node 4       0.02      0.00      0.00      1061
+
+    accuracy                           0.30      5521
+   macro avg       0.24      0.30      0.25      5521
+weighted avg       0.24      0.30      0.25      5521
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m2_f100_o50_id3.pth
+------------------------------------------------
+Running: CNN | Scenario 2 | Method 2 | ID 4
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the CNN.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 4 for testing
+
+        
+Epoch 1/40, Loss: 1092.1275, Test Acc: 0.2213
+Epoch 2/40, Loss: 922.3118, Test Acc: 0.2674
+Epoch 3/40, Loss: 872.9982, Test Acc: 0.2372
+Epoch 4/40, Loss: 843.3636, Test Acc: 0.2177
+Epoch 5/40, Loss: 814.8129, Test Acc: 0.1655
+Epoch 6/40, Loss: 786.6109, Test Acc: 0.1549
+Epoch 7/40, Loss: 767.1022, Test Acc: 0.1574
+Epoch 8/40, Loss: 749.6104, Test Acc: 0.1600
+Epoch 9/40, Loss: 737.0633, Test Acc: 0.1676
+Epoch 10/40, Loss: 719.1896, Test Acc: 0.1379
+Epoch 11/40, Loss: 707.6365, Test Acc: 0.1433
+Epoch 12/40, Loss: 696.6391, Test Acc: 0.1629
+Epoch 13/40, Loss: 695.0131, Test Acc: 0.1577
+Epoch 14/40, Loss: 688.7296, Test Acc: 0.1529
+Epoch 15/40, Loss: 683.5320, Test Acc: 0.1450
+Epoch 16/40, Loss: 677.2971, Test Acc: 0.1424
+Epoch 17/40, Loss: 672.5739, Test Acc: 0.1373
+Epoch 18/40, Loss: 666.5992, Test Acc: 0.1552
+Epoch 19/40, Loss: 660.8469, Test Acc: 0.1355
+Epoch 20/40, Loss: 651.9674, Test Acc: 0.1514
+Epoch 21/40, Loss: 655.2676, Test Acc: 0.1623
+Epoch 22/40, Loss: 636.9864, Test Acc: 0.1693
+Epoch 23/40, Loss: 635.4855, Test Acc: 0.1597
+Epoch 24/40, Loss: 635.2957, Test Acc: 0.1523
+Epoch 25/40, Loss: 621.3000, Test Acc: 0.1519
+Epoch 26/40, Loss: 613.0218, Test Acc: 0.1414
+Epoch 27/40, Loss: 609.1348, Test Acc: 0.1572
+Epoch 28/40, Loss: 598.4828, Test Acc: 0.1485
+Epoch 29/40, Loss: 596.7043, Test Acc: 0.1663
+Epoch 30/40, Loss: 597.4396, Test Acc: 0.1482
+Epoch 31/40, Loss: 584.8953, Test Acc: 0.1302
+Epoch 32/40, Loss: 588.6500, Test Acc: 0.1482
+Epoch 33/40, Loss: 571.4784, Test Acc: 0.1811
+Epoch 34/40, Loss: 576.0119, Test Acc: 0.1322
+Epoch 35/40, Loss: 567.7780, Test Acc: 0.1502
+Epoch 36/40, Loss: 559.4541, Test Acc: 0.1618
+Epoch 37/40, Loss: 565.9766, Test Acc: 0.1560
+Epoch 38/40, Loss: 571.6707, Test Acc: 0.1571
+Epoch 39/40, Loss: 564.7057, Test Acc: 0.1519
+Epoch 40/40, Loss: 554.7666, Test Acc: 0.1543
+----------------------------------------
+Accuracy:  15.43%
+F-Score:   13.03%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.22      0.11      0.15      1379
+      node 1       0.14      0.35      0.20      1323
+      node 2       0.07      0.06      0.06      1273
+      node 3       0.22      0.25      0.23      1284
+      node 4       0.00      0.00      0.00      1267
+
+    accuracy                           0.15      6526
+   macro avg       0.13      0.15      0.13      6526
+weighted avg       0.13      0.15      0.13      6526
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/cnn_s2_m2_f100_o50_id4.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 1     : Using random split 75/25
+
+        
+Epoch 1/40, Loss: 789.5969, Test Acc: 0.6136
+Epoch 2/40, Loss: 673.6285, Test Acc: 0.7117
+Epoch 3/40, Loss: 617.2243, Test Acc: 0.7089
+Epoch 4/40, Loss: 586.0700, Test Acc: 0.7166
+Epoch 5/40, Loss: 562.9519, Test Acc: 0.7273
+Epoch 6/40, Loss: 553.7915, Test Acc: 0.7082
+Epoch 7/40, Loss: 533.5531, Test Acc: 0.7363
+Epoch 8/40, Loss: 523.8999, Test Acc: 0.7411
+Epoch 9/40, Loss: 512.3687, Test Acc: 0.7261
+Epoch 10/40, Loss: 497.4416, Test Acc: 0.7475
+Epoch 11/40, Loss: 514.9479, Test Acc: 0.7489
+Epoch 12/40, Loss: 494.9201, Test Acc: 0.7540
+Epoch 13/40, Loss: 488.2256, Test Acc: 0.7164
+Epoch 14/40, Loss: 497.8794, Test Acc: 0.7462
+Epoch 15/40, Loss: 478.3336, Test Acc: 0.7480
+Epoch 16/40, Loss: 476.1301, Test Acc: 0.7487
+Epoch 17/40, Loss: 478.5153, Test Acc: 0.7354
+Epoch 18/40, Loss: 479.1128, Test Acc: 0.7494
+Epoch 19/40, Loss: 473.6479, Test Acc: 0.6899
+Epoch 20/40, Loss: 468.5941, Test Acc: 0.7521
+Epoch 21/40, Loss: 458.5460, Test Acc: 0.7582
+Epoch 22/40, Loss: 465.6317, Test Acc: 0.7563
+Epoch 23/40, Loss: 457.9718, Test Acc: 0.7597
+Epoch 24/40, Loss: 453.0596, Test Acc: 0.7570
+Epoch 25/40, Loss: 445.2080, Test Acc: 0.7577
+Epoch 26/40, Loss: 456.6331, Test Acc: 0.7481
+Epoch 27/40, Loss: 448.8202, Test Acc: 0.7351
+Epoch 28/40, Loss: 439.0277, Test Acc: 0.7646
+Epoch 29/40, Loss: 439.8582, Test Acc: 0.7506
+Epoch 30/40, Loss: 435.3576, Test Acc: 0.7521
+Epoch 31/40, Loss: 433.5716, Test Acc: 0.7716
+Epoch 32/40, Loss: 435.6304, Test Acc: 0.7670
+Epoch 33/40, Loss: 428.4027, Test Acc: 0.7738
+Epoch 34/40, Loss: 423.4372, Test Acc: 0.7440
+Epoch 35/40, Loss: 427.1665, Test Acc: 0.7355
+Epoch 36/40, Loss: 428.6375, Test Acc: 0.7685
+Epoch 37/40, Loss: 428.7638, Test Acc: 0.7802
+Epoch 38/40, Loss: 421.0311, Test Acc: 0.7419
+Epoch 39/40, Loss: 422.9568, Test Acc: 0.7662
+Epoch 40/40, Loss: 419.8741, Test Acc: 0.7479
+----------------------------------------
+Accuracy:  74.79%
+F-Score:   74.29%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.66      0.77      0.71      1513
+      forest       0.76      0.87      0.81      1675
+        lake       0.75      0.60      0.67      1469
+       river       0.81      0.57      0.67      1385
+      bridge       0.79      0.89      0.84      1637
+
+    accuracy                           0.75      7679
+   macro avg       0.75      0.74      0.74      7679
+weighted avg       0.75      0.75      0.74      7679
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m1_f100_o50.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 2 | ID 0
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 0 for testing
+
+        
+Epoch 1/40, Loss: 786.2762, Test Acc: 0.3374
+Epoch 2/40, Loss: 722.6573, Test Acc: 0.3009
+Epoch 3/40, Loss: 686.8684, Test Acc: 0.2757
+Epoch 4/40, Loss: 662.9850, Test Acc: 0.2872
+Epoch 5/40, Loss: 635.7166, Test Acc: 0.2957
+Epoch 6/40, Loss: 617.0007, Test Acc: 0.2782
+Epoch 7/40, Loss: 599.5175, Test Acc: 0.2702
+Epoch 8/40, Loss: 576.8247, Test Acc: 0.2834
+Epoch 9/40, Loss: 551.6269, Test Acc: 0.2787
+Epoch 10/40, Loss: 558.1137, Test Acc: 0.2737
+Epoch 11/40, Loss: 537.4970, Test Acc: 0.2923
+Epoch 12/40, Loss: 519.3246, Test Acc: 0.2659
+Epoch 13/40, Loss: 508.9138, Test Acc: 0.2869
+Epoch 14/40, Loss: 503.8542, Test Acc: 0.2708
+Epoch 15/40, Loss: 492.5749, Test Acc: 0.2415
+Epoch 16/40, Loss: 499.0880, Test Acc: 0.2536
+Epoch 17/40, Loss: 469.1971, Test Acc: 0.2945
+Epoch 18/40, Loss: 475.7364, Test Acc: 0.2443
+Epoch 19/40, Loss: 469.6883, Test Acc: 0.2395
+Epoch 20/40, Loss: 459.3273, Test Acc: 0.2329
+Epoch 21/40, Loss: 459.8488, Test Acc: 0.2849
+Epoch 22/40, Loss: 445.7123, Test Acc: 0.2403
+Epoch 23/40, Loss: 455.5921, Test Acc: 0.2679
+Epoch 24/40, Loss: 438.7659, Test Acc: 0.2679
+Epoch 25/40, Loss: 433.4124, Test Acc: 0.2501
+Epoch 26/40, Loss: 427.4336, Test Acc: 0.2523
+Epoch 27/40, Loss: 423.2080, Test Acc: 0.2587
+Epoch 28/40, Loss: 425.9107, Test Acc: 0.2727
+Epoch 29/40, Loss: 413.2834, Test Acc: 0.2467
+Epoch 30/40, Loss: 421.2042, Test Acc: 0.2889
+Epoch 31/40, Loss: 417.1186, Test Acc: 0.2685
+Epoch 32/40, Loss: 416.9223, Test Acc: 0.2564
+Epoch 33/40, Loss: 411.9180, Test Acc: 0.2650
+Epoch 34/40, Loss: 406.5430, Test Acc: 0.2693
+Epoch 35/40, Loss: 395.2454, Test Acc: 0.2435
+Epoch 36/40, Loss: 394.4236, Test Acc: 0.2285
+Epoch 37/40, Loss: 407.4514, Test Acc: 0.2639
+Epoch 38/40, Loss: 396.2207, Test Acc: 0.2463
+Epoch 39/40, Loss: 393.9167, Test Acc: 0.2365
+Epoch 40/40, Loss: 386.0556, Test Acc: 0.2240
+----------------------------------------
+Accuracy:  22.40%
+F-Score:   21.42%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.43      0.41      0.42      1318
+      forest       0.00      0.00      0.00      1397
+        lake       0.15      0.09      0.11      1251
+       river       0.17      0.16      0.17      1172
+      bridge       0.32      0.46      0.37      1379
+
+    accuracy                           0.22      6517
+   macro avg       0.21      0.22      0.21      6517
+weighted avg       0.21      0.22      0.21      6517
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m2_f100_o50_id0.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 2 | ID 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 1 for testing
+
+        
+Epoch 1/40, Loss: 890.8962, Test Acc: 0.2510
+Epoch 2/40, Loss: 737.2950, Test Acc: 0.2556
+Epoch 3/40, Loss: 641.0564, Test Acc: 0.2930
+Epoch 4/40, Loss: 600.2741, Test Acc: 0.3253
+Epoch 5/40, Loss: 574.7685, Test Acc: 0.3288
+Epoch 6/40, Loss: 549.8916, Test Acc: 0.3032
+Epoch 7/40, Loss: 522.6739, Test Acc: 0.2916
+Epoch 8/40, Loss: 521.3946, Test Acc: 0.3642
+Epoch 9/40, Loss: 510.6702, Test Acc: 0.2804
+Epoch 10/40, Loss: 497.6448, Test Acc: 0.2941
+Epoch 11/40, Loss: 491.7467, Test Acc: 0.2933
+Epoch 12/40, Loss: 484.8860, Test Acc: 0.3070
+Epoch 13/40, Loss: 476.3489, Test Acc: 0.2760
+Epoch 14/40, Loss: 465.4311, Test Acc: 0.3097
+Epoch 15/40, Loss: 466.5698, Test Acc: 0.2839
+Epoch 16/40, Loss: 461.2209, Test Acc: 0.2930
+Epoch 17/40, Loss: 454.8985, Test Acc: 0.3223
+Epoch 18/40, Loss: 448.4684, Test Acc: 0.2723
+Epoch 19/40, Loss: 454.7989, Test Acc: 0.3305
+Epoch 20/40, Loss: 448.6718, Test Acc: 0.3328
+Epoch 21/40, Loss: 439.6363, Test Acc: 0.3253
+Epoch 22/40, Loss: 436.4257, Test Acc: 0.2747
+Epoch 23/40, Loss: 432.7800, Test Acc: 0.3293
+Epoch 24/40, Loss: 431.5497, Test Acc: 0.3299
+Epoch 25/40, Loss: 432.3155, Test Acc: 0.2990
+Epoch 26/40, Loss: 424.6439, Test Acc: 0.2881
+Epoch 27/40, Loss: 427.1095, Test Acc: 0.3272
+Epoch 28/40, Loss: 419.1132, Test Acc: 0.3162
+Epoch 29/40, Loss: 414.1655, Test Acc: 0.2928
+Epoch 30/40, Loss: 416.6198, Test Acc: 0.2815
+Epoch 31/40, Loss: 406.2376, Test Acc: 0.2744
+Epoch 32/40, Loss: 410.5157, Test Acc: 0.2881
+Epoch 33/40, Loss: 412.6901, Test Acc: 0.3054
+Epoch 34/40, Loss: 410.9815, Test Acc: 0.2739
+Epoch 35/40, Loss: 414.8120, Test Acc: 0.2537
+Epoch 36/40, Loss: 395.4197, Test Acc: 0.2944
+Epoch 37/40, Loss: 411.1463, Test Acc: 0.3358
+Epoch 38/40, Loss: 403.6507, Test Acc: 0.2978
+Epoch 39/40, Loss: 396.8858, Test Acc: 0.2935
+Epoch 40/40, Loss: 398.5823, Test Acc: 0.3160
+----------------------------------------
+Accuracy:  31.60%
+F-Score:   30.54%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.20      0.20      0.20      1247
+      forest       0.35      0.28      0.31      1344
+        lake       0.22      0.21      0.21      1239
+       river       0.13      0.13      0.13      1134
+      bridge       0.57      0.73      0.64      1323
+
+    accuracy                           0.32      6287
+   macro avg       0.29      0.31      0.30      6287
+weighted avg       0.30      0.32      0.31      6287
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m2_f100_o50_id1.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 2 | ID 2
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 2 for testing
+
+        
+Epoch 1/40, Loss: 804.3822, Test Acc: 0.2626
+Epoch 2/40, Loss: 681.9141, Test Acc: 0.2433
+Epoch 3/40, Loss: 611.1144, Test Acc: 0.2136
+Epoch 4/40, Loss: 565.4882, Test Acc: 0.2102
+Epoch 5/40, Loss: 540.3105, Test Acc: 0.2194
+Epoch 6/40, Loss: 522.6526, Test Acc: 0.2396
+Epoch 7/40, Loss: 520.4200, Test Acc: 0.2558
+Epoch 8/40, Loss: 504.2614, Test Acc: 0.2442
+Epoch 9/40, Loss: 494.9657, Test Acc: 0.2562
+Epoch 10/40, Loss: 493.0721, Test Acc: 0.2232
+Epoch 11/40, Loss: 481.4232, Test Acc: 0.2005
+Epoch 12/40, Loss: 479.7038, Test Acc: 0.2345
+Epoch 13/40, Loss: 469.5070, Test Acc: 0.2407
+Epoch 14/40, Loss: 463.0404, Test Acc: 0.2381
+Epoch 15/40, Loss: 447.8934, Test Acc: 0.2516
+Epoch 16/40, Loss: 456.0856, Test Acc: 0.2243
+Epoch 17/40, Loss: 461.9006, Test Acc: 0.2373
+Epoch 18/40, Loss: 455.2512, Test Acc: 0.2442
+Epoch 19/40, Loss: 443.5936, Test Acc: 0.2693
+Epoch 20/40, Loss: 448.2965, Test Acc: 0.2534
+Epoch 21/40, Loss: 443.5944, Test Acc: 0.2645
+Epoch 22/40, Loss: 447.3071, Test Acc: 0.2411
+Epoch 23/40, Loss: 426.4690, Test Acc: 0.2611
+Epoch 24/40, Loss: 422.0882, Test Acc: 0.2557
+Epoch 25/40, Loss: 423.2919, Test Acc: 0.2337
+Epoch 26/40, Loss: 416.7982, Test Acc: 0.2626
+Epoch 27/40, Loss: 425.7115, Test Acc: 0.2627
+Epoch 28/40, Loss: 418.3065, Test Acc: 0.2414
+Epoch 29/40, Loss: 419.9193, Test Acc: 0.2517
+Epoch 30/40, Loss: 414.5711, Test Acc: 0.2511
+Epoch 31/40, Loss: 403.1285, Test Acc: 0.2507
+Epoch 32/40, Loss: 404.9962, Test Acc: 0.2335
+Epoch 33/40, Loss: 409.2390, Test Acc: 0.2693
+Epoch 34/40, Loss: 415.1210, Test Acc: 0.2422
+Epoch 35/40, Loss: 393.1806, Test Acc: 0.2588
+Epoch 36/40, Loss: 395.0812, Test Acc: 0.2568
+Epoch 37/40, Loss: 396.9026, Test Acc: 0.2521
+Epoch 38/40, Loss: 399.1726, Test Acc: 0.2432
+Epoch 39/40, Loss: 388.6021, Test Acc: 0.2343
+Epoch 40/40, Loss: 387.4901, Test Acc: 0.2801
+----------------------------------------
+Accuracy:  28.01%
+F-Score:   24.11%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.39      0.46      0.42      1198
+      forest       0.01      0.00      0.00      1358
+        lake       0.30      0.19      0.23      1175
+       river       0.22      0.26      0.24      1086
+      bridge       0.25      0.51      0.34      1273
+
+    accuracy                           0.28      6090
+   macro avg       0.23      0.28      0.25      6090
+weighted avg       0.23      0.28      0.24      6090
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m2_f100_o50_id2.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 2 | ID 3
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 3 for testing
+
+        
+Epoch 1/40, Loss: 1002.8327, Test Acc: 0.2906
+Epoch 2/40, Loss: 842.2079, Test Acc: 0.3027
+Epoch 3/40, Loss: 763.0516, Test Acc: 0.3013
+Epoch 4/40, Loss: 723.4436, Test Acc: 0.2774
+Epoch 5/40, Loss: 673.7233, Test Acc: 0.3259
+Epoch 6/40, Loss: 655.9588, Test Acc: 0.2837
+Epoch 7/40, Loss: 627.2181, Test Acc: 0.2299
+Epoch 8/40, Loss: 610.4937, Test Acc: 0.2925
+Epoch 9/40, Loss: 595.0311, Test Acc: 0.2204
+Epoch 10/40, Loss: 572.5214, Test Acc: 0.2699
+Epoch 11/40, Loss: 556.9862, Test Acc: 0.2825
+Epoch 12/40, Loss: 565.7249, Test Acc: 0.2822
+Epoch 13/40, Loss: 551.5966, Test Acc: 0.3005
+Epoch 14/40, Loss: 545.2302, Test Acc: 0.2389
+Epoch 15/40, Loss: 539.5514, Test Acc: 0.2703
+Epoch 16/40, Loss: 523.5073, Test Acc: 0.2854
+Epoch 17/40, Loss: 527.9719, Test Acc: 0.2723
+Epoch 18/40, Loss: 513.6250, Test Acc: 0.3212
+Epoch 19/40, Loss: 536.1181, Test Acc: 0.2676
+Epoch 20/40, Loss: 511.0159, Test Acc: 0.2801
+Epoch 21/40, Loss: 527.4959, Test Acc: 0.2799
+Epoch 22/40, Loss: 504.6711, Test Acc: 0.2674
+Epoch 23/40, Loss: 496.1323, Test Acc: 0.2528
+Epoch 24/40, Loss: 489.7260, Test Acc: 0.3137
+Epoch 25/40, Loss: 491.3073, Test Acc: 0.2559
+Epoch 26/40, Loss: 499.4121, Test Acc: 0.2699
+Epoch 27/40, Loss: 487.4427, Test Acc: 0.2696
+Epoch 28/40, Loss: 489.9135, Test Acc: 0.2818
+Epoch 29/40, Loss: 476.1686, Test Acc: 0.2918
+Epoch 30/40, Loss: 481.2342, Test Acc: 0.2913
+Epoch 31/40, Loss: 488.3750, Test Acc: 0.2654
+Epoch 32/40, Loss: 461.7538, Test Acc: 0.2696
+Epoch 33/40, Loss: 479.2456, Test Acc: 0.2786
+Epoch 34/40, Loss: 473.2429, Test Acc: 0.2647
+Epoch 35/40, Loss: 465.6375, Test Acc: 0.2710
+Epoch 36/40, Loss: 460.4844, Test Acc: 0.2501
+Epoch 37/40, Loss: 470.1516, Test Acc: 0.2957
+Epoch 38/40, Loss: 450.8988, Test Acc: 0.2301
+Epoch 39/40, Loss: 462.3650, Test Acc: 0.2901
+Epoch 40/40, Loss: 466.6807, Test Acc: 0.3047
+----------------------------------------
+Accuracy:  30.47%
+F-Score:   32.02%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.14      0.29      0.19      1150
+      forest       0.45      0.50      0.47      1297
+        lake       0.32      0.24      0.27      1095
+       river       0.21      0.15      0.17      1068
+      bridge       0.82      0.31      0.45      1284
+
+    accuracy                           0.30      5894
+   macro avg       0.39      0.30      0.31      5894
+weighted avg       0.40      0.30      0.32      5894
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m2_f100_o50_id3.pth
+------------------------------------------------
+Running: ResNet | Scenario 1 | Method 2 | ID 4
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 1 : Looking for environment
+        Method 2     : Using sending node id 4 for testing
+
+        
+Epoch 1/40, Loss: 890.0916, Test Acc: 0.2910
+Epoch 2/40, Loss: 786.3623, Test Acc: 0.3094
+Epoch 3/40, Loss: 747.6121, Test Acc: 0.3305
+Epoch 4/40, Loss: 720.8169, Test Acc: 0.3073
+Epoch 5/40, Loss: 696.1184, Test Acc: 0.2735
+Epoch 6/40, Loss: 669.1249, Test Acc: 0.3293
+Epoch 7/40, Loss: 643.7837, Test Acc: 0.3350
+Epoch 8/40, Loss: 629.3735, Test Acc: 0.3677
+Epoch 9/40, Loss: 614.4899, Test Acc: 0.3269
+Epoch 10/40, Loss: 607.3486, Test Acc: 0.3118
+Epoch 11/40, Loss: 591.8931, Test Acc: 0.3238
+Epoch 12/40, Loss: 580.8903, Test Acc: 0.2740
+Epoch 13/40, Loss: 564.7523, Test Acc: 0.3233
+Epoch 14/40, Loss: 556.8128, Test Acc: 0.3206
+Epoch 15/40, Loss: 566.6880, Test Acc: 0.2771
+Epoch 16/40, Loss: 550.6403, Test Acc: 0.3307
+Epoch 17/40, Loss: 548.5463, Test Acc: 0.3192
+Epoch 18/40, Loss: 548.9440, Test Acc: 0.3087
+Epoch 19/40, Loss: 539.1440, Test Acc: 0.2951
+Epoch 20/40, Loss: 543.1323, Test Acc: 0.3467
+Epoch 21/40, Loss: 523.2100, Test Acc: 0.3166
+Epoch 22/40, Loss: 524.4828, Test Acc: 0.3506
+Epoch 23/40, Loss: 522.5240, Test Acc: 0.3642
+Epoch 24/40, Loss: 525.3909, Test Acc: 0.3331
+Epoch 25/40, Loss: 512.7061, Test Acc: 0.3295
+Epoch 26/40, Loss: 512.0830, Test Acc: 0.3307
+Epoch 27/40, Loss: 496.4096, Test Acc: 0.3450
+Epoch 28/40, Loss: 506.9086, Test Acc: 0.3623
+Epoch 29/40, Loss: 505.5860, Test Acc: 0.3322
+Epoch 30/40, Loss: 496.9351, Test Acc: 0.3369
+Epoch 31/40, Loss: 498.9206, Test Acc: 0.3642
+Epoch 32/40, Loss: 487.2025, Test Acc: 0.3312
+Epoch 33/40, Loss: 494.5374, Test Acc: 0.3133
+Epoch 34/40, Loss: 486.5601, Test Acc: 0.3664
+Epoch 35/40, Loss: 486.9899, Test Acc: 0.3579
+Epoch 36/40, Loss: 477.8478, Test Acc: 0.3628
+Epoch 37/40, Loss: 473.6270, Test Acc: 0.3104
+Epoch 38/40, Loss: 485.0454, Test Acc: 0.3759
+Epoch 39/40, Loss: 466.8256, Test Acc: 0.3508
+Epoch 40/40, Loss: 468.4403, Test Acc: 0.3414
+----------------------------------------
+Accuracy:  34.14%
+F-Score:   33.80%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      garden       0.25      0.19      0.21      1118
+      forest       0.52      0.49      0.51      1281
+        lake       0.30      0.38      0.33      1091
+       river       0.15      0.14      0.14      1061
+      bridge       0.43      0.46      0.45      1267
+
+    accuracy                           0.34      5818
+   macro avg       0.33      0.33      0.33      5818
+weighted avg       0.34      0.34      0.34      5818
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s1_m2_f100_o50_id4.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 1     : Using random split 75/25
+
+        
+Epoch 1/40, Loss: 833.2687, Test Acc: 0.5171
+Epoch 2/40, Loss: 760.6596, Test Acc: 0.4932
+Epoch 3/40, Loss: 722.0349, Test Acc: 0.5627
+Epoch 4/40, Loss: 696.0067, Test Acc: 0.5886
+Epoch 5/40, Loss: 685.5194, Test Acc: 0.5917
+Epoch 6/40, Loss: 671.8902, Test Acc: 0.6127
+Epoch 7/40, Loss: 671.2341, Test Acc: 0.5499
+Epoch 8/40, Loss: 657.7152, Test Acc: 0.5554
+Epoch 9/40, Loss: 654.4625, Test Acc: 0.6343
+Epoch 10/40, Loss: 646.2704, Test Acc: 0.6058
+Epoch 11/40, Loss: 647.9874, Test Acc: 0.5908
+Epoch 12/40, Loss: 637.5903, Test Acc: 0.5512
+Epoch 13/40, Loss: 636.8278, Test Acc: 0.5641
+Epoch 14/40, Loss: 631.8406, Test Acc: 0.6141
+Epoch 15/40, Loss: 628.8936, Test Acc: 0.6512
+Epoch 16/40, Loss: 629.5112, Test Acc: 0.5905
+Epoch 17/40, Loss: 620.4934, Test Acc: 0.6264
+Epoch 18/40, Loss: 620.6659, Test Acc: 0.6129
+Epoch 19/40, Loss: 616.1864, Test Acc: 0.6148
+Epoch 20/40, Loss: 625.8480, Test Acc: 0.5644
+Epoch 21/40, Loss: 612.4375, Test Acc: 0.6338
+Epoch 22/40, Loss: 611.2575, Test Acc: 0.5738
+Epoch 23/40, Loss: 609.3052, Test Acc: 0.6241
+Epoch 24/40, Loss: 602.9174, Test Acc: 0.5795
+Epoch 25/40, Loss: 599.5559, Test Acc: 0.6343
+Epoch 26/40, Loss: 602.4883, Test Acc: 0.5688
+Epoch 27/40, Loss: 597.2024, Test Acc: 0.6491
+Epoch 28/40, Loss: 595.6440, Test Acc: 0.6357
+Epoch 29/40, Loss: 593.6940, Test Acc: 0.6407
+Epoch 30/40, Loss: 595.2048, Test Acc: 0.5498
+Epoch 31/40, Loss: 597.2290, Test Acc: 0.5757
+Epoch 32/40, Loss: 590.7127, Test Acc: 0.6250
+Epoch 33/40, Loss: 593.4495, Test Acc: 0.6015
+Epoch 34/40, Loss: 583.8010, Test Acc: 0.6374
+Epoch 35/40, Loss: 587.6018, Test Acc: 0.6512
+Epoch 36/40, Loss: 585.8510, Test Acc: 0.5395
+Epoch 37/40, Loss: 578.5451, Test Acc: 0.6435
+Epoch 38/40, Loss: 572.4724, Test Acc: 0.6174
+Epoch 39/40, Loss: 575.3746, Test Acc: 0.5769
+Epoch 40/40, Loss: 574.0625, Test Acc: 0.6491
+----------------------------------------
+Accuracy:  64.91%
+F-Score:   64.39%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.50      0.69      0.58      1636
+      node 1       0.71      0.70      0.71      1577
+      node 2       0.69      0.39      0.50      1528
+      node 3       0.84      0.89      0.86      1480
+      node 4       0.58      0.57      0.58      1460
+
+    accuracy                           0.65      7681
+   macro avg       0.67      0.65      0.65      7681
+weighted avg       0.66      0.65      0.64      7681
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m1_f100_o50.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 2 | ID 0
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 0 for testing
+
+        
+Epoch 1/40, Loss: 904.6180, Test Acc: 0.2414
+Epoch 2/40, Loss: 790.7649, Test Acc: 0.2605
+Epoch 3/40, Loss: 758.9249, Test Acc: 0.2207
+Epoch 4/40, Loss: 738.2220, Test Acc: 0.2260
+Epoch 5/40, Loss: 715.9294, Test Acc: 0.1671
+Epoch 6/40, Loss: 699.9632, Test Acc: 0.2597
+Epoch 7/40, Loss: 697.8165, Test Acc: 0.2403
+Epoch 8/40, Loss: 683.5709, Test Acc: 0.2741
+Epoch 9/40, Loss: 678.9336, Test Acc: 0.2673
+Epoch 10/40, Loss: 676.0815, Test Acc: 0.2419
+Epoch 11/40, Loss: 662.8352, Test Acc: 0.2684
+Epoch 12/40, Loss: 665.0585, Test Acc: 0.2219
+Epoch 13/40, Loss: 656.6358, Test Acc: 0.2479
+Epoch 14/40, Loss: 656.6510, Test Acc: 0.2437
+Epoch 15/40, Loss: 645.2747, Test Acc: 0.2500
+Epoch 16/40, Loss: 638.3992, Test Acc: 0.2305
+Epoch 17/40, Loss: 639.6291, Test Acc: 0.2366
+Epoch 18/40, Loss: 633.7689, Test Acc: 0.2270
+Epoch 19/40, Loss: 630.1222, Test Acc: 0.2373
+Epoch 20/40, Loss: 631.2019, Test Acc: 0.2179
+Epoch 21/40, Loss: 622.7381, Test Acc: 0.2368
+Epoch 22/40, Loss: 620.9749, Test Acc: 0.2759
+Epoch 23/40, Loss: 621.2816, Test Acc: 0.2401
+Epoch 24/40, Loss: 620.2563, Test Acc: 0.2744
+Epoch 25/40, Loss: 614.3935, Test Acc: 0.2152
+Epoch 26/40, Loss: 604.1868, Test Acc: 0.2590
+Epoch 27/40, Loss: 615.7269, Test Acc: 0.2767
+Epoch 28/40, Loss: 608.8476, Test Acc: 0.2631
+Epoch 29/40, Loss: 605.3594, Test Acc: 0.2643
+Epoch 30/40, Loss: 599.8818, Test Acc: 0.2464
+Epoch 31/40, Loss: 600.2121, Test Acc: 0.2361
+Epoch 32/40, Loss: 593.2100, Test Acc: 0.2459
+Epoch 33/40, Loss: 593.4142, Test Acc: 0.2222
+Epoch 34/40, Loss: 592.9010, Test Acc: 0.2502
+Epoch 35/40, Loss: 587.5961, Test Acc: 0.2225
+Epoch 36/40, Loss: 586.6861, Test Acc: 0.2383
+Epoch 37/40, Loss: 586.6664, Test Acc: 0.2575
+Epoch 38/40, Loss: 590.8588, Test Acc: 0.2320
+Epoch 39/40, Loss: 579.3721, Test Acc: 0.2409
+Epoch 40/40, Loss: 581.1581, Test Acc: 0.2326
+----------------------------------------
+Accuracy:  23.26%
+F-Score:   21.10%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.52      0.41      0.46      1318
+      node 1       0.01      0.01      0.01      1247
+      node 2       0.27      0.35      0.31      1198
+      node 3       0.19      0.38      0.25      1150
+      node 4       0.00      0.00      0.00      1118
+
+    accuracy                           0.23      6031
+   macro avg       0.20      0.23      0.21      6031
+weighted avg       0.21      0.23      0.21      6031
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m2_f100_o50_id0.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 2 | ID 1
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 1 for testing
+
+        
+Epoch 1/40, Loss: 874.1039, Test Acc: 0.3006
+Epoch 2/40, Loss: 773.9604, Test Acc: 0.3028
+Epoch 3/40, Loss: 728.3963, Test Acc: 0.3093
+Epoch 4/40, Loss: 707.1162, Test Acc: 0.3022
+Epoch 5/40, Loss: 684.3779, Test Acc: 0.2811
+Epoch 6/40, Loss: 675.6734, Test Acc: 0.2840
+Epoch 7/40, Loss: 667.4685, Test Acc: 0.2837
+Epoch 8/40, Loss: 658.7463, Test Acc: 0.2991
+Epoch 9/40, Loss: 659.9805, Test Acc: 0.2661
+Epoch 10/40, Loss: 647.3040, Test Acc: 0.2880
+Epoch 11/40, Loss: 645.6112, Test Acc: 0.2381
+Epoch 12/40, Loss: 638.1984, Test Acc: 0.3036
+Epoch 13/40, Loss: 637.1878, Test Acc: 0.2652
+Epoch 14/40, Loss: 639.3174, Test Acc: 0.2652
+Epoch 15/40, Loss: 632.1413, Test Acc: 0.2873
+Epoch 16/40, Loss: 630.0222, Test Acc: 0.2658
+Epoch 17/40, Loss: 627.2251, Test Acc: 0.2838
+Epoch 18/40, Loss: 619.0683, Test Acc: 0.2705
+Epoch 19/40, Loss: 624.7940, Test Acc: 0.2374
+Epoch 20/40, Loss: 616.9615, Test Acc: 0.2852
+Epoch 21/40, Loss: 616.1382, Test Acc: 0.2543
+Epoch 22/40, Loss: 611.6599, Test Acc: 0.2868
+Epoch 23/40, Loss: 612.4483, Test Acc: 0.2769
+Epoch 24/40, Loss: 609.2316, Test Acc: 0.2592
+Epoch 25/40, Loss: 611.3050, Test Acc: 0.2757
+Epoch 26/40, Loss: 602.2501, Test Acc: 0.2681
+Epoch 27/40, Loss: 606.6460, Test Acc: 0.2775
+Epoch 28/40, Loss: 596.9419, Test Acc: 0.2589
+Epoch 29/40, Loss: 596.2731, Test Acc: 0.2696
+Epoch 30/40, Loss: 599.5266, Test Acc: 0.2868
+Epoch 31/40, Loss: 594.6327, Test Acc: 0.2566
+Epoch 32/40, Loss: 586.5204, Test Acc: 0.2651
+Epoch 33/40, Loss: 585.1005, Test Acc: 0.2932
+Epoch 34/40, Loss: 585.4280, Test Acc: 0.3096
+Epoch 35/40, Loss: 580.2063, Test Acc: 0.2583
+Epoch 36/40, Loss: 577.4163, Test Acc: 0.2622
+Epoch 37/40, Loss: 575.6191, Test Acc: 0.2624
+Epoch 38/40, Loss: 579.0159, Test Acc: 0.2811
+Epoch 39/40, Loss: 569.1922, Test Acc: 0.2841
+Epoch 40/40, Loss: 575.6627, Test Acc: 0.2856
+----------------------------------------
+Accuracy:  28.56%
+F-Score:   26.01%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.42      0.31      0.35      1397
+      node 1       0.22      0.25      0.23      1344
+      node 2       0.00      0.00      0.00      1358
+      node 3       0.47      0.81      0.59      1297
+      node 4       0.40      0.07      0.13      1281
+
+    accuracy                           0.29      6677
+   macro avg       0.30      0.29      0.26      6677
+weighted avg       0.30      0.29      0.26      6677
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m2_f100_o50_id1.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 2 | ID 2
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 2 for testing
+
+        
+Epoch 1/40, Loss: 889.7564, Test Acc: 0.2379
+Epoch 2/40, Loss: 785.7712, Test Acc: 0.2126
+Epoch 3/40, Loss: 741.9238, Test Acc: 0.2218
+Epoch 4/40, Loss: 722.7995, Test Acc: 0.2401
+Epoch 5/40, Loss: 706.5358, Test Acc: 0.2181
+Epoch 6/40, Loss: 696.7134, Test Acc: 0.2598
+Epoch 7/40, Loss: 675.2489, Test Acc: 0.2435
+Epoch 8/40, Loss: 675.8587, Test Acc: 0.2271
+Epoch 9/40, Loss: 666.2657, Test Acc: 0.2453
+Epoch 10/40, Loss: 666.5329, Test Acc: 0.2227
+Epoch 11/40, Loss: 657.9262, Test Acc: 0.2897
+Epoch 12/40, Loss: 653.1043, Test Acc: 0.2100
+Epoch 13/40, Loss: 648.0061, Test Acc: 0.2183
+Epoch 14/40, Loss: 641.0136, Test Acc: 0.2398
+Epoch 15/40, Loss: 641.6465, Test Acc: 0.2167
+Epoch 16/40, Loss: 633.8775, Test Acc: 0.2176
+Epoch 17/40, Loss: 636.3126, Test Acc: 0.2222
+Epoch 18/40, Loss: 632.9609, Test Acc: 0.2256
+Epoch 19/40, Loss: 624.3743, Test Acc: 0.2442
+Epoch 20/40, Loss: 626.5725, Test Acc: 0.2955
+Epoch 21/40, Loss: 622.8138, Test Acc: 0.2200
+Epoch 22/40, Loss: 620.3149, Test Acc: 0.2441
+Epoch 23/40, Loss: 615.1770, Test Acc: 0.2461
+Epoch 24/40, Loss: 614.9141, Test Acc: 0.2593
+Epoch 25/40, Loss: 610.5321, Test Acc: 0.2750
+Epoch 26/40, Loss: 608.5825, Test Acc: 0.2519
+Epoch 27/40, Loss: 607.1358, Test Acc: 0.2668
+Epoch 28/40, Loss: 602.7232, Test Acc: 0.2550
+Epoch 29/40, Loss: 599.3387, Test Acc: 0.2295
+Epoch 30/40, Loss: 596.7403, Test Acc: 0.2300
+Epoch 31/40, Loss: 596.5015, Test Acc: 0.2242
+Epoch 32/40, Loss: 591.6302, Test Acc: 0.2459
+Epoch 33/40, Loss: 588.2482, Test Acc: 0.2405
+Epoch 34/40, Loss: 589.4121, Test Acc: 0.2470
+Epoch 35/40, Loss: 581.1611, Test Acc: 0.2263
+Epoch 36/40, Loss: 580.6762, Test Acc: 0.2635
+Epoch 37/40, Loss: 581.8618, Test Acc: 0.2511
+Epoch 38/40, Loss: 579.3746, Test Acc: 0.2800
+Epoch 39/40, Loss: 573.2166, Test Acc: 0.2545
+Epoch 40/40, Loss: 566.4457, Test Acc: 0.2434
+----------------------------------------
+Accuracy:  24.34%
+F-Score:   22.61%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.43      0.23      0.30      1251
+      node 1       0.22      0.24      0.23      1239
+      node 2       0.18      0.23      0.20      1175
+      node 3       0.25      0.48      0.33      1095
+      node 4       0.26      0.04      0.07      1091
+
+    accuracy                           0.24      5851
+   macro avg       0.27      0.24      0.22      5851
+weighted avg       0.27      0.24      0.23      5851
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m2_f100_o50_id2.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 2 | ID 3
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 3 for testing
+
+        
+Epoch 1/40, Loss: 938.1864, Test Acc: 0.3608
+Epoch 2/40, Loss: 831.1819, Test Acc: 0.3646
+Epoch 3/40, Loss: 799.9237, Test Acc: 0.3336
+Epoch 4/40, Loss: 770.8431, Test Acc: 0.3345
+Epoch 5/40, Loss: 749.2791, Test Acc: 0.3554
+Epoch 6/40, Loss: 738.9825, Test Acc: 0.3081
+Epoch 7/40, Loss: 724.1202, Test Acc: 0.3077
+Epoch 8/40, Loss: 726.7762, Test Acc: 0.3729
+Epoch 9/40, Loss: 719.1315, Test Acc: 0.3655
+Epoch 10/40, Loss: 703.8487, Test Acc: 0.3293
+Epoch 11/40, Loss: 703.7133, Test Acc: 0.3191
+Epoch 12/40, Loss: 698.6659, Test Acc: 0.3172
+Epoch 13/40, Loss: 690.3982, Test Acc: 0.2989
+Epoch 14/40, Loss: 690.9466, Test Acc: 0.3135
+Epoch 15/40, Loss: 685.8249, Test Acc: 0.3028
+Epoch 16/40, Loss: 683.0814, Test Acc: 0.3213
+Epoch 17/40, Loss: 678.5980, Test Acc: 0.3398
+Epoch 18/40, Loss: 671.9379, Test Acc: 0.3152
+Epoch 19/40, Loss: 673.8742, Test Acc: 0.3228
+Epoch 20/40, Loss: 669.1710, Test Acc: 0.3353
+Epoch 21/40, Loss: 659.1618, Test Acc: 0.2965
+Epoch 22/40, Loss: 658.3885, Test Acc: 0.2858
+Epoch 23/40, Loss: 656.4668, Test Acc: 0.3112
+Epoch 24/40, Loss: 651.8331, Test Acc: 0.2858
+Epoch 25/40, Loss: 660.2711, Test Acc: 0.3403
+Epoch 26/40, Loss: 650.3968, Test Acc: 0.3258
+Epoch 27/40, Loss: 649.8001, Test Acc: 0.2978
+Epoch 28/40, Loss: 642.2806, Test Acc: 0.3099
+Epoch 29/40, Loss: 651.3766, Test Acc: 0.3336
+Epoch 30/40, Loss: 642.9515, Test Acc: 0.3119
+Epoch 31/40, Loss: 637.5317, Test Acc: 0.2884
+Epoch 32/40, Loss: 638.2605, Test Acc: 0.3193
+Epoch 33/40, Loss: 637.2212, Test Acc: 0.3146
+Epoch 34/40, Loss: 631.7304, Test Acc: 0.3047
+Epoch 35/40, Loss: 632.3611, Test Acc: 0.3106
+Epoch 36/40, Loss: 631.8794, Test Acc: 0.2976
+Epoch 37/40, Loss: 624.2048, Test Acc: 0.2983
+Epoch 38/40, Loss: 625.5451, Test Acc: 0.3208
+Epoch 39/40, Loss: 628.2217, Test Acc: 0.3255
+Epoch 40/40, Loss: 616.9340, Test Acc: 0.2817
+----------------------------------------
+Accuracy:  28.17%
+F-Score:   24.27%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.29      0.25      0.27      1172
+      node 1       0.22      0.19      0.20      1134
+      node 2       0.21      0.18      0.19      1086
+      node 3       0.35      0.75      0.48      1068
+      node 4       0.19      0.05      0.07      1061
+
+    accuracy                           0.28      5521
+   macro avg       0.25      0.28      0.24      5521
+weighted avg       0.25      0.28      0.24      5521
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m2_f100_o50_id3.pth
+------------------------------------------------
+Running: ResNet | Scenario 2 | Method 2 | ID 4
+100 0.5 32 40 0.0005
+<class 'int'> <class 'float'> <class 'int'> <class 'int'> <class 'float'>
+
+        Starting the training of the ResNet.
+        ---------------------------------------
+        Scenario 2 : Looking for sending node
+        Method 2     : Using environment id 4 for testing
+
+        
+Epoch 1/40, Loss: 880.5221, Test Acc: 0.1669
+Epoch 2/40, Loss: 759.1717, Test Acc: 0.1575
+Epoch 3/40, Loss: 688.2345, Test Acc: 0.1563
+Epoch 4/40, Loss: 657.6057, Test Acc: 0.1474
+Epoch 5/40, Loss: 625.3341, Test Acc: 0.1275
+Epoch 6/40, Loss: 613.4217, Test Acc: 0.1255
+Epoch 7/40, Loss: 582.0775, Test Acc: 0.1629
+Epoch 8/40, Loss: 574.9720, Test Acc: 0.1437
+Epoch 9/40, Loss: 575.2602, Test Acc: 0.1725
+Epoch 10/40, Loss: 545.3861, Test Acc: 0.1572
+Epoch 11/40, Loss: 539.3234, Test Acc: 0.1347
+Epoch 12/40, Loss: 539.1795, Test Acc: 0.1765
+Epoch 13/40, Loss: 510.0824, Test Acc: 0.1537
+Epoch 14/40, Loss: 525.7583, Test Acc: 0.1554
+Epoch 15/40, Loss: 516.7476, Test Acc: 0.1350
+Epoch 16/40, Loss: 502.0197, Test Acc: 0.1339
+Epoch 17/40, Loss: 495.7184, Test Acc: 0.1546
+Epoch 18/40, Loss: 491.6475, Test Acc: 0.1917
+Epoch 19/40, Loss: 502.5841, Test Acc: 0.1434
+Epoch 20/40, Loss: 481.1031, Test Acc: 0.1925
+Epoch 21/40, Loss: 483.3784, Test Acc: 0.1640
+Epoch 22/40, Loss: 486.1784, Test Acc: 0.1966
+Epoch 23/40, Loss: 469.6917, Test Acc: 0.1607
+Epoch 24/40, Loss: 476.1382, Test Acc: 0.1889
+Epoch 25/40, Loss: 496.6576, Test Acc: 0.1655
+Epoch 26/40, Loss: 465.6720, Test Acc: 0.1670
+Epoch 27/40, Loss: 471.2454, Test Acc: 0.1969
+Epoch 28/40, Loss: 470.4740, Test Acc: 0.1454
+Epoch 29/40, Loss: 470.8293, Test Acc: 0.1666
+Epoch 30/40, Loss: 458.4758, Test Acc: 0.1683
+Epoch 31/40, Loss: 466.0668, Test Acc: 0.1459
+Epoch 32/40, Loss: 461.4729, Test Acc: 0.1869
+Epoch 33/40, Loss: 442.3111, Test Acc: 0.1373
+Epoch 34/40, Loss: 455.9372, Test Acc: 0.2052
+Epoch 35/40, Loss: 452.1846, Test Acc: 0.1470
+Epoch 36/40, Loss: 450.4527, Test Acc: 0.1232
+Epoch 37/40, Loss: 455.9004, Test Acc: 0.1883
+Epoch 38/40, Loss: 449.6130, Test Acc: 0.2040
+Epoch 39/40, Loss: 433.2889, Test Acc: 0.1793
+Epoch 40/40, Loss: 452.0439, Test Acc: 0.1810
+----------------------------------------
+Accuracy:  18.10%
+F-Score:   16.83%
+----------------------------------------
+              precision    recall  f1-score   support
+
+      node 0       0.29      0.25      0.27      1379
+      node 1       0.12      0.22      0.15      1323
+      node 2       0.14      0.18      0.16      1273
+      node 3       0.26      0.25      0.26      1284
+      node 4       0.00      0.00      0.00      1267
+
+    accuracy                           0.18      6526
+   macro avg       0.16      0.18      0.17      6526
+weighted avg       0.16      0.18      0.17      6526
+
+Model weights saved to /home/cilu/dev/riot/iotcomms-project/ml-model/saves/resnet_s2_m2_f100_o50_id4.pth
+------------------------------------------------
