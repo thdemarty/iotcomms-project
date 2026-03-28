@@ -39,6 +39,23 @@ Latency measurements would have required synchronizing device clocks, which was 
 The goal is to gather as much data as possible from nodes at the maximum distance from each other.
 Hence, we formed a fully connected mesh network.
 
+The maximum distance was established using 10 experiments to break the connection between a pair of nodes as per the following table.
+We estimated the distance based on GPS determined positions.
+We suspect our margin of error to be at most around one meter.
+
+| N | Node ID 1 | Node ID 2 | Distance [m]
+| -       | -         | -         | -
+|       1 |         0 |         1 | 11
+|       2 |         0 |         2 | 10
+|       3 |         0 |         3 | 11
+|       4 |         0 |         4 |  9
+|       5 |         1 |         2 | 11
+|       6 |         1 |         3 | 11
+|       7 |         1 |         4 | 10
+|       8 |         2 |         3 | 12
+|       9 |         2 |         4 | 10
+|      10 |         3 |         4 | 11
+
 Since it is impossible to place five nodes such that each individual pair of nodes is at its maximum distance, we positioned the nodes in a pentagon.
 Our ability to adhere to this structure varied across the different environments.
 
@@ -46,9 +63,6 @@ To give an example of how the real conditions affected the distance between node
 For the river environment, the nodes were situated on two sides of a small river, with three nodes on one side and two on the other.
 However, the width of the river was such that there were only a few meters of margin before connections failed.
 As a result, nodes on the same side of the river were a lot closer together compared to nodes on opposing sides.
-
-TODO: add precise distances per environment
-
 
 ## Machine Learning Analysis
 
@@ -111,7 +125,7 @@ The results for CNN can be found in its entirety -> [link to CNN results](ml-mod
 With a classic split of 75% / 25% (training / testing) there is a diagonal forming on the confusion matrix for both scenarios and the accuracy is far above 20% (where 20% means basically guessing, since 100% / 5 classes = 20%).
 Our general goal of this project was to practically investigate the existence of device imperfection in Bluetooth Low Energy radios and whether they lead
 to the unique identification of individual sensor platforms and if the influence of the environment on the transmission can also be classified.
-This thesis is proven as the characteristics of the RSSI per node and environment are something that was learned.
+This theory is proven as the characteristics of the RSSI per node and environment are something that was learned.
 
 However, with method 2 it becomes apparent that the CNN does need to see the signal for all nodes and all environments during training.
 Otherwise, a new deployment area or a new node is not well recognized - or not at all.
@@ -142,25 +156,14 @@ self.fc = nn.Linear(64, num_classes)
 
 #### Train & Test
 
-Data preparation for the ResNet model utilized RSSI values processed into frames of 100 consecutive datapoints with an overlap of 50%. The model was trained for 20 epochs using a batch size of 32 and the Adam optimizer with a learning rate of 1e-3.
-
-Experiments were conducted for both Scenario 1 and Scenario 2 using Methods 1 and 2. Additionally, a multi-channel variation was tested by stacking Timestamps with RSSI values, though this configuration showed a decrease in generalization performance.
+We used the same procedure and parameters as described for the CNN.
 
 #### Results
 
 The comprehensive results for the ResNet model, including all visual metrics, are documented here: [link to ResNet results](ml-model/results.md#ResNet).
 
-In Method 1 (Random Split), the ResNet achieved a weighted average F1-score of 50.41% for environment classification, demonstrating high performance in specific environments such as the River (F1-score of 0.81).
-
-In Method 2 (Leave-One-Out), the model maintained a weighted average F1-score of 44.31%. While there is a performance gap compared to Method 1, the relative stability of the scores indicates that the residual architecture is capable of extracting environmental features that persist across different hardware deployments.
-
-In Scenario 2, Method 2, the model returned 0% accuracy as expected, confirming that the model cannot identify a specific Node ID that was entirely excluded from the training set.
-
 ### Comparison
 
-A comparative analysis of the two architectures reveals distinct characteristics:
-
-* **Environment Classification:** The CNN architecture generally demonstrated higher average performance during Method 1 (Random Split). However, the ResNet showed superior feature extraction in high-interference environments, specifically the River, where it outperformed the CNN's F1-score significantly.
-* **Generalization Stability:** The ResNet architecture exhibited more stable performance metrics when transitioning from Method 1 to Method 2. While the CNN scores showed higher volatility when facing unseen nodes, the ResNet's residual blocks provided more consistent classification across different deployment nodes.
-* **Input Features:** Both models confirmed that RSSI is the most reliable feature for these classification tasks. The inclusion of temporal data (Timesteps) was found to be detrimental to the accuracy of both models, suggesting that the networks were overfitting to packet timing rather than learning signal physics.
-* **Application Suitability:** For large-scale environmental mapping where the model must generalize to new hardware in known environments, the ResNet's stability is advantageous. For localized node identification where computational overhead is a constraint, the CNN provides a highly effective and lower-complexity solution.
+* **Scenario 1 / Environment Classification:** The CNN and ResNet architectures generally demonstrated similar average performance during Method 1 (Random Split). However, the ResNet showed a superior f-score in Method 2, although this was still only slightly better then a random guess. 
+* **Scenario 1 / Node Classification:** The ResNet architecture performed better during Method 1. Both architectures did not perform significantly better than random chance for Method 2.
+* **Input Features:** Both models confirmed that RSSI is the most reliable feature for these classification tasks. The inclusion of temporal data (timesteps) was found to be detrimental to the accuracy of both models, suggesting that the networks were overfitting to packet timing rather than learning signal physics.
