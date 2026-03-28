@@ -165,5 +165,5 @@ The comprehensive results for the ResNet model, including all visual metrics, ar
 ### Comparison
 
 * **Scenario 1 / Environment Classification:** The CNN and ResNet architectures generally demonstrated similar average performance during Method 1 (Random Split). However, the ResNet showed a superior f-score in Method 2, although this was still only slightly better then a random guess. 
-* **Scenario 1 / Node Classification:** The ResNet architecture performed better during Method 1. Both architectures did not perform significantly better than random chance for Method 2.
-* **Input Features:** Both models confirmed that RSSI is the most reliable feature for these classification tasks. The inclusion of temporal data (timesteps) was found to be detrimental to the accuracy of both models, suggesting that the networks were overfitting to packet timing rather than learning signal physics.
+* **Scenario 2 / Node Classification:** The ResNet architecture performed better during Method 1. Both architectures did not perform significantly better than random chance for Method 2.
+* **Input Features:** Both models confirmed that RSSI is the most reliable feature for these classification tasks. The inclusion of temporal data (timesteps) was found to be detrimental to the accuracy of both models.
